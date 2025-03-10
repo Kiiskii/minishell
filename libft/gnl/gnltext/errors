@@ -1,0 +1,25 @@
+Errors found:
+Error in test 1: get_next_line(5: "empty.txt"): Segmentation fault!
+     in sigsegv utils.c:53:1
+     in get_next_line get_next_line.c:78:7
+     in test_gnl_func file_utils.c:40:8
+     in main tester.c:111:2
+
+=================================================================
+==55711==ERROR: AddressSanitizer: heap-buffer-overflow on address 0x6020000001b2 at pc 0x00010d47b636 bp 0x7ffee2791000 sp
+0x7ffee2790ff8
+WRITE of size 1 at 0x6020000001b2 thread T0
+    #0 0x10d47b635 in read_fd get_next_line.c:31
+    #1 0x10d47b533 in get_next_line get_next_line.c:76
+    #2 0x10d47ad50 in test_gnl_func file_utils.c:40
+    #3 0x10d471358 in main tester.c:117
+    #4 0x7fff5ca633d4 in start (libdyld.dylib:x86_64+0x163d4)
+
+0x6020000001b2 is located 0 bytes to the right of 2-byte region [0x6020000001b0,0x6020000001b2)
+allocated by thread T0 here:
+    #0 0x110a8d793 in wrap_malloc (libclang_rt.asan_osx_dynamic.dylib:x86_64h+0x61793)
+    #1 0x10d474ddc in malloc malloc_mock.c:65
+    #2 0x10d47b504 in get_next_line get_next_line.c:72
+    #3 0x10d47ad50 in test_gnl_func file_utils.c:40
+    #4 0x10d471358 in main tester.c:117
+    #5 0x7fff5ca633d4 in start (libdyld.dylib:x86_64+0x163d4)
