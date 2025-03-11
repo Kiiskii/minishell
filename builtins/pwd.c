@@ -1,17 +1,20 @@
-int	builtin_pwd(some array)
+#include "minishell.h"
+#include <errno.h>
+
+int	builtin_pwd(char **array)
 {
 	char	*pathname;
 
-	if (after pwd there is "-") //check the element in the array following pwd, it should be NULL 
+	if (array[1] && array[1][0] == "-")
 	{
-		printf("Options for pwd are not supported.");
-		error_and_exit();
+		printf("lash: pwd: options for pwd are not supported\n");
+		return (2);
 	}
 	pathname = getcwd(NULL, 0);
 	if (!pathname)
 	{
-		printf("Error getcwd");
-		return (1);
+		printf("Error: getcwd\n");
+		return (1); //what error code? strerror(errno) ? or perror("getcwd") and return(errno)
 	}
 	printf("%s\n", pathname);
 	free(pathname); //As an extension to the POSIX.1-2001 standard, glibc's getcwd()
