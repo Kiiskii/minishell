@@ -2,7 +2,7 @@ CC = cc
 
 CFLAGS = -Wall -Wextra -Werror -g
 
-SRCS =	
+SRCS =	srcs/minishell.c srcs/utils.c srcs/tokenization.c
 
 NAME =	minishell
 
@@ -14,11 +14,16 @@ LIBFT_DIR = ./libft
 
 LIBFT = $(LIBFT_DIR)/libft.a
 
+LIBS = -lreadline
+
 GREEN = \033[32m
 ORANGE = \033[38;5;214m
 RESET = \033[0m
 
 all: $(NAME)
+
+db:
+	@echo $(HEADERS)
 
 $(LIBFT):
 	@echo "$(GREEN)----------------------------------------$(RESET)"
@@ -30,7 +35,7 @@ $(NAME): $(OBJS) $(LIBFT)
 	@echo "$(GREEN)----------------------------------------$(RESET)"
 	@echo "$(ORANGE)Compiling executable...$(RESET)"
 	@echo "$(GREEN)----------------------------------------$(RESET)"
-	$(CC) $(CFLAGS) $(HEADERS) $(OBJS) $(LIBFT) -o $(NAME)
+	$(CC) $(CFLAGS) $(HEADERS) $(OBJS) $(LIBFT) $(LIBS) -o $(NAME)
 	@echo "$(GREEN)----------------------------------------$(RESET)"
 	@echo "$(ORANGE)COMPILATION COMPLETE!$(RESET)"
 	@echo "$(GREEN)----------------------------------------$(RESET)"
@@ -39,7 +44,7 @@ clean:
 	@echo "$(GREEN)----------------------------------------$(RESET)"
 	@echo "$(ORANGE)Cleaning object files...$(RESET)"
 	@echo "$(GREEN)----------------------------------------$(RESET)"
-	rm -f *.o
+	rm -f srcs/*.o
 	make clean --no-print-directory -C $(LIBFT_DIR)
 
 fclean: clean
@@ -50,8 +55,8 @@ fclean: clean
 
 re:	fclean all
 
-%.o: %.c pipex.h
-	$(CC) $(CFLAGS) -c $< -o $@ -g $(HEADERS)
+%.o: %.c minishell.h
+		$(CC) $(CFLAGS) -c $< -o $@ -g $(HEADERS)
 
 debug: CFLAGS += -fsanitize=address -fsanitize=leak -fsanitize=undefined
 debug: $(NAME)
