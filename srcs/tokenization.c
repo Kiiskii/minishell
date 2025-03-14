@@ -1,6 +1,4 @@
-#include <readline/readline.h>
-#include <readline/history.h>
-#include "minishell.h"
+#include "../minishell.h"
 
 void	add_token(t_token **list, char *content, t_token_type type)
 {
@@ -45,19 +43,20 @@ int	handle_redirs(t_token **list, char *str)
 	return (1);
 }
 
-int	is_specialchar(char c)
+int	handle_words(t_token **list, char *str)
 {
-	if (c == '|')
-		return (1);
-	if (c == '<' || c == '>')
-		return (1);
-	return (0);
+	int	i;
+
+	i = 0;
+	while (str[i] && !ft_iswhitespace(str[i]) && !is_specialchar(str[i]))
+		i++;
+	add_token(list, ft_substr(str, 0, i), WORD);
+	return (i);
 }
 
 void	tokenize_input(char *input, t_token **list)
 {
 	int	i;
-	int	start;
 	int	len;
 
 	i = 0;
@@ -77,39 +76,7 @@ void	tokenize_input(char *input, t_token **list)
 				len = handle_redirs(list, &input[i]);
 		}
 		else
-		{
-			start = i;
-			while (input[i] && !ft_iswhitespace(input[i]) && !is_specialchar(input[i]))
-				i++;
-			add_token(list, ft_substr(input, start, i - start), WORD);
-		}
+			len = handle_words(list, &input[i]);
 		i += len;
 	}
-}
-
-int	main()
-{
-	char	*input;
-	t_token	*tokens;
-	t_token	*tmp;
-
-	tokens = NULL;
-	while (1)
-	{
-		input = readline("lash$: ");
-		if (!input)
-		{
-			printf("\nExiting lash...\n");
-			break ;
-		}
-		tokenize_input(input, &tokens);
-		tmp = tokens;
-		while (tmp)
-		{
-			printf("Token: %s, Type: %d\n", tmp->token, tmp->type);
-			tmp = tmp->next;
-		}
-		free(input);
-	}
-	return (0);
 }

@@ -26,4 +26,11 @@ typedef struct s_token
 	t_token_type	type;
 }		t_token;
 
+void	start_readline();
+void	tokenize_input(char *input, t_token **list);
+int		is_specialchar(char c);
+int		handle_redirs(t_token **list, char *str);
+void	add_token(t_token **list, char *content, t_token_type type);
+int		handle_words(t_token **list, char *str);
+
 #endif

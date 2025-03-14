@@ -2,7 +2,7 @@ CC = cc
 
 CFLAGS = -Wall -Wextra -Werror -g
 
-SRCS =	minishell.c
+SRCS =	srcs/minishell.c srcs/utils.c srcs/tokenization.c
 
 NAME =	minishell
 
@@ -44,7 +44,7 @@ clean:
 	@echo "$(GREEN)----------------------------------------$(RESET)"
 	@echo "$(ORANGE)Cleaning object files...$(RESET)"
 	@echo "$(GREEN)----------------------------------------$(RESET)"
-	rm -f *.o
+	rm -f srcs/*.o
 	make clean --no-print-directory -C $(LIBFT_DIR)
 
 fclean: clean
