@@ -2,7 +2,7 @@ CC = cc
 
 CFLAGS = -Wall -Wextra -Werror -g
 
-SRCS =	srcs/minishell.c srcs/utils.c srcs/tokenization.c
+SRCS =	srcs/minishell.c srcs/utils.c srcs/tokenization.c srcs/env-to-list.c
 
 NAME =	minishell
 

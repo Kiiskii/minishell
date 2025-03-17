@@ -19,6 +19,13 @@ typedef enum e_token_type
 	REDIR_OUT_APPEND
 }		t_token_type;
 
+typedef struct s_envi
+{
+	char			*value;
+	char			*key;
+	struct s_envi	*next;
+}		t_envi;
+
 typedef struct s_token
 {
 	char			*token;
@@ -32,5 +39,8 @@ int		is_specialchar(char c);
 int		handle_redirs(t_token **list, char *str);
 void	add_token(t_token **list, char *content, t_token_type type);
 int		handle_words(t_token **list, char *str);
+void	env_to_list(t_envi **envi, char **env);
+t_envi	*create_node(t_envi *new_node, char *env, int j, int has_value);
+void	add_back(t_envi *tmp, t_envi *new);
 
 #endif
