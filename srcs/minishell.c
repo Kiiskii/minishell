@@ -6,30 +6,27 @@ void	start_readline()
 {
 	char	*input;
 	t_token	*tokens;
-	t_token	*tmp;
 
 	tokens = NULL;
 	while (1)
 	{
 		input = readline("lash$: ");
-		if (!input)
-		{
-			printf("\nExiting lash...\n");
-			break ;
-		}
 		tokenize_input(input, &tokens);
-		tmp = tokens;
-		while (tmp)
-		{
-			printf("Token: %s, Type: %d\n", tmp->token, tmp->type);
-			tmp = tmp->next;
-		}
 		free(input);
 	}
 }
 
-int	main()
+int	main(int argc, char **argv, char **env)
 {
+	t_envi	*envi;
+
+	if (argc != 1)
+		return (1);
+	(void)argv;
+	envi = NULL;
+	env_to_list(&envi, env);
 	start_readline();
+	printf("\nExiting lash...\n");
+	// implement signalhandling
 	return (0);
 }
