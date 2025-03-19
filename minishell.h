@@ -23,6 +23,7 @@ typedef struct s_envi
 {
 	char			*value;
 	char			*key;
+	int				has_value;
 	struct s_envi	*next;
 }		t_envi;
 
@@ -42,5 +43,18 @@ int		handle_words(t_token **list, char *str);
 void	env_to_list(t_envi **envi, char **env);
 t_envi	*create_node(t_envi *new_node, char *env, int j, int has_value);
 void	add_back(t_envi *tmp, t_envi *new);
+
+//for testing
+void	execute_command(char **args, t_envi *env);
+void	begin_execution(char **args, t_envi *env);
+
+//builtins
+int		builtin_cd(char **array);//, t_envi *env);
+int		builtin_echo(char **array);
+int		builtin_env(char **array, t_envi *env);
+void	builtin_exit(char **array);
+int		builtin_export(char **array, t_envi *env);
+int		builtin_pwd(char **array);
+int		builtin_unset(char **array, t_envi *env);
 
 #endif

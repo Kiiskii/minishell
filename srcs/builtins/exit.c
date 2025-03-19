@@ -1,4 +1,4 @@
-#include "minishell.h"
+#include "../minishell.h"
 
 //need to decide whether these return something or just exit
 //if given just "exit" or "exit 6", is exit written on STDOUT?
@@ -6,17 +6,18 @@
 //check with "exit 9999999999999999999" should exit with message
 //"bash: exit: 9999999999999999999: numeric argument required" and $? = 2
 
-void	builtin_exit(array)
+void	builtin_exit(char **array)
 {
-	ft_putstr_fd("exit\n", STDERR);
+	ft_putstr_fd("exit\n", 2);
 	if (!array[1])
+		return ;
 		//set $? to 0
 		//exit --> maybe just exit(0);
-	else if (ft_isdigit(array[1]))
+	else if (ft_isdigit(array[1][0])) //check what you send here, need to do a loop?
 	{
 		if (array[2])
 		{
-			ft_putstr_fd("lash: exit: too man arguments\n", STDERR); //check if nl necessary
+			ft_putstr_fd("lash: exit: too man arguments\n", 2); //check if nl necessary
 			//set $? to 1
 		}
 		else
@@ -27,9 +28,9 @@ void	builtin_exit(array)
 	}
 	else
 	{
-		ft_putstr_fd("lash: exit: ", STDERR);
-		ft_putstr_fd(array[1], STDERR);
-		ft_putstr_fd(": numeric argument required\n", STDERR); //check nl or no
+		ft_putstr_fd("lash: exit: ", 2);
+		ft_putstr_fd(array[1], 2);
+		ft_putstr_fd(": numeric argument required\n", 2); //check nl or no
 		//set $? to 2
 		//exit
 	}

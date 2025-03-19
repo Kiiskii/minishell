@@ -2,6 +2,7 @@
 
 t_envi	*create_node(t_envi *new_node, char *env, int j, int has_value)
 {
+	new_node->has_value = has_value;
 	new_node->key = ft_substr(env, 0, j);
 	new_node->next = NULL;
 	if (has_value)

@@ -1,13 +1,37 @@
-#include "minishell.h"
+#include "../minishell.h"
 
 //update PWD and OLDPWD environment variables, except if invalid pathname
 //remember to update oldpwd even if cd in home
 
-void	update_env(char *path, char *current, t_env *env)
+void	update_env(char *new, char *old, t_envi *env)
 {
+	t_envi	*pwd;
+	t_envi	*old_pwd;
 
+	//check is new and old exist?
+	pwd = env;
+	old_pwd = env;
+	while (pwd != NULL)
+	{
+		if (ft_strcmp(pwd->key, PWD) == 0)
+		{
+			free(pwd->value);
+			pwd->value = ft_strdup(new);
+		}
+		pwd = pwd->next;
+	}
+	while (old_pwd != NULL)
+	{
+		if (ft_strcmp(old_pwd->key, OLDPWD) == 0)
+		{
+			free(old_pwd->value);
+			old_pwd->value = ft_strdup(old);
+		}
+		old_pwd = old_pwd->next;
+	}
+}
 
-int	change_dir(char *path, t_env *env)
+int	change_dir(char *path, t_envi *env)
 {
 	char	*current;
 
@@ -21,20 +45,41 @@ int	change_dir(char *path, t_env *env)
 	current = getcwd(NULL, 0);
 	if (!current)
 	{
-		error message
+		return (1); //error message?
 	}
 	update_env(path, current, env);
 	return (0);
 }
 
-int	go_home(t_env *env)
+int	go_home(t_envi *env)
+{
+	t_envi	*seeker;
+	char	*current;
 
+	current = getcwd(NULL, 0);
+	if (!current)
+	{
+		return (1); //error message?
+	}
+	seeker = env;
+	while (seeker != NULL)
+	{
+		if (ft_strcmp(seeker->key, "HOME") == 0)
+			break ;
+		seeker = seeker->next;
+	}
+	if (seeker == NULL)
+		return (1);
+	chdir(seeker->value);
+	update_env(seeker->value, current, env);
+	return (0);
+}
 
-int	builtin_cd(char **array, t_env *env)
+int	builtin_cd(char **array, t_envi *env)
 {
 	if (!args[1])
 		return (go_home(env));
-	else if (args[2])
+	else if (array[2])
 	{
 		ft_putstr_fd("lash: cd: too many arguments\n", 2);
 		return (1);

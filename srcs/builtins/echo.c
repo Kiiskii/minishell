@@ -1,4 +1,4 @@
-#include "minishell.h"
+#include "../minishell.h"
 
 //#include <unistd.h>
 //#include <stdio.h>
@@ -23,7 +23,7 @@ int	check_nl(char *str)
 	return (1);
 }
 
-void	builtin_echo(char **array)
+int	builtin_echo(char **array)
 {
 	int	i;
 	int	nl_check;
@@ -46,12 +46,13 @@ void	builtin_echo(char **array)
 	}
 	if (nl_check == 1)
 		printf("\n");
+	return (0);
 }
-//
+
 //int	main(int argc, char **argv)
 //{
 //	if (argc == 0)
 //		return (0);
-//	builtin_echo(argv);
+//	builtin_echo(argv + 1);
 //	return (0);
 //}

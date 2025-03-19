@@ -1,6 +1,31 @@
-#include "minishell.h"
+#include "../minishell.h"
 
-int	builtin_unset(char **array, t_env *env)
+void	remove_env(char	*str, t_envi **env)
+{
+	t_envi	*trav;
+	t_envi	*prev;
+
+	trav = *env;
+	prev = NULL;
+	while (trav != NULL)
+	{
+		if (ft_strcmp(trav->key, str) == 0)
+		{
+			if (prev == NULL)
+				*env = trav->next;
+			else
+				prev->next = trav->next;
+			free(trav->key);
+			free(trav->value);
+			free(trav);
+			return ;
+		}
+		prev = trav;
+		trav = trav->next;
+	}
+}
+
+int	builtin_unset(char **array, t_envi *env)
 {
 	int	 i;
 
@@ -9,16 +34,16 @@ int	builtin_unset(char **array, t_env *env)
 		return (0);
 	else if (array[1][0] == '-' && array[1][1])
 	{	
-		ft_putstr("lash: unset: ", 2);
-		ft_putstr(array[1], 2);
-		ft_putstr(": options not supported\n", 2);
-		ft_putstr("unset: usage: unset [name ...]\n");
+		ft_putstr_fd("lash: unset: ", 2);
+		ft_putstr_fd(array[1], 2);
+		ft_putstr_fd(": options not supported\n", 2);
+		ft_putstr_fd("unset: usage: unset [name ...]\n", 2);
 		return (2);
 	}
 	while (array[i])
 	{
-		if (input_is_valid(array[i])
-
-
+		remove_env(array[i], &env);
+		i++;
+	}
+	return (0);
 }
-	

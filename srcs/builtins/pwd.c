@@ -1,11 +1,11 @@
-#include "minishell.h"
+#include "../minishell.h"
 #include <errno.h>
 
 int	builtin_pwd(char **array)
 {
 	char	*pathname;
 
-	if (array[1] && array[1][0] == "-")
+	if (array[1] && array[1][0] == '-')
 	{
 		printf("lash: pwd: options for pwd are not supported\n");
 		return (2);

@@ -1,86 +1,162 @@
-#include "minishell.h"
+#include "../minishell.h"
 
-t_env	*find_next(t_env *env)
+void	modify_existing(char *str, t_envi *env)
 {
-	t_env	*min;
-	t_env	*trav;
+	int	count;
+	t_envi	*trav;
 
 	trav = env;
-	min = trav;
-	while (trav->next != NULL)
+	count = 0;
+	while (str[count] && str[count] != '=')
+		count++;
+	while (trav != NULL)
 	{
-		if (ft_strcmp(trav->key, trav->next->key) < 0)
-			min = trav->next;
+		if (ft_strcmp(trav->key, ft_substr(str, 0, count)) == 0)
+		{
+			free(trav->value);
+			trav->value = strdup(str[count + 1]);
+		}
 		trav = trav->next;
 	}
-	return (min);
 }
 
-void	modify_existing(char *str, t_env *env)
+void	add_new(char *str, t_envi *env)
 {
-	
+	t_envi	*new_node;
+	int		equal;
+
+	equal = 0;
+	new_node = malloc(sizeof(t_envi));
+	while (str[equal] && str[equal] != '=')
+		equal++;
+	if (str[equal] == '=')
+		new_node = create_node(new_node, str, equal, 1);
+	else
+		new_node = create_node(new_node, str, equal, 0);
+	add_back(env, new_node);
 }
 
-_Bool	check_existing(char *str, t_env *env)
+_Bool	check_existing(char *str, t_envi *env)
 {
-	t_env	*trav;
+	t_envi	*trav;
 
 	trav = env;
 	while (trav != NULL)
 	{
-		if (trav->key == str)
+		if (ft_strcmp(trav->key, str) == 0)
 			return (1);
 		trav = trav->next;
 	}
 	return (0);
 }
 
-int	builtin_export(char **array, t_env *env)
+void	add_to_env(char *str, t_envi *env)
 {
-	t_env	*alphalist;
-	t_env	*trav;
-	int		i;
+	if (check_existing(str, env))
+		modify_env(str, env);
+	else
+		add_new(str, env);
+}
+
+void	add_to_copy(t_envi **copy, t_envi *new_node)
+{
+	int		comp;
+	t_envi	*trav;
+
+	trav = *copy;
+	comp = ft_strcmp(new_node->key, (*copy)->key);
+	if (*copy == NULL || comp < 0)
+	{
+		new_node->next = *copy;
+		*copy = new_node;
+	}
+	else
+	{
+		while (trav->next != NULL && comp > 0)
+			trav = trav->next;
+		new_node->next = trav->next;
+		trav->next = new_node;
+	}
+}
+
+t_envi	*sort_env(t_envi *env)
+{
+	t_envi	*copy;
+	t_envi	*trav;
+	t_envi	*new_node;
 
 	trav = env;
-	i = 1;
-	if (!array[i])
+	copy = NULL;
+	while (trav != NULL)
 	{
-		while (env != NULL)
-		{
-			printf("declare -x ");
-			alphalist = find_next(env);
-			printf("\"%s=%s\n\"", alphalist->key, alphalist->value);
-			alphalist = alphalist->next;
-			trav = trav->next;
-		}
-		return (0); //return success
+		new_node = malloc(sizeof(t_envi));
+		if (!new_node)
+			return (NULL);
+		copy->key = strdup(trav->key);
+		copy->value = strdup(trav->value);
+		copy->has_value = current->has_value;
+		copy->next = NULL;
+		add_to_copy(&copy, new);
+		trav = trav->next;
 	}
+	return (copy);
+}
+
+int	print_alphabetised(t_envi *env)
+{
+	t_envi	*trav;
+	t_envi	*alphalist;
+
+	trav = env;
+	alphalist = sort_env(env);
+	if (alphalist == NULL)
+		return (1);
+	while (trav != NULL)
+	{
+		printf("declare -x ");
+		if (alphalist->has_value == 1)
+			printf("\"%s=%s\n\"", alphalist->key, alphalist->value);
+		else
+			printf("\"%s\"", alphalist->key);
+		trav = trav->next;
+	}
+	//free copied list?
+	return (0);
+}
+
+int	builtin_export(char **array, t_envi *env)
+{
+	int		i;
+	int		exit_code;
+
+	i = 1;
+	exit_code = 0;
+	if (!array[i])
+		return (print_alphabetised(env));
 	else
 	{
 		while (array[i])
 		{
-			exit_code = is_valid_input(array[i]);
 			if (array[1][0] == '-' && array[1][1])
 			{
 				ft_putstr_fd("lash: export: ", 2);
 				ft_putstr_fd(array[1], 2);
-				ft_putstr_fd("Options not supported\n", 2);
+				ft_putstr_fd(": options not supported\n", 2);
 				ft_putstr_fd("export: usage: export [name[=value ...]\n", 2);
-				return (2);
+				exit_code = 2;
 			}
-			else if (is_valid_input(array[i]) == 0)
+			else if (array[i][0] == '-')
 			{
 				ft_putstr_fd("lash: export: '", 2);
 				ft_putstr_fd(array[i], 2);
 				ft_putstr_fd("': not a valid identifier\n", 2);
 				exit_code = 1;
 			}
-			else if (check_existing(array[i], env) == 1)
-				modify_existing(array[i], env);
 			else
-				add_new(array[i], env);
+				add_to_env(array[i], env);
 			i++;
 		}
+		return (exit_code); //testing
 	}
 
 	//check if env var already exists, in which case replace
