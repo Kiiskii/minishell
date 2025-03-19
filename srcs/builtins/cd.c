@@ -13,7 +13,7 @@ void	update_env(char *new, char *old, t_envi *env)
 	old_pwd = env;
 	while (pwd != NULL)
 	{
-		if (ft_strcmp(pwd->key, PWD) == 0)
+		if (ft_strcmp(pwd->key, "PWD") == 0)
 		{
 			free(pwd->value);
 			pwd->value = ft_strdup(new);
@@ -22,7 +22,7 @@ void	update_env(char *new, char *old, t_envi *env)
 	}
 	while (old_pwd != NULL)
 	{
-		if (ft_strcmp(old_pwd->key, OLDPWD) == 0)
+		if (ft_strcmp(old_pwd->key, "OLDPWD") == 0)
 		{
 			free(old_pwd->value);
 			old_pwd->value = ft_strdup(old);
@@ -35,7 +35,7 @@ int	change_dir(char *path, t_envi *env)
 {
 	char	*current;
 
-	if (chdir(path) != 0);
+	if (chdir(path) != 0)
 	{
 		ft_putstr_fd("lash: cd: ", 2);
 		ft_putstr_fd(path, 2);
@@ -77,7 +77,7 @@ int	go_home(t_envi *env)
 
 int	builtin_cd(char **array, t_envi *env)
 {
-	if (!args[1])
+	if (!array[1])
 		return (go_home(env));
 	else if (array[2])
 	{

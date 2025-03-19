@@ -5,7 +5,7 @@ void	execute_command(char **args, t_envi *env)
 	int	exit_code;
 
 	if (ft_strncmp(args[0], "cd", 2) == 0)
-		exit_code = builtin_cd(args);//, env);
+		exit_code = builtin_cd(args, env);
 	else if (ft_strncmp(args[0], "pwd", 3) == 0)
 		exit_code = builtin_pwd(args);
 	else if (ft_strncmp(args[0], "export", 8) == 0)
@@ -22,19 +22,12 @@ void	execute_command(char **args, t_envi *env)
 //		execute_externals(something, ms);
 }
 
-void	begin_execution(char **args, t_envi *env)
+void	begin_execution(char *str, t_envi *env)
 {
-	//int	in = 1;
-	//int	j = 0;
+	char	**arr;
 
-	//array = malloc(10 * sizeof(char *));
-	//while (args[in])
-	//{
-	//	array[j] = args[in];
-//		j++;
-//		in++;
-//	}
-	execute_command(array, env);
+	arr = ft_split(str, ' ');
+	execute_command(arr, env);
 }
 //
 //void	begin_execution(ast node, struct minishell)

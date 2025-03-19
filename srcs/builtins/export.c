@@ -14,7 +14,7 @@ void	modify_existing(char *str, t_envi *env)
 		if (ft_strcmp(trav->key, ft_substr(str, 0, count)) == 0)
 		{
 			free(trav->value);
-			trav->value = strdup(str[count + 1]);
+			trav->value = ft_strdup(&str[count + 1]);
 		}
 		trav = trav->next;
 	}
@@ -39,21 +39,28 @@ void	add_new(char *str, t_envi *env)
 _Bool	check_existing(char *str, t_envi *env)
 {
 	t_envi	*trav;
+	char	*key;
+	int		count;
 
+	count = 0;
 	trav = env;
+	while (str[count] && str[count] != '=')
+		count++;
+	key = ft_substr(str, 0, count);
 	while (trav != NULL)
 	{
-		if (ft_strcmp(trav->key, str) == 0)
+		if (ft_strcmp(trav->key, key) == 0)
 			return (1);
 		trav = trav->next;
 	}
+	free(key);
 	return (0);
 }
 
 void	add_to_env(char *str, t_envi *env)
 {
 	if (check_existing(str, env))
-		modify_env(str, env);
+		modify_existing(str, env);
 	else
 		add_new(str, env);
 }
@@ -63,16 +70,22 @@ void	add_to_copy(t_envi **copy, t_envi *new_node)
 	int		comp;
 	t_envi	*trav;
 
+	if (*copy == NULL)
+	{
+		*copy = new_node;
+		return ;
+	}
 	trav = *copy;
-	comp = ft_strcmp(new_node->key, (*copy)->key);
-	if (*copy == NULL || comp < 0)
+	comp = ft_strcmp(new_node->key, trav->key);
+	if (comp < 0)
 	{
 		new_node->next = *copy;
 		*copy = new_node;
 	}
 	else
 	{
-		while (trav->next != NULL && comp > 0)
+		while (trav->next != NULL 
+			&& ft_strcmp(new_node->key, trav->next->key) > 0)
 			trav = trav->next;
 		new_node->next = trav->next;
 		trav->next = new_node;
@@ -92,11 +105,11 @@ t_envi	*sort_env(t_envi *env)
 		new_node = malloc(sizeof(t_envi));
 		if (!new_node)
 			return (NULL);
-		copy->key = strdup(trav->key);
-		copy->value = strdup(trav->value);
-		copy->has_value = current->has_value;
-		copy->next = NULL;
-		add_to_copy(&copy, new);
+		new_node->key = ft_strdup(trav->key);
+		new_node->value = ft_strdup(trav->value);
+		new_node->has_value = trav->has_value;
+		new_node->next = NULL;
+		add_to_copy(&copy, new_node);
 		trav = trav->next;
 	}
 	return (copy);
@@ -104,21 +117,19 @@ t_envi	*sort_env(t_envi *env)
 
 int	print_alphabetised(t_envi *env)
 {
-	t_envi	*trav;
 	t_envi	*alphalist;
 
-	trav = env;
 	alphalist = sort_env(env);
 	if (alphalist == NULL)
 		return (1);
-	while (trav != NULL)
+	while (alphalist != NULL)
 	{
 		printf("declare -x ");
 		if (alphalist->has_value == 1)
-			printf("\"%s=%s\n\"", alphalist->key, alphalist->value);
+			printf("%s=\"%s\"\n", alphalist->key, alphalist->value);
 		else
 			printf("\"%s\"", alphalist->key);
-		trav = trav->next;
+		alphalist = alphalist->next;
 	}
 	//free copied list?
 	return (0);
@@ -137,13 +148,13 @@ int	builtin_export(char **array, t_envi *env)
 	{
 		while (array[i])
 		{
-			if (array[1][0] == '-' && array[1][1])
+			if (i == 1 && array[i][0] == '-' && array[1][1])
 			{
 				ft_putstr_fd("lash: export: ", 2);
 				ft_putstr_fd(array[1], 2);
 				ft_putstr_fd(": options not supported\n", 2);
 				ft_putstr_fd("export: usage: export [name[=value ...]\n", 2);
-				exit_code = 2;
+				return (2);
 			}
 			else if (array[i][0] == '-')
 			{

@@ -17,7 +17,7 @@ void	builtin_exit(char **array)
 	{
 		if (array[2])
 		{
-			ft_putstr_fd("lash: exit: too man arguments\n", 2); //check if nl necessary
+			ft_putstr_fd("lash: exit: too many arguments\n", 2); //check if nl necessary
 			//set $? to 1
 		}
 		else
