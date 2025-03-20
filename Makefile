@@ -49,6 +49,8 @@ clean:
 	@echo "$(ORANGE)Cleaning object files...$(RESET)"
 	@echo "$(GREEN)----------------------------------------$(RESET)"
 	rm -f srcs/*.o
+	rm -f srcs/builtins/*.o
+	rm -f srcs/execution/*.o
 	make clean --no-print-directory -C $(LIBFT_DIR)
 
 fclean: clean

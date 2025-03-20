@@ -17,7 +17,7 @@ void	execute_command(char **args, t_envi *env)
 	else if (ft_strncmp(args[0], "echo", 8) == 0)
 		exit_code = builtin_echo(args);
 	else if (ft_strncmp(args[0], "exit", 8) == 0)
-		builtin_exit(args);
+		exit_code = builtin_exit(args);
 //	else
 //		execute_externals(something, ms);
 }
