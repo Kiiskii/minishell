@@ -1,14 +1,14 @@
 #include "../minishell.h"
 
 //update PWD and OLDPWD environment variables, except if invalid pathname
-//remember to update oldpwd even if cd in home
+//cd .. and cd with directory removed from underneath
 
 void	update_env(char *new, char *old, t_envi *env)
 {
 	t_envi	*pwd;
 	t_envi	*old_pwd;
 
-	//check is new and old exist?
+	//check if new and old exist?
 	pwd = env;
 	old_pwd = env;
 	while (pwd != NULL)
@@ -95,23 +95,3 @@ int	builtin_cd(char **array, t_envi *env)
 	else
 		return (change_dir(array[1], env));
 }
-
-
-
-//int	builtin_cd(void)
-//{
-//	char	*pwd;
-
-//	pwd = getcwd(NULL, 0);
-//    printf("pwd before chdir: %s\n", pwd);
-//	chdir("/home/lguillen/minishell_github/execution");
-//	pwd = getcwd(NULL, 0);
-//    printf("pwd after chdir: %s\n", pwd);
-//	return (0);
-//}
-
-//int	main(void)
-//{
-//	builtin_cd();
-//	return (0);
-//}
