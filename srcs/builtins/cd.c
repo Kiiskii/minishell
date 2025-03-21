@@ -1,7 +1,8 @@
 #include "../minishell.h"
 
 //update PWD and OLDPWD environment variables, except if invalid pathname
-//cd .. and cd with directory removed from underneath
+//TO DO: "cd .." and "cd ." with directory removed from underneath
+//probably getcwd and remove last part ft_strrchr '/'?
 
 void	update_env(char *new, char *old, t_envi *env)
 {
@@ -69,7 +70,10 @@ int	go_home(t_envi *env)
 		seeker = seeker->next;
 	}
 	if (seeker == NULL)
+	{
+		ft_putstr_fd("lash: cd: HOME not set\n", 2);
 		return (1);
+	}
 	chdir(seeker->value);
 	update_env(seeker->value, current, env);
 	return (0);
