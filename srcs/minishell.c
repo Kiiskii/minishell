@@ -2,7 +2,7 @@
 #include <readline/history.h>
 #include "../minishell.h"
 
-void	start_readline()
+void	start_readline(t_envi *env)
 {
 	char	*input;
 	t_token	*tokens;
@@ -12,6 +12,7 @@ void	start_readline()
 	{
 		input = readline("lash$: ");
 		tokenize_input(input, &tokens);
+		begin_execution(input, env);
 		free(input);
 	}
 }
@@ -25,7 +26,7 @@ int	main(int argc, char **argv, char **env)
 	(void)argv;
 	envi = NULL;
 	env_to_list(&envi, env);
-	start_readline();
+	start_readline(envi);
 	printf("\nExiting lash...\n");
 	// implement signalhandling
 	return (0);
