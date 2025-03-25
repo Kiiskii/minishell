@@ -2,6 +2,7 @@
 
 //check with "exit 9999999999999999999" should exit with message
 //"bash: exit: 9999999999999999999: numeric argument required" and $? = 2
+//to do: negative values
 
 int	only_digits(char *str)
 {

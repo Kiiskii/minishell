@@ -1,5 +1,7 @@
 #include "../minishell.h"
 
+//TO DO: += append
+
 void	modify_existing(char *str, t_envi *env)
 {
 	int	count;
