@@ -41,6 +41,8 @@ int		ft_isblank(int c);
 int		handle_redirs(t_token **list, char *str);
 void	add_token(t_token **list, char *content, t_token_type type);
 int		handle_words(t_token **list, char *str);
+char	*concat_word(char *word, char *str, int len);
+int		word_in_quotes(char **word, char *str, int i, int *j);
 void	env_to_list(t_envi **envi, char **env);
 t_envi	*create_node(t_envi *new_node, char *env, int j, int has_value);
 void	add_back(t_envi *tmp, t_envi *new);

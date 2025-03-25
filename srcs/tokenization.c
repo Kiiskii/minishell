@@ -43,69 +43,6 @@ int	handle_redirs(t_token **list, char *str)
 	return (1);
 }
 
-char	*concat_word(char *word, char *str, int len)
-{
-	char *new_word;
-	char *tmp;
-
-	tmp = ft_substr(str, 0, len);
-	if (!word)
-		return (tmp);
-	new_word = ft_strjoin(word, tmp);
-	free(tmp);
-	free(word);
-	return (new_word);
-}
-
-int	handle_words(t_token **list, char *str)
-{
-	int		i;
-	int		j;
-	int		start;
-	char	*word;
-
-	word = NULL;
-	i = 0;
-	while (str[i] && !ft_isblank(str[i]) && !is_specialchar(str[i]))
-	{
-		if (str[i] == '"')
-		{
-			if (j > 1)
-				word = ft_strjoin(word, ft_substr(str, i - j + 1, j - 1));
-			j = 0;
-			if (i > 0 && !word)
-				word = ft_substr(str, 0, i);
-			i++;
-			start = i;
-			while (str[i] && str[i] != '"')
-				i++;
-			word = concat_word(word, &str[start], i - start);
-		}
-		else if (str[i] == '\'')
-		{
-			if (j > 1)
-				word = ft_strjoin(word, ft_substr(str, i - j + 1, j - 1));
-			j = 0;
-			if (i > 0 && !word)
-				word = ft_substr(str, 0, i);
-			i++;
-			start = i;
-			while (str[i] && str[i] != '\'')
-				i++;
-			word = concat_word(word, &str[start], i - start);
-		}
-		if (str[i])
-			i++;
-		j++;
-	}
-	if (!word)
-		word = ft_substr(str, 0, i);
-	if (j != 0)
-		word = ft_strjoin(word, ft_substr(str, i - j + 1, j));
-	add_token(list, word, WORD);
-	return (i);
-}
-
 void	tokenize_input(char *input, t_token **list)
 {
 	int	i;
