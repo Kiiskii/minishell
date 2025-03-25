@@ -29,7 +29,10 @@ int	word_in_quotes(char **word, char *str, int i, int *j)
 	start = i;
 	while (str[i] && str[i] != quote)
 		i++;
-	*word = concat_word(*word, &str[start], i - start);
+	if (str[i] != quote)
+		printf("SYNTAX ERROR, EXIT\n");
+	else
+		*word = concat_word(*word, &str[start], i - start);
 	return (i + 1);
 }
 
