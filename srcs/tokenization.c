@@ -43,17 +43,6 @@ int	handle_redirs(t_token **list, char *str)
 	return (1);
 }
 
-int	handle_words(t_token **list, char *str)
-{
-	int	i;
-
-	i = 0;
-	while (str[i] && !ft_iswhitespace(str[i]) && !is_specialchar(str[i]))
-		i++;
-	add_token(list, ft_substr(str, 0, i), WORD);
-	return (i);
-}
-
 void	tokenize_input(char *input, t_token **list)
 {
 	int	i;
@@ -63,7 +52,7 @@ void	tokenize_input(char *input, t_token **list)
 	while (input[i])
 	{
 		len = 0;
-		while (ft_iswhitespace(input[i]))
+		while (ft_isblank(input[i]))
 			i++;
 		if (is_specialchar(input[i]))
 		{

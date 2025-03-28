@@ -3,10 +3,10 @@ CC = cc
 CFLAGS = -Wall -Wextra -Werror -g
 
 SRCS =	srcs/minishell.c srcs/utils.c srcs/tokenization.c srcs/env-to-list.c \
+		srcs/handle_words.c \
 		srcs/builtins/cd.c srcs/builtins/echo.c srcs/builtins/env.c \
 		srcs/builtins/exit.c srcs/builtins/export.c srcs/builtins/pwd.c \
-		srcs/builtins/unset.c \
-		srcs/execution/begin_execution.c
+		srcs/builtins/unset.c srcs/execution/begin_execution.c \
 
 NAME =	minishell
 
