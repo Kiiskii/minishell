@@ -34,6 +34,14 @@ typedef struct s_token
 	t_token_type	type;
 }		t_token;
 
+typedef struct s_mini
+{
+	t_envi	*env; //could plop this here
+	int		fd_in;
+	int		fd_out;
+	int		exit_code;
+}		t_mini;
+
 void	start_readline();
 void	tokenize_input(char *input, t_token **list);
 int		is_specialchar(char c);
@@ -42,7 +50,7 @@ void	add_token(t_token **list, char *content, t_token_type type);
 int		handle_words(t_token **list, char *str);
 void	env_to_list(t_envi **envi, char **env);
 t_envi	*create_node(t_envi *new_node, char *env, int j, int has_value);
-void	add_back(t_envi *tmp, t_envi *new);
+void	add_back(t_envi *tmp, t_envi *new); //why is new a different colour?
 
 //for testing
 void	execute_command(char **args, t_envi *env);
@@ -56,5 +64,24 @@ int		builtin_exit(char **array);
 int		builtin_export(char **array, t_envi *env);
 int		builtin_pwd(char **array);
 int		builtin_unset(char **array, t_envi *env);
+
+//pipes
+void	execute_pipe(t_ast *root, t_mini *lash);
+void	go_left(t_ast *node, t_mini *lash, int *fds, int *pid);
+void	go_right(t_ast *node, t_mini *lash, int *fds, int *pid);
+void	prepare_pipe(int *fds, t_mini *lash);
+
+//externals
+void	execute_external(char **args, t_envi *env);
+char	*find_path(char **paths, char *path, char *cmd);
+char	**env_to_arr(t_envi *env);
+int		env_size(t_envi *env);
+void	node_to_str(e_envi *env, char *tmp, int *i);
+
+//redirections
+int		execute_redirs(head, lash);
+void	redirect_in(t_ast *head, t_shell *lash);
+void	redirect_out(t_ast *head, t_shell *lash);
+void	redirect_outapp(t_ast *head, t_shell *lash);
 
 #endif

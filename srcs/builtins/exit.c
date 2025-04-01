@@ -3,6 +3,7 @@
 //check with "exit 9999999999999999999" should exit with message
 //"bash: exit: 9999999999999999999: numeric argument required" and $? = 2
 //to do: negative values
+//to do: exit + |
 
 int	only_digits(char *str)
 {
@@ -18,12 +19,12 @@ int	only_digits(char *str)
 	return (1);
 }
 
-int	builtin_exit(char **array)
+int	builtin_exit(char **array) //need to send a struct around that carries ret_value
 {
 	ft_putstr_fd("exit\n", 2);
 	if (!array[1])
-		exit (0);
-	else if (only_digits(array[1]))
+		return (0);//(ms->ret_value);
+	else if (only_digits(array[1])) //to do: also + and - and then only numbers
 	{
 		if (array[2])
 		{

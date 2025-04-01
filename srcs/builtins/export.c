@@ -1,6 +1,7 @@
 #include "../minishell.h"
 
 //TO DO: += append
+//test that expansions work
 
 void	modify_existing(char *str, t_envi *env)
 {
