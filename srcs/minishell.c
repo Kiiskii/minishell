@@ -6,20 +6,25 @@ void	start_readline(t_envi *env)
 {
 	char	*input;
 	t_token	*tokens;
-	t_token	*tmp;
+	t_ast	*tmp;
+	t_ast	*tree;
 
 	tokens = NULL;
 	while (1)
 	{
 		input = readline("lash$: ");
 		tokenize_input(input, &tokens);
+		tree = build_ast(tokens);
 		begin_execution(input, env);
-		tmp = tokens;
+		tmp = tree;
+		int nodecount = 0;
 		while (tmp)
 		{
-			printf("Token: %s, Type: %d\n", tmp->token, tmp->type);
-			tmp = tmp->next;
+			nodecount++;
+			printf("Type: %d\n", tmp->type);
+			tmp = tmp->left;
 		}
+		printf("Nodecount = %d\n", nodecount);
 		tokens = NULL;
 		free(input);
 	}
@@ -39,3 +44,5 @@ int	main(int argc, char **argv, char **env)
 	// implement signalhandling
 	return (0);
 }
+
+//TODO: Finalize right side branches. Figure out how to get correct commands to correct redirs left.

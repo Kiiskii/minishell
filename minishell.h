@@ -19,6 +19,15 @@ typedef enum e_token_type
 	REDIR_OUT_APPEND
 }		t_token_type;
 
+typedef struct s_ast
+{
+	struct s_ast	*left;
+	struct s_ast	*right;
+	t_token_type	type;
+	char			*filename;
+	char			**args;
+}		t_ast;
+
 typedef struct s_envi
 {
 	char			*value;
@@ -46,6 +55,8 @@ int		word_in_quotes(char **word, char *str, int i, int *j);
 void	env_to_list(t_envi **envi, char **env);
 t_envi	*create_node(t_envi *new_node, char *env, int j, int has_value);
 void	add_back(t_envi *tmp, t_envi *new);
+t_ast	*build_ast(t_token *list);
+t_ast	*create_tree(t_ast *tree, t_token *list);
 
 //for testing
 void	execute_command(char **args, t_envi *env);
