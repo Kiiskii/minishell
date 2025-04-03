@@ -22,6 +22,12 @@ void	start_readline(t_envi *env)
 		{
 			nodecount++;
 			printf("Type: %d\n", tmp->type);
+			t_ast *tmp2 = tmp->right;
+			while (tmp2)
+			{
+				printf("Type: %d, Filename: %s\n", tmp2->type, tmp2->filename);
+				tmp2 = tmp2->right;
+			}
 			tmp = tmp->left;
 		}
 		printf("Nodecount = %d\n", nodecount);
@@ -45,4 +51,4 @@ int	main(int argc, char **argv, char **env)
 	return (0);
 }
 
-//TODO: Finalize right side branches. Figure out how to get correct commands to correct redirs left.
+//TODO: Basic version of creating right tree working. For some reason it's building it the wrong way, need to that. Next up also  is to create left command nodes for redirs. Lastly need to handle when redirs or pipes dont exist.

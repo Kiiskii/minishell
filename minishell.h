@@ -16,7 +16,7 @@ typedef enum e_token_type
 	REDIR_IN,
 	REDIR_OUT,
 	HEREDOC,
-	REDIR_OUT_APPEND
+	REDIR_APP
 }		t_token_type;
 
 typedef struct s_ast
@@ -57,6 +57,8 @@ t_envi	*create_node(t_envi *new_node, char *env, int j, int has_value);
 void	add_back(t_envi *tmp, t_envi *new);
 t_ast	*build_ast(t_token *list);
 t_ast	*create_tree(t_ast *tree, t_token *list);
+t_ast	*build_right(t_token *list);
+t_ast	*create_redir(t_token_type redir, char *filename, t_ast *branch);
 
 //for testing
 void	execute_command(char **args, t_envi *env);

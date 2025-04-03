@@ -33,7 +33,7 @@ int	handle_redirs(t_token **list, char *str)
 	}
 	else if (str[0] == '>' && str[1] == '>')
 	{
-		add_token(list, ft_strdup(">>"), REDIR_OUT_APPEND);
+		add_token(list, ft_strdup(">>"), REDIR_APP);
 		return (2);
 	}
 	else if (str[0] == '<')
