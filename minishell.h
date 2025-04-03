@@ -53,8 +53,9 @@ t_envi	*create_node(t_envi *new_node, char *env, int j, int has_value);
 void	add_back(t_envi *tmp, t_envi *new); //why is new a different colour?
 
 //for testing
-void	execute_command(char **args, t_envi *env);
-void	begin_execution(char *str, t_envi *env);
+void	execute_command(char **args, t_mini *lash);
+void	begin_execution(char *str, t_mini *lash);
+//void	exit_process(t_ast *ast, t_mini *lash);
 
 //builtins
 int		builtin_cd(char **array, t_envi *env);
@@ -66,22 +67,23 @@ int		builtin_pwd(char **array);
 int		builtin_unset(char **array, t_envi *env);
 
 //pipes
-void	execute_pipe(t_ast *root, t_mini *lash);
-void	go_left(t_ast *node, t_mini *lash, int *fds, int *pid);
-void	go_right(t_ast *node, t_mini *lash, int *fds, int *pid);
-void	prepare_pipe(int *fds, t_mini *lash);
+//void	execute_pipe(t_ast *root, t_mini *lash);
+//void	go_left(t_ast *node, t_mini *lash, int *fds, int *pid);
+//void	go_right(t_ast *node, t_mini *lash, int *fds, int *pid);
+//void	prepare_pipe(int *fds, t_mini *lash);
 
 //externals
-void	execute_external(char **args, t_envi *env);
+void	execute_external(char **args, t_mini *lash);
+char	**get_bin(char **args, t_mini *lash, t_envi *env);
 char	*find_path(char **paths, char *path, char *cmd);
 char	**env_to_arr(t_envi *env);
 int		env_size(t_envi *env);
-void	node_to_str(e_envi *env, char *tmp, int *i);
+void	node_to_str(t_envi *env, char *tmp, int *i);
 
 //redirections
-int		execute_redirs(head, lash);
-void	redirect_in(t_ast *head, t_shell *lash);
-void	redirect_out(t_ast *head, t_shell *lash);
-void	redirect_outapp(t_ast *head, t_shell *lash);
+//int		execute_redirs(head, lash);
+//void	redirect_in(t_ast *head, t_shell *lash);
+//void	redirect_out(t_ast *head, t_shell *lash);
+//void	redirect_outapp(t_ast *head, t_shell *lash);
 
 #endif

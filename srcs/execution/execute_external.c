@@ -1,13 +1,13 @@
 #include "../minishell.h"
 
-void    node_to_str(e_envi *env, char *tmp, int *i)
+void    node_to_str(t_envi *env, char *tmp, int *i)
 {
 	int j;
 
 	j = 0;
 	while (env->key[j])
 	{
-		tmp[i] = env->key[j];
+		tmp[*i] = env->key[j];
 		(*i)++;
 		j++;
 	}
@@ -40,14 +40,30 @@ int env_size(t_envi *env)
 	return (counter);
 }
 
+//char	**env_to_arr(t_envi *env)
+//{
+//	char	*res;
+//	char	**arr;
+//	int	size;
+//
+//	size = env_size(env);
+//	res = malloc ((size + 1) * sizeof(char));
+//	arr = ft_split(res, ' ');
+//	free(res);
+//	return (arr);
+//}
+
+
 char    **env_to_arr(t_envi *env)
 {
 	char    *tmp;
 	char    **res;
 	int     i;
+	int		size;
 
 	i = 0;
-	if (!(tmp = malloc(env_size(env)) + 1 * sizeof(char)))
+	size = env_size(env);
+	if (!(tmp = malloc((size + 1) * sizeof(char))))
 		return (NULL);
 	while (env && env->next != NULL)
 	{
@@ -71,10 +87,10 @@ char    *find_path(char **paths, char *path, char *cmd)
 	i = 0;
 	while (paths[i] != NULL)
 	{
-		tmp = ft_strjoin(paths[i], "/");
-		path = ft_strjoin(tmp, cmd);
+		tmp = ft_strjoin(paths[i], "/"); //TODO malloc check
+		path = ft_strjoin(tmp, cmd); //TODO malloc check
 		free(tmp);
-		if (access(path, X_OK) == 0) //check F/X
+		if (access(path, X_OK) == 0)
 			return (path);
 		free(path);
 		i++;
@@ -86,33 +102,4 @@ char    *find_path(char **paths, char *path, char *cmd)
 		i++;
 	}
 	return (NULL);
-}
-
-void    execute_external(char **args, t_envi *env)
-{
-	char    **paths;
-	char    **env_array;
-	char    path[PATH_MAX]; //set max
-	int     pid;
-
-	path[0] = '\0';
-	while (env && ft_strncmp(env->key, "PATH", 4) != 0) //do in different function
-		env = env->next;
-	if (env == NULL) //what is supposed to happen? or what if PATH has been unset but PATHP exported
-		return ;
-	paths = ft_split(env->value, ':');
-	if (paths == NULL)
-		error;
-	path = find_path(paths, path, args[0]);
-	if (!path)
-		error, path not found //free paths?
-	pid = fork();
-	if (pid == 0)
-	{
-		env_array = env_to_arr(env);
-		if (!env_array)
-			error;
-		execve(path, args, env_array);
-		error, free shit
-	}
 }

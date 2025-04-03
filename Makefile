@@ -1,12 +1,13 @@
 CC = cc
 
-CFLAGS = -Wall -Wextra -Werror -g
+CFLAGS = -Wall -Wextra -Werror -g -fsanitize=address -fsanitize=undefined
 
 SRCS =	srcs/minishell.c srcs/utils.c srcs/tokenization.c srcs/env-to-list.c \
 		srcs/builtins/cd.c srcs/builtins/echo.c srcs/builtins/env.c \
 		srcs/builtins/exit.c srcs/builtins/export.c srcs/builtins/pwd.c \
 		srcs/builtins/unset.c \
-		srcs/execution/begin_execution.c
+		srcs/execution/begin_execution.c srcs/execution/execute_command.c \
+		srcs/execution/execute_external.c
 
 NAME =	minishell
 

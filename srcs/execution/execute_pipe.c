@@ -1,11 +1,9 @@
 #include "../minishell.h"
 
-void	prepare_pipe(int *fds, t_mini *lash)
+void	prepare_pipe(t_ast *node, t_mini *lash)
 {
-	int	set_fd;
-
 	set_fd = STDOUT_FILENO;
-	if (is input instead, maybe check which function sent us here)
+	if ()
 		set_fd = STDIN_FILENO;
 	if (dup2(fds[which one], set_fd) == -1)
 	{
@@ -51,6 +49,10 @@ void	execute_pipe(t_ast *root, t_mini *lash)
 
 	left_pid = 0;
 	right_pid = 0;
+	if (pipe(fds) == -1)
+		error
+	lash.pipe_read = fds[0];
+	lash.pipe_write = fds[1];
 	go_left(root->left, lash, fds, &left_pid);
 	close(fds[1]);
 	go_right(root->right, lash, fds, &right_pid);

@@ -26,19 +26,19 @@
 //void	execute_tree(t_ast *ast, t_mini *lash)
 //{
 	
-void	begin_execution(char *str, t_envi *env)
+void	begin_execution(char *str, t_mini *lash)
 {
 	char	**arr;
 
 	arr = ft_split(str, ' ');
-	execute_command(arr, env);
+	execute_command(arr, lash);
 	/*Here would actually be info taken from ast root
 	if (!ast || !lash)
 		return (0);
 	if (ast->type == PIPE)
 		execute_pipe(ast, lash);
 	else if (ast->type == CMD)
-		execute_command(ast, lash);
+		execute_command(ast->args, lash);
 	else if (ast->type == REDIR IN  OUT APPEND, HEREDOC) can you say >= REDIR_IN && <= REDIR_APP
 		execute_redirs(ast, lash);*/
 }

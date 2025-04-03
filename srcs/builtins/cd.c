@@ -3,6 +3,7 @@
 //update PWD and OLDPWD environment variables, except if invalid pathname
 //TO DO: "cd .." and "cd ." with directory removed from underneath
 //probably getcwd and remove last part ft_strrchr '/'?
+//TODO : CRUD, check pwd and oldpwd with cd, if either has been unset
 
 void	update_env(char *new, char *old, t_envi *env)
 {

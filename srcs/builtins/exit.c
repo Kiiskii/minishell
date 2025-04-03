@@ -23,7 +23,7 @@ int	builtin_exit(char **array) //need to send a struct around that carries ret_v
 {
 	ft_putstr_fd("exit\n", 2);
 	if (!array[1])
-		return (0);//(ms->ret_value);
+		exit(0); //is it ever something different? Need to be last->exit_code?
 	else if (only_digits(array[1])) //to do: also + and - and then only numbers
 	{
 		if (array[2])
