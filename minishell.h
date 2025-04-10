@@ -56,9 +56,13 @@ void	env_to_list(t_envi **envi, char **env);
 t_envi	*create_node(t_envi *new_node, char *env, int j, int has_value);
 void	add_back(t_envi *tmp, t_envi *new);
 t_ast	*build_ast(t_token *list);
-t_ast	*create_tree(t_ast *tree, t_token *list);
+t_ast	*create_tree(t_ast *tree, t_token *list, t_token_type type);
 t_ast	*build_right(t_token *list);
 t_ast	*create_redir(t_token_type redir, char *filename, t_ast *branch);
+t_ast	*create_args(char **args, t_ast *branch);
+char	**list_to_array(t_token *list);
+char	**alloc_args(t_token *list, char **args);
+char	**fill_array(t_token *list, char **args);
 
 //for testing
 void	execute_command(char **args, t_envi *env);

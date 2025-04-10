@@ -2,11 +2,13 @@
 #include <readline/history.h>
 #include "../minishell.h"
 
+
+//TODO: Test properly to see if AST is built correctly
+
 void	start_readline(t_envi *env)
 {
 	char	*input;
 	t_token	*tokens;
-	t_ast	*tmp;
 	t_ast	*tree;
 
 	tokens = NULL;
@@ -14,23 +16,10 @@ void	start_readline(t_envi *env)
 	{
 		input = readline("lash$: ");
 		tokenize_input(input, &tokens);
+		if (!tokens)
+			continue ;
 		tree = build_ast(tokens);
 		begin_execution(input, env);
-		tmp = tree;
-		int nodecount = 0;
-		while (tmp)
-		{
-			nodecount++;
-			printf("Type: %d\n", tmp->type);
-			t_ast *tmp2 = tmp->right;
-			while (tmp2)
-			{
-				printf("Type: %d, Filename: %s\n", tmp2->type, tmp2->filename);
-				tmp2 = tmp2->right;
-			}
-			tmp = tmp->left;
-		}
-		printf("Nodecount = %d\n", nodecount);
 		tokens = NULL;
 		free(input);
 	}
@@ -50,5 +39,3 @@ int	main(int argc, char **argv, char **env)
 	// implement signalhandling
 	return (0);
 }
-
-//TODO: Basic version of creating right tree working. For some reason it's building it the wrong way, need to that. Next up also  is to create left command nodes for redirs. Lastly need to handle when redirs or pipes dont exist.
