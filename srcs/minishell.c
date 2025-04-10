@@ -12,6 +12,7 @@ void	start_readline(t_envi *env)
 	while (1)
 	{
 		input = readline("lash$: ");
+		add_history(input);
 		tokenize_input(input, &tokens);
 		if (!tokens)
 			continue ;
