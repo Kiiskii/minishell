@@ -2,9 +2,6 @@
 #include <readline/history.h>
 #include "../minishell.h"
 
-
-//TODO: Test properly to see if AST is built correctly
-
 void	start_readline(t_envi *env)
 {
 	char	*input;
@@ -19,6 +16,7 @@ void	start_readline(t_envi *env)
 		if (!tokens)
 			continue ;
 		tree = build_ast(tokens);
+		free_tokens(tokens);
 		begin_execution(input, env);
 		tokens = NULL;
 		free(input);
