@@ -14,13 +14,13 @@ void	start_readline(t_envi *env)
 		input = readline("lash$: ");
 		add_history(input);
 		tokenize_input(input, &tokens);
+		free(input);
 		if (!tokens)
 			continue ;
 		tree = build_ast(tokens);
 		free_tokens(tokens);
 		begin_execution(input, env);
 		tokens = NULL;
-		free(input);
 	}
 }
 
