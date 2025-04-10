@@ -8,6 +8,8 @@
 # include <fcntl.h>
 # include <sys/wait.h>
 # include <sys/types.h>
+# include <errno.h>
+#include <limits.h>
 
 typedef enum e_token_type
 {
@@ -36,7 +38,7 @@ typedef struct s_token
 
 typedef struct s_mini
 {
-	t_envi	*env; //could plop this here
+	t_envi	*env;
 	int		fd_in;
 	int		fd_out;
 	int		exit_code;
@@ -55,15 +57,15 @@ void	add_back(t_envi *tmp, t_envi *new); //why is new a different colour?
 //for testing
 void	execute_command(char **args, t_mini *lash);
 void	begin_execution(char *str, t_mini *lash);
-//void	exit_process(t_ast *ast, t_mini *lash);
+void	exit_process(t_mini *lash); //(t_ast *ast, t_mini *lash);
 
 //builtins
 int		builtin_cd(char **array, t_envi *env);
 int		builtin_echo(char **array);
 int		builtin_env(char **array, t_envi *env);
-int		builtin_exit(char **array);
+int		builtin_exit(char **array, t_mini *lash);
 int		builtin_export(char **array, t_envi *env);
-int		builtin_pwd(char **array);
+int		builtin_pwd(char **array, t_envi *env);
 int		builtin_unset(char **array, t_envi *env);
 
 //pipes

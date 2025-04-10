@@ -1,12 +1,20 @@
 #include "../minishell.h"
 
-void	exit_process(t_ast *ast, t_mini *lash)
+void	exit_process(t_mini *lash) //(t_ast *ast, t_mini *lash)
 {
-	free_tree(ast);
-	free_env(lash->env);
+//	free_tree(ast);
+	t_envi	*tmp;
+
+	tmp = lash->env;
+	while (lash->env)
+	{
+		lash->env = lash->env->next;
+		free(tmp);
+		tmp = lash->env;
+	}
 	if (STDIN_FILENO == lash->fd_in)
-		close(fd_in);
+		close(lash->fd_in);
 	if (STDOUT_FILENO == lash->fd_out)
-		close(fd_out);
+		close(lash->fd_out);
 	exit(lash->exit_code);
 }

@@ -2,6 +2,8 @@
 
 //TO DO: test with > out1.txt > out2.txt echo which one will this > out3.txt go to
 //TO DO: figure out all error codes and wether strerror gives correct error messages
+//TODO: when does opening fail in out and append?
+//TODO: get fds from lash struct instead?
 
 void	redirect_append(t_ast *head, t_shell *lash)
 {
@@ -35,7 +37,7 @@ void	redirect_out(t_ast *head, t_shell *lash)
 		ft_putstr_fd("lash: redirect_out: ", 2);
 		perror(head->value);
 		lash->exit_code = 1;
-		return ; //or exit?
+		return ; //exit(lash->exit_code);
 	}
 	if (dup2(fd, STDOUT_FILENO) == -1)
 	{
@@ -54,7 +56,7 @@ void	redirect_in(t_ast *node, t_mini *lash)
 	fd = open(node->value, O_RDONLY);
 	if (fd == -1)
 	{
-		ft_putstr_fd("lash: ", 2);
+		ft_putstr_fd("lash: ", 2); //TODO: use perror?
 		ft_putstr_fd(node->value, 2);
 		ft_putstr_fd(": No such file or directory\n", 2);
 		lash->exit_code = 1;
@@ -72,16 +74,16 @@ void	redirect_in(t_ast *node, t_mini *lash)
 
 int	execute_redirs(t_ast *node, t_mini *lash)
 {
-	int	pid;
+	pid_t	pid;
 
 	pid = fork();
 	if (pid == 0)
 	{
-		if (node->type == REDIRIN)
+		if (node->type == REDIR_IN)
 			redirect_in(node, lash);
-		else if (node->type == REDIROUT)
+		else if (node->type == REDIR_OUT)
 			redirect_out(node, lash);
-		else if (node->type == REDIRAPP)
+		else if (node->type == REDIR_APP)
 			redirect_append(node, lash);
 //		else
 //			heredoc
@@ -90,5 +92,5 @@ int	execute_redirs(t_ast *node, t_mini *lash)
 		if (lash->exit_code == 0)
 			begin_execution(node->right, lash);
 	}
-	waitpid(pid);
+	waitpid(pid, &lash->exit_code, 0);
 }

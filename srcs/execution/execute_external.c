@@ -75,16 +75,33 @@ char    **env_to_arr(t_envi *env)
 	}
 	tmp[i] = '\0';
 	res = ft_split(tmp, '\n'); //check if exists?
-	free(tmp); //check if exists?
+	free(tmp);
 	return (res);
+}
+
+char	*check_ms(char *arg, char *path)
+{
+	int	len;
+
+	len = ft_strlen(arg);
+	if (access(arg, X_OK) == 0)
+	{
+		ft_memcpy(path, arg, len);
+		path[len] = '\0';
+		return (path);
+	}
+	return (NULL);
 }
 
 char    *find_path(char **paths, char *path, char *cmd)
 {
 	int		i;
 	char	*tmp;
+	char	*ms_path;
 
 	i = 0;
+	if ((ms_path = check_ms(cmd, path)) != NULL)
+		return (ms_path);
 	while (paths[i] != NULL)
 	{
 		tmp = ft_strjoin(paths[i], "/"); //TODO malloc check
@@ -93,12 +110,6 @@ char    *find_path(char **paths, char *path, char *cmd)
 		if (access(path, X_OK) == 0)
 			return (path);
 		free(path);
-		i++;
-	}
-	i = 0;
-	while (paths[i])
-	{
-		free(paths[i]);
 		i++;
 	}
 	return (NULL);

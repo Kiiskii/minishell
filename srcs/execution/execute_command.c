@@ -1,7 +1,5 @@
 #include "../minishell.h"
 
-//TODO: check path of ./minishell before checking PATH env
-
 char	**get_bin(char **args, t_mini *lash, t_envi *env)
 {
 	char	**paths;
@@ -11,16 +9,16 @@ char	**get_bin(char **args, t_mini *lash, t_envi *env)
 	if (env == NULL)
 	{
 		lash->exit_code = 127;
-		ft_putstr_fd("Command '", 2);
+		ft_putstr_fd("lash: ", 2);
 		ft_putstr_fd(args[0], 2);
-		ft_putstr_fd("' not found\n", 2);
+		ft_putstr_fd(": no such file or directory\n", 2);
 		return (NULL);
 	}
 	paths = ft_split(env->value, ':');
 	if (paths == NULL)
 	{
 		lash->exit_code = 12;
-		ft_putstr_fd("Cannot allocate memory\n", 2);
+		ft_putstr_fd("Cannot allocate memory, please exit lash\n", 2);
 	}
 	return (paths);
 }
@@ -29,17 +27,28 @@ void    execute_external(char **args, t_mini *lash)
 {
 	char    **bin;
 	char    **env_array;
-	char    *path; //TODO change
+	char    *path; //TODO change, maybe to PATH_MAX
 	pid_t     pid;
 
 	path = malloc(30 * sizeof(char)); //TODO change
 	bin = get_bin(args, lash, lash->env);
 	if (bin == NULL)
+	{
+		//ft_putstr_fd("lash: ", 2); TODO prob not here
+		//ft_putstr_fd(args[0], 2);
+		//ft_putstr_fd(": no such file or directory\n", 2);
 		return ;
+	}
 	path = find_path(bin, path, args[0]);
 	free_arr(bin);
 	if (!path)
+	{
+		ft_putstr_fd("Command '", 2);
+		ft_putstr_fd(args[0], 2);
+		ft_putstr_fd("' not found\n", 2);
+		lash->exit_code = 127;
 		return ;
+	}									//TODO: All above this into check path
 	pid = fork();
 	if (pid == -1)
 		printf("Forking failed\n"); //TODO remove
@@ -49,7 +58,7 @@ void    execute_external(char **args, t_mini *lash)
 		if (!env_array)
 		{
 			lash->exit_code = 12;
-			ft_putstr_fd("Cannot allocate memory\n", 2);
+			ft_putstr_fd("Cannot allocate memory, please exit lash\n", 2);
 		}
 		execve(path, args, env_array); //TODO check if we should pass just NULL and getenv when executing a shell
 		ft_putstr_fd("Failed to execute\n", 2);
@@ -57,14 +66,15 @@ void    execute_external(char **args, t_mini *lash)
 		free_arr(env_array);
 	}
 	waitpid(pid, &lash->exit_code, 0);
+	free(path);
 }
 
-void    execute_command(char **args, t_mini *lash) //lash struct with env inside?
+void    execute_command(char **args, t_mini *lash)
 {
 	if (ft_strcmp(args[0], "cd") == 0)
 		lash->exit_code = builtin_cd(args, lash->env);
 	else if (ft_strcmp(args[0], "pwd") == 0)
-		lash->exit_code = builtin_pwd(args);
+		lash->exit_code = builtin_pwd(args, lash->env);
 	else if (ft_strcmp(args[0], "export") == 0)
 		lash->exit_code = builtin_export(args, lash->env);
 	else if (ft_strcmp(args[0], "unset") == 0)
@@ -74,8 +84,7 @@ void    execute_command(char **args, t_mini *lash) //lash struct with env inside
 	else if (ft_strcmp(args[0], "echo") == 0)
 		lash->exit_code = builtin_echo(args);
 	else if (ft_strcmp(args[0], "exit") == 0)
-		lash->exit_code = builtin_exit(args);
+		lash->exit_code = builtin_exit(args, lash);
 	else
 		execute_external(args, lash);
-	printf("EXIT CODE: %i\n", lash->exit_code);
 }

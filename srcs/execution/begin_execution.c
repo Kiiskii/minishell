@@ -32,6 +32,7 @@ void	begin_execution(char *str, t_mini *lash)
 
 	arr = ft_split(str, ' ');
 	execute_command(arr, lash);
+	free(arr);
 	/*Here would actually be info taken from ast root
 	if (!ast || !lash)
 		return (0);

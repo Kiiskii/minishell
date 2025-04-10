@@ -1,17 +1,101 @@
 #include "../minishell.h"
 
-//TO DO: += append
+//TODO: exit codes
 //test that expansions work
+//check cases at bottom of file
+
+char	*find_key(char *str)
+{
+	int		i;
+	char	*key;
+
+	i = 0;
+	while (str[i])
+	{
+		if (str[i] == '=')
+			break ;
+		i++;
+	}
+	if (str[i] == '=' && str[i - 1] == '+')
+		i--;
+	key = ft_substr(str, 0, i);
+	if (!key) //check can it be other than malloc
+		ft_putstr_fd("Memory allocation failed, please exit lash", 2);
+	return (key);
+}
+
+void	append_env(char *str, int count, t_envi *env)
+{
+	t_envi	*trav;
+	char	*key;
+
+	trav = env;
+	key = find_key(str);
+	while (*str)
+	{
+		if (*str == '=')
+		{
+			str++;
+			break ;
+		}
+		str++;
+	}
+	while (trav != NULL)
+	{
+		if (ft_strcmp(trav->key, ft_substr(key, 0, count)) == 0)
+			trav->value = ft_strjoin(trav->value, str);
+		trav = trav->next;
+	}
+}
+
+int	is_valid_input(char *str)
+{
+	int		i;
+	char	*key;
+
+	i = 0;
+	while (str[i])
+	{
+		if (str[i] == '=')
+			break ;
+		i++;
+	}
+	if (str[i] == '=' && str[i - 1] == '+')
+		i--;
+	key = ft_substr(str, 0, i);
+	i = 0;
+	while (key[i])
+	{
+		if (ft_isalnum(key[i]) == 0 && key[i] != '_')
+		{
+			ft_putstr_fd("lash: export: `", 2);
+			ft_putstr_fd(str, 2);
+			ft_putstr_fd("': not a valid identifier\n", 2); //TODO: set exit_code to 1
+			return (0);
+		}
+		i++;
+	}
+	free(key);
+	return (1);
+}
 
 void	modify_existing(char *str, t_envi *env)
 {
-	int	count;
+	int		count;
 	t_envi	*trav;
 
 	trav = env;
 	count = 0;
+	if (!is_valid_input(str))
+		return ;
 	while (str[count] && str[count] != '=')
 		count++;
+	if (str[count] == '=' && str[count - 1] == '+')
+	{
+		count--;
+		append_env(str, count, env);
+		return ;
+	}
 	while (trav != NULL)
 	{
 		if (ft_strcmp(trav->key, ft_substr(str, 0, count)) == 0)
@@ -29,7 +113,9 @@ void	add_new(char *str, t_envi *env)
 	int		equal;
 
 	equal = 0;
-	new_node = malloc(sizeof(t_envi));
+	new_node = malloc(sizeof(t_envi)); //TODO: malloc check
+	if (!is_valid_input(str))
+		return ;
 	while (str[equal] && str[equal] != '=')
 		equal++;
 	if (str[equal] == '=')
@@ -49,6 +135,8 @@ _Bool	check_existing(char *str, t_envi *env)
 	trav = env;
 	while (str[count] && str[count] != '=')
 		count++;
+	if (str[count] == '=' && str[count - 1] == '+')
+		count--;
 	key = ft_substr(str, 0, count);
 	while (trav != NULL)
 	{
@@ -62,6 +150,8 @@ _Bool	check_existing(char *str, t_envi *env)
 
 void	add_to_env(char *str, t_envi *env)
 {
+	if (str[0] == '_' && str[1] == '\0')
+		return ;
 	if (check_existing(str, env))
 		modify_existing(str, env);
 	else
@@ -134,7 +224,7 @@ int	print_alphabetised(t_envi *env)
 			printf("\"%s\"", alphalist->key);
 		alphalist = alphalist->next;
 	}
-	//free copied list?
+	//free_list(alphalist);
 	return (0);
 }
 

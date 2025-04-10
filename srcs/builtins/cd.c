@@ -1,9 +1,6 @@
 #include "../minishell.h"
 
-//update PWD and OLDPWD environment variables, except if invalid pathname
-//TO DO: "cd .." and "cd ." with directory removed from underneath
-//probably getcwd and remove last part ft_strrchr '/'?
-//TODO : CRUD, check pwd and oldpwd with cd, if either has been unset
+//TODO: check error messages
 
 void	update_env(char *new, char *old, t_envi *env)
 {
@@ -36,7 +33,14 @@ void	update_env(char *new, char *old, t_envi *env)
 int	change_dir(char *path, t_envi *env)
 {
 	char	*current;
-
+	char	*old;
+	
+	old = getcwd(NULL, 0);
+	if (!old)
+	{
+		ft_putstr_fd("error getcwd\n", 2);
+		return (1);
+	}
 	if (chdir(path) != 0)
 	{
 		ft_putstr_fd("lash: cd: ", 2);
@@ -49,7 +53,7 @@ int	change_dir(char *path, t_envi *env)
 	{
 		return (1); //error message?
 	}
-	update_env(path, current, env);
+	update_env(current, old, env);
 	return (0);
 }
 

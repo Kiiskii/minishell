@@ -1,6 +1,8 @@
 #include "../minishell.h"
 
 //takes a char **array where "env" is at index 0 and head node to env list
+//bash exit returns 125 on invalid option and 127 on "No such file or directory" (when second
+//argument does not begin with '-'.
 
 int	builtin_env(char **array, t_envi *env)
 {
@@ -10,7 +12,7 @@ int	builtin_env(char **array, t_envi *env)
 	{
 		ft_putstr_fd("env: ", 2);
 		ft_putstr_fd("options and arguments for env are not supported\n", 2);
-		return (1); //return 125 or 127 depending on error
+		return (125);
 	}
 	trav = env;
 	while (trav != NULL)
