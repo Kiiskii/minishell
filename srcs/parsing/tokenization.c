@@ -5,7 +5,7 @@ void	add_token(t_token **list, char *content, t_token_type type)
 	t_token	*new_node;
 	t_token	*tmp;
 
-	new_node = malloc(sizeof(t_list));
+	new_node = malloc(sizeof(t_token));
 	/*
 	if (!new_node)
 		return (NULL);
@@ -33,7 +33,7 @@ int	handle_redirs(t_token **list, char *str)
 	}
 	else if (str[0] == '>' && str[1] == '>')
 	{
-		add_token(list, ft_strdup(">>"), REDIR_OUT_APPEND);
+		add_token(list, ft_strdup(">>"), REDIR_APP);
 		return (2);
 	}
 	else if (str[0] == '<')

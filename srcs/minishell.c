@@ -6,22 +6,21 @@ void	start_readline(t_envi *env)
 {
 	char	*input;
 	t_token	*tokens;
-	t_token	*tmp;
+	t_ast	*tree;
 
 	tokens = NULL;
 	while (1)
 	{
 		input = readline("lash$: ");
+		add_history(input);
 		tokenize_input(input, &tokens);
-		begin_execution(input, env);
-		tmp = tokens;
-		while (tmp)
-		{
-			printf("Token: %s, Type: %d\n", tmp->token, tmp->type);
-			tmp = tmp->next;
-		}
-		tokens = NULL;
 		free(input);
+		if (!tokens)
+			continue ;
+		tree = build_ast(tokens);
+		free_tokens(tokens);
+		begin_execution(input, env);
+		tokens = NULL;
 	}
 }
 
