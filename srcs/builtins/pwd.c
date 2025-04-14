@@ -1,7 +1,5 @@
 #include "../minishell.h"
 
-//TODO: check error codes
-
 char	*check_pwd(t_envi *env)
 {
 	char	*path;
@@ -40,8 +38,8 @@ int	builtin_pwd(char **array, t_envi *env)
 	pathname = getcwd(NULL, 0);
 	if (!pathname)
 	{
-		printf("Error: getcwd\n");
-		return (1); //what error code? strerror(errno) ? or perror("getcwd") and return(errno)
+		perror("lash: getcwd\n");
+		return (errno);
 	}
 	printf("%s\n", pathname);
 	free(pathname);

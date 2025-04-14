@@ -68,6 +68,15 @@ int		builtin_export(char **array, t_envi *env);
 int		builtin_pwd(char **array, t_envi *env);
 int		builtin_unset(char **array, t_envi *env);
 
+//env functions
+void	add_to_env(char *str, t_envi *env);
+char	*find_key(char *str);
+int	print_alphabetised(t_envi *env);
+void	add_new(char *str, t_envi *env);
+
+//builtin utils
+void	free_list(t_envi **head);
+
 //pipes
 //void	execute_pipe(t_ast *root, t_mini *lash);
 //void	go_left(t_ast *node, t_mini *lash, int *fds, int *pid);

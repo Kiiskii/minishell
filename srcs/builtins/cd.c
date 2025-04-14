@@ -1,13 +1,10 @@
 #include "../minishell.h"
 
-//TODO: check error messages
-
 void	update_env(char *new, char *old, t_envi *env)
 {
 	t_envi	*pwd;
 	t_envi	*old_pwd;
 
-	//check if new and old exist?
 	pwd = env;
 	old_pwd = env;
 	while (pwd != NULL)
@@ -34,24 +31,25 @@ int	change_dir(char *path, t_envi *env)
 {
 	char	*current;
 	char	*old;
-	
+
 	old = getcwd(NULL, 0);
 	if (!old)
 	{
-		ft_putstr_fd("error getcwd\n", 2);
-		return (1);
+		perror("lash: getcwd\n");
+		return (errno);
 	}
 	if (chdir(path) != 0)
 	{
 		ft_putstr_fd("lash: cd: ", 2);
 		ft_putstr_fd(path, 2);
-		ft_putstr_fd(": No such file or directory\n", 2); //or perror??
+		ft_putstr_fd(": No such file or directory\n", 2);
 		return (1);
 	}
 	current = getcwd(NULL, 0);
 	if (!current)
 	{
-		return (1); //error message?
+		perror("lash: getcwd\n");
+		return (errno);
 	}
 	update_env(current, old, env);
 	return (0);
@@ -65,7 +63,8 @@ int	go_home(t_envi *env)
 	current = getcwd(NULL, 0);
 	if (!current)
 	{
-		return (1); //error message?
+		perror("lash: getcwd\n");
+		return (errno);
 	}
 	seeker = env;
 	while (seeker != NULL)

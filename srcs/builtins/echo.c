@@ -1,8 +1,5 @@
 #include "../minishell.h"
 
-//echo with option -n. Takes a char **array, where "echo" is in index 0
-//checks if -n option is in place (also -nnnn and -n -n -n)
-
 int	check_nl(char *str)
 {
 	int	i;
