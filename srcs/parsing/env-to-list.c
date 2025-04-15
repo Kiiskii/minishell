@@ -35,8 +35,8 @@ void	env_to_list(t_envi **envi, char **env)
 	{
 		j = 0;
 		new_node = malloc(sizeof(t_envi));
-		//if (!new_node)
-		//	return (NULL);
+		if (!new_node)
+			return ;
 		while (env[i][j] && env[i][j] != '=')
 			j++;
 		if (env[i][j] == '=')

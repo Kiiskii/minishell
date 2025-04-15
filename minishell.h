@@ -8,6 +8,8 @@
 # include <fcntl.h>
 # include <sys/wait.h>
 # include <sys/types.h>
+# include <readline/readline.h>
+# include <readline/history.h>
 
 typedef enum e_token_type
 {
@@ -67,9 +69,15 @@ t_ast	*create_args(char **args, t_ast *branch);
 char	**list_to_array(t_token *list);
 char	**alloc_args(t_token *list, char **args);
 char	**fill_array(t_token *list, char **args);
+t_ast	*add_node_right(t_ast *node, t_ast *new_node);
+t_ast	*add_node_left(t_ast *node, t_ast *new_node);
 
 // free functions
 void	free_tokens(t_token *list);
+void	free_ast(t_ast *tree);
+void	free_args(char **args);
+void	free_branch(t_ast *branch);
+void	free_env(t_envi *env);
 
 //for testing
 void	execute_command(char **args, t_envi *env);
