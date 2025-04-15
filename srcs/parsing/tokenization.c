@@ -43,7 +43,7 @@ int	handle_redirs(t_token **list, char *str)
 	return (1);
 }
 
-void	tokenize_input(char *input, t_token **list)
+void	tokenize_input(char *input, t_token **list, t_envi *env)
 {
 	int	i;
 	int	len;
@@ -65,7 +65,7 @@ void	tokenize_input(char *input, t_token **list)
 				len = handle_redirs(list, &input[i]);
 		}
 		else
-			len = handle_words(list, &input[i]);
+			len = handle_words(list, &input[i], env);
 		i += len;
 	}
 }

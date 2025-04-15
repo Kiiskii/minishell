@@ -1,6 +1,5 @@
 #include "../minishell.h"
 
-/*
 void	print_args(char **args)
 {
 	int	i = 0;
@@ -41,10 +40,9 @@ void	print_ast(t_ast *tree)
 		printf("\n");
 	}
 }
-*/
 
-//void	start_readline(t_envi *env)
-void	start_readline()
+//void	start_readline()
+void	start_readline(t_envi *env)
 {
 	char	*input;
 	t_token	*tokens;
@@ -55,12 +53,12 @@ void	start_readline()
 	{
 		input = readline("lash$: ");
 		add_history(input);
-		tokenize_input(input, &tokens);
+		tokenize_input(input, &tokens, env);
 		free(input);
 		if (!tokens)
 			continue ;
 		tree = build_ast(tokens);
-		//print_ast(tree);
+		print_ast(tree);
 		//begin_execution(input, env);
 		free_tokens(tokens);
 		free_ast(tree);
@@ -78,8 +76,8 @@ int	main(int argc, char **argv, char **env)
 	envi = NULL;
 	env_to_list(&envi, env);
 	//if (!envi)
-	//start_readline(envi);
-	start_readline();
+	start_readline(envi);
+	//start_readline();
 	printf("\nExiting lash...\n");
 	// implement signalhandling
 	return (0);

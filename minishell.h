@@ -45,18 +45,29 @@ typedef struct s_token
 	struct s_token	*next;
 }		t_token;
 
-void	start_readline();
+typedef struct s_indexer
+{
+	int		i;
+	int		j;
+	char	*str;
+}		t_indexer;
+
+void	start_readline(t_envi *env);
 void	env_to_list(t_envi **envi, char **env);
 
 // tokenizing
-void	tokenize_input(char *input, t_token **list);
+void	tokenize_input(char *input, t_token **list, t_envi *env);
 int		is_specialchar(char c);
 int		ft_isblank(int c);
 int		handle_redirs(t_token **list, char *str);
 void	add_token(t_token **list, char *content, t_token_type type);
-int		handle_words(t_token **list, char *str);
+int		handle_words(t_token **list, char *str, t_envi *env);
 char	*concat_word(char *word, char *str, int len);
-int		word_in_quotes(char **word, char *str, int i, int *j);
+char	*word_in_quotes(char *word, t_indexer *s);
+char	*iterate_word(t_indexer *s, t_envi *env);
+
+// expansions
+char	*handle_expansions(char *word, t_envi *env, t_indexer *s);
 
 // building ast
 t_envi	*create_node(t_envi *new_node, char *env, int j, int has_value);

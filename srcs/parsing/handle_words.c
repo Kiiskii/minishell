@@ -14,52 +14,61 @@ char	*concat_word(char *word, char *str, int len)
 	return (new_word);
 }
 
-int	word_in_quotes(char **word, char *str, int i, int *j)
+char	*word_in_quotes(char *word, t_indexer *s)
 {
 	int		start;
 	char	quote;
 
-	quote = str[i];
-	if (*j > 1)
-		*word = ft_strjoin(*word, ft_substr(str, i - *j + 1, *j - 1));
-	if (i > 0 && !(*word))
-		*word = ft_substr(str, 0, i);
-	*j = 0;
-	i++;
-	start = i;
-	while (str[i] && str[i] != quote)
-		i++;
-	if (str[i] != quote)
-		printf("SYNTAX ERROR, EXIT\n");
-	else
-		*word = concat_word(*word, &str[start], i - start);
-	return (i + 1);
+	quote = s->str[s->i];
+	if (s->j > 1)
+		word = ft_strjoin(word, ft_substr(s->str, s->i - s->j + 1, s->j - 1));
+	if (s->i > 0 && !(word))
+		word = ft_substr(s->str, 0, s->i);
+	s->j = 0;
+	s->i++;
+	start = s->i;
+	while (s->str[s->i] && s->str[s->i] != quote)
+		s->i++;
+	word = concat_word(word, &s->str[start], s->i - start);
+	s->i++;
+	return (word);
 }
 
-int	handle_words(t_token **list, char *str)
+char	*iterate_word(t_indexer *s, t_envi *env)
 {
-	int		i;
-	int		j;
 	char	*word;
 
 	word = NULL;
-	i = 0;
-	j = 0;
-	while (str[i] && !ft_isblank(str[i]) && !is_specialchar(str[i]))
+	while (s->str[s->i] && !ft_isblank(s->str[s->i]) && !is_specialchar(s->str[s->i]))
 	{
-		j++;
-		if (str[i] == '"')
-			i = word_in_quotes(&word, str, i, &j);
-		else if (str[i] == '\'')
-			i = word_in_quotes(&word, str, i, &j);
+		s->j++;
+		if (s->str[s->i] == '"')
+			word = word_in_quotes(word, s);
+		else if (s->str[s->i] == '\'')
+			word = word_in_quotes(word, s);
+		else if (s->str[s->i] == '$')
+			word = handle_expansions(word, env, s);
 		else
-			i++;
+			s->i++;
 	}
+	return (word);
+}
+
+int	handle_words(t_token **list, char *str, t_envi *env)
+{
+	char		*word;
+	t_indexer	s;
+
+	ft_memset(&s, 0, sizeof(t_indexer));
+	s.str = ft_strdup(str);
+	word = NULL;
+	word = iterate_word(&s, env);
 	if (!word)
-		word = ft_substr(str, 0, i);
-	else if (j > 1)
-		word = ft_strjoin(word, ft_substr(str, i - j, j));
+		word = ft_substr(s.str, 0, s.i);
+	else if (s.j > 1)
+		word = ft_strjoin(word, ft_substr(s.str, s.i - s.j, s.j));
 	if (word[0] != '\0')
 		add_token(list, word, WORD);
-	return (i);
+	free(s.str);
+	return (s.i);
 }
