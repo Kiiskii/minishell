@@ -53,7 +53,8 @@ void	start_readline(t_envi *env)
 	{
 		input = readline("lash$: ");
 		add_history(input);
-		tokenize_input(input, &tokens, env);
+		parse_expansions(input, env);
+		tokenize_input(input, &tokens);
 		free(input);
 		if (!tokens)
 			continue ;

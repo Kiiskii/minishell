@@ -22,7 +22,7 @@ char	*word_in_quotes(char *word, t_indexer *s)
 	quote = s->str[s->i];
 	if (s->j > 1)
 		word = ft_strjoin(word, ft_substr(s->str, s->i - s->j + 1, s->j - 1));
-	if (s->i > 0 && !(word))
+	if (s->i > 0 && !word)
 		word = ft_substr(s->str, 0, s->i);
 	s->j = 0;
 	s->i++;
@@ -34,7 +34,7 @@ char	*word_in_quotes(char *word, t_indexer *s)
 	return (word);
 }
 
-char	*iterate_word(t_indexer *s, t_envi *env)
+char	*iterate_word(t_indexer *s)
 {
 	char	*word;
 
@@ -46,15 +46,17 @@ char	*iterate_word(t_indexer *s, t_envi *env)
 			word = word_in_quotes(word, s);
 		else if (s->str[s->i] == '\'')
 			word = word_in_quotes(word, s);
+		/*
 		else if (s->str[s->i] == '$')
 			word = handle_expansions(word, env, s);
+		*/
 		else
 			s->i++;
 	}
 	return (word);
 }
 
-int	handle_words(t_token **list, char *str, t_envi *env)
+int	handle_words(t_token **list, char *str)
 {
 	char		*word;
 	t_indexer	s;
@@ -62,7 +64,7 @@ int	handle_words(t_token **list, char *str, t_envi *env)
 	ft_memset(&s, 0, sizeof(t_indexer));
 	s.str = ft_strdup(str);
 	word = NULL;
-	word = iterate_word(&s, env);
+	word = iterate_word(&s);
 	if (!word)
 		word = ft_substr(s.str, 0, s.i);
 	else if (s.j > 1)
