@@ -26,22 +26,22 @@
 //void	execute_tree(t_ast *ast, t_mini *lash)
 //{
 	
-void	begin_execution(char *str, t_mini *lash)
+void	begin_execution(t_ast *ast, t_mini *lash)
 {
-	char	**arr;
+//	char	**arr;
 
-	arr = ft_split(str, ' ');
-	execute_command(arr, lash);
-	free(arr);
-	/*Here would actually be info taken from ast root
+//	arr = ft_split(str, ' ');
+//	execute_command(arr, lash);
+//	free(arr);
+	//Here would actually be info taken from ast root
 	if (!ast || !lash)
-		return (0);
+		return ;
 	if (ast->type == PIPE)
 		execute_pipe(ast, lash);
-	else if (ast->type == CMD)
+	else if (ast->type == WORD)
 		execute_command(ast->args, lash);
-	else if (ast->type == REDIR IN  OUT APPEND, HEREDOC) can you say >= REDIR_IN && <= REDIR_APP
-		execute_redirs(ast, lash);*/
+	else if (ast->type == REDIR_IN || ast->type == REDIR_OUT || ast->type == REDIR_APP) //HEREDOC can you say >= REDIR_IN && <= REDIR_APP
+		execute_redirs(ast, lash);
 }
 //
 //void	begin_execution(ast node, struct minishell)

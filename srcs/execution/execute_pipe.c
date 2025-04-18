@@ -13,31 +13,29 @@
 //	}
 //}
 
-void	go_right(t_ast *node, t_mini *lash, int *fds)
+void	go_right(t_ast *node, t_mini *lash, int *fds, int *pid)
 {
-	int	pid;
-
-	pid = fork();
-	if (pid == -1)
+	*pid = fork();
+	if (*pid == -1)
 	{
 		perror("lash: fork\n");
-		exit_code = errno;
+		lash->exit_code = errno;
 		return ;
 	}
-	if (pid == 0)
+	if (*pid == 0)
 	{
 		close(fds[1]);
 		if (dup2(fds[0], STDIN_FILENO) == -1)
 		{
 			close(fds[0]);
 			perror("lash: dup2\n");
-			exit_code = errno;
+			lash->exit_code = errno;
 			exit(errno);
 		}
 		close(fds[0]);
 		begin_execution(node, lash);
 		lash->exit_code = 0;
-		exit(exit_code);
+		exit(lash->exit_code);
 	}
 }
 
@@ -63,8 +61,8 @@ int	go_left(t_ast *node, t_mini *lash, int *fds)
 	if (pid == -1)
 	{
 		perror("lash: fork\n");
-		exit_code = errno;
-		return ;
+		lash->exit_code = errno;
+		return (errno); //follow this up, what happens?
 	}
 	if (pid == 0)
 	{
@@ -76,16 +74,14 @@ int	go_left(t_ast *node, t_mini *lash, int *fds)
 		{
 			close(fds[1]);
 			perror("lash: dup2\n");
-			exit_code = errno;
+			lash->exit_code = errno;
 			exit(errno);
 		}
 		close(fds[1]);
 		begin_execution(node, lash);
 		lash->exit_code = 0;
-		exit(exit_code);
-		}
+		exit(lash->exit_code);
 	}
-
 	return (pid);
 }
 
@@ -119,7 +115,7 @@ void	execute_pipe(t_ast *root, t_mini *lash) //need to add input_fd?
 	}
 //	lash.pipe_read = fds[0];
 //	lash.pipe_write = fds[1];
-	left_pid = go_left(root->left, lash); //or &left_pid
+	left_pid = go_left(root->left, lash, fds); //or &left_pid
 	close(fds[1]);
 	go_right(root->right, lash, fds, &right_pid);
 	close(fds[0]);

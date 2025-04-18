@@ -6,14 +6,21 @@ void	start_readline(t_mini *lash)
 {
 	char	*input;
 	t_token	*tokens;
+	t_ast	*tree;
 
 	tokens = NULL;
 	while (1)
 	{
-		input = readline("lash$: "); //add check if input == NULL
+		input = readline("lash$: ");
+		add_history(input);
 		tokenize_input(input, &tokens);
-		begin_execution(input, lash);
 		free(input);
+		if (!tokens)
+			continue ;
+		tree = build_ast(tokens);
+		begin_execution(tree, lash);
+		free_tokens(tokens);
+		tokens = NULL;
 	}
 	tokens = NULL;
 }

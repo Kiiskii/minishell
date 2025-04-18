@@ -1,5 +1,7 @@
 #include "../minishell.h"
 
+//TODO: check path after unset PATH. check access with just the argument given
+
 void    node_to_str(t_envi *env, char *tmp, int *i)
 {
 	int j;

@@ -8,3 +8,10 @@ int	is_specialchar(char c)
 		return (1);
 	return (0);
 }
+
+int	ft_isblank(int c)
+{
+	if (c == '\t' || c == '\n' || c == ' ')
+		return (1);
+	return (0);
+}
