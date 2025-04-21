@@ -1,113 +1,20 @@
 #include "../minishell.h"
 
-//TODO: check path after unset PATH. check access with just the argument given
-
-void    node_to_str(t_envi *env, char *tmp, int *i)
-{
-	int j;
-
-	j = 0;
-	while (env->key[j])
-	{
-		tmp[*i] = env->key[j];
-		(*i)++;
-		j++;
-	}
-	tmp[*i] = '=';
-	(*i)++;
-	j = 0;
-	while (env->value[j])
-	{
-		tmp[*i] = env->value[j];
-		(*i)++;
-		j++;
-	}
-}
-
-int env_size(t_envi *env)
-{
-	int	counter;
-
-	counter = 0;
-	while (env && env->next != NULL)
-	{
-		if (env->has_value == 1)
-		{
-			counter += ft_strlen(env->key) + 1;
-			counter += ft_strlen(env->value);
-			counter++;
-		}
-		env = env->next;
-	}
-	return (counter);
-}
-
-//char	**env_to_arr(t_envi *env)
-//{
-//	char	*res;
-//	char	**arr;
-//	int	size;
-//
-//	size = env_size(env);
-//	res = malloc ((size + 1) * sizeof(char));
-//	arr = ft_split(res, ' ');
-//	free(res);
-//	return (arr);
-//}
-
-
-char    **env_to_arr(t_envi *env)
-{
-	char    *tmp;
-	char    **res;
-	int     i;
-	int		size;
-
-	i = 0;
-	size = env_size(env);
-	if (!(tmp = malloc((size + 1) * sizeof(char))))
-		return (NULL);
-	while (env && env->next != NULL)
-	{
-		if (env->has_value == 1)
-			node_to_str(env, tmp, &i);
-		if (env->next->next != NULL)
-			tmp[i++] = '\n';
-		env = env->next;
-	}
-	tmp[i] = '\0';
-	res = ft_split(tmp, '\n'); //check if exists?
-	free(tmp);
-	return (res);
-}
-
-char	*check_ms(char *arg, char *path)
-{
-	int	len;
-
-	len = ft_strlen(arg);
-	if (access(arg, X_OK) == 0)
-	{
-		ft_memcpy(path, arg, len);
-		path[len] = '\0';
-		return (path);
-	}
-	return (NULL);
-}
-
-char    *find_path(char **paths, char *path, char *cmd)
+char	*create_path(char **paths, char *cmd)
 {
 	int		i;
 	char	*tmp;
-	char	*ms_path;
+	char	*path;
 
 	i = 0;
-	if ((ms_path = check_ms(cmd, path)) != NULL)
-		return (ms_path);
 	while (paths[i] != NULL)
 	{
-		tmp = ft_strjoin(paths[i], "/"); //TODO malloc check
-		path = ft_strjoin(tmp, cmd); //TODO malloc check
+		tmp = ft_strjoin(paths[i], "/");
+		if (tmp == NULL)
+			ft_putstr_fd("Cannot allocate memory, please exit lash\n", 2);
+		path = ft_strjoin(tmp, cmd);
+		if (path == NULL)
+			ft_putstr_fd("Cannot allocate memory, please exit lash\n", 2);
 		free(tmp);
 		if (access(path, X_OK) == 0)
 			return (path);
@@ -115,4 +22,63 @@ char    *find_path(char **paths, char *path, char *cmd)
 		i++;
 	}
 	return (NULL);
+}
+
+char	*get_path(char **args, t_mini *lash)
+{
+	char	*res;
+	char	**path_env;
+
+	if (access(args[0], X_OK) == 0)
+		return (args[0]);
+	path_env = get_env_path(args, lash, lash->env);
+	if (path_env == NULL)
+	{
+		lash->exit_code = 12;
+		return (NULL);
+	}
+	res = create_path(path_env, args[0]);
+	return (res);
+}
+
+void	exec_ext_child(t_mini *lash, char *path, char **args)
+{
+	char	**env_array;
+
+	env_array = env_to_arr(lash->env);
+	if (!env_array)
+		ft_putstr_fd("Cannot allocate memory, please exit lash\n", 2);
+	execve(path, args, env_array);
+	ft_putstr_fd("Failed to execute\n", 2);
+	lash->exit_code = 127;
+	if (errno == EACCES)
+		lash->exit_code = 126;
+	free_arr(env_array);
+}
+
+void	execute_external(char **args, t_mini *lash)
+{
+	char	*path;
+	pid_t	pid;
+
+	path = get_path(args, lash);
+	if (!path)
+	{
+		ft_putstr_fd("Command '", 2);
+		ft_putstr_fd(args[0], 2);
+		ft_putstr_fd("' not found\n", 2);
+		lash->exit_code = 127;
+		return ;
+	}
+	pid = fork();
+	if (pid == -1)
+	{
+		perror("lash: fork");
+		lash->exit_code = errno;
+		return ;
+	}
+	if (pid == 0)
+		exec_ext_child(lash, path, args);
+	waitpid(pid, &lash->exit_code, 0);
+	free(path);
 }

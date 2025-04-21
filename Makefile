@@ -11,7 +11,7 @@ SRCS =	srcs/minishell.c srcs/utils/utils.c srcs/parsing/tokenization.c srcs/pars
 		srcs/execution/begin_execution.c srcs/execution/execute_command.c \
 		srcs/execution/execute_external.c srcs/execution/exit_process.c \
 		srcs/execution/execute_pipe.c srcs/execution/execute_redirs.c \
-		srcs/env/add_to_env.c srcs/env/print_alphabetised.c
+		srcs/env/add_to_env.c srcs/env/print_alphabetised.c srcs/env/list_to_array.c \
 
 NAME =	minishell
 

@@ -2,9 +2,9 @@
 
 void	exit_process(t_mini *lash) //(t_ast *ast, t_mini *lash)
 {
-//	free_tree(ast);
 	t_envi	*tmp;
 
+//	free_tree(ast);
 	tmp = lash->env;
 	while (lash->env)
 	{

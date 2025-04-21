@@ -112,11 +112,12 @@ void	go_right(t_ast *node, t_mini *lash, int *fds, int *pid);
 
 //externals
 void	execute_external(char **args, t_mini *lash);
-char	**get_bin(char **args, t_mini *lash, t_envi *env);
-char	*find_path(char **paths, char *path, char *cmd);
+char	**get_env_path(char **args, t_mini *lash, t_envi *env);
+//char	**get_bin(char **args, t_mini *lash, t_envi *env);
+//char	*find_path(char **paths, char *path, char *cmd);
 char	**env_to_arr(t_envi *env);
-int		env_size(t_envi *env);
-void	node_to_str(t_envi *env, char *tmp, int *i);
+//int		env_size(t_envi *env);
+//void	node_to_str(t_envi *env, char *tmp, int *i);
 
 //redirections
 void		execute_redirs(t_ast *head, t_mini *lash);
