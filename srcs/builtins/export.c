@@ -29,17 +29,19 @@ int	is_valid_input(char *str)
 	return (1);
 }
 
-void	add_new(char *str, t_envi *env)
+int	add_new(char *str, t_envi *env)
 {
 	t_envi	*new_node;
 	int		equal;
+	int		exit_code;
 
 	equal = 0;
+	exit_code = 0;
 	new_node = malloc(sizeof(t_envi));
 	if (!new_node)
 		printf("Memory allocation failed, please exit lash\n");
 	if (!is_valid_input(str))
-		return ;
+		return (1);
 	while (str[equal] && str[equal] != '=')
 		equal++;
 	if (str[equal] == '=')
@@ -47,6 +49,7 @@ void	add_new(char *str, t_envi *env)
 	else
 		new_node = create_node(new_node, str, equal, 0);
 	add_back(env, new_node);
+	return (0);
 }
 
 int	check_option(char **array)
@@ -62,7 +65,7 @@ int	check_option(char **array)
 	return (0);
 }
 
-int	builtin_export(char **array, t_envi *env)
+void	builtin_export(char **array, t_envi *env, t_mini *lash)
 {
 	int		i;
 	int		exit_code;
@@ -70,21 +73,23 @@ int	builtin_export(char **array, t_envi *env)
 	i = 1;
 	exit_code = 0;
 	if (!array[i])
-		return (print_alphabetised(env));
+	{
+		lash->exit_code = (print_alphabetised(env));
+		return ;
+	}
 	while (array[i])
 	{
 		if (i == 1 && check_option(array) == 1)
-			return (2);
-		else if (array[i][0] == '-')
 		{
-			ft_putstr_fd("lash: export: '", 2);
-			ft_putstr_fd(array[i], 2);
-			ft_putstr_fd("': not a valid identifier\n", 2);
-			exit_code = 1;
+			lash->exit_code = 2;
+			return ;
 		}
 		else
-			add_to_env(array[i], env);
+			exit_code = add_to_env(array[i], env);
+		if (exit_code == 1)
+			lash->exit_code = 1;
 		i++;
 	}
-	return (exit_code);
+	if (lash->exit_code != 1)
+		lash->exit_code = 0;
 }

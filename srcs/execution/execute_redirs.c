@@ -1,7 +1,6 @@
 #include "../minishell.h"
 
 //TO DO: test with > out1.txt > out2.txt echo which one will this > out3.txt go to
-//TO DO: figure out all error codes and wether strerror gives correct error messages
 //TODO: when does opening fail in out and append?
 //TODO: get fds from lash struct instead?
 
@@ -31,7 +30,6 @@ void	redirect_out(t_ast *head, t_mini *lash)
 {
 	int	fd;
 
-	printf("Do we enter redir out"); //TODO: remove
 	fd = open(head->filename, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	if (fd == -1)
 	{
@@ -75,8 +73,6 @@ void	redirect_in(t_ast *node, t_mini *lash)
 
 void	execute_redirs(t_ast *node, t_mini *lash)
 {
-//	int		status;
-//	int		child_exit_code;
 	pid_t	pid;
 
 	pid = fork();
@@ -90,18 +86,13 @@ void	execute_redirs(t_ast *node, t_mini *lash)
 			redirect_append(node, lash);
 //		else
 //			heredoc
-		printf("exit code inside redirs fork: %i\n", lash->exit_code);
 		if (lash->exit_code == 0)
 			begin_execution(node->left, lash);
 		if (lash->exit_code == 0)
 			begin_execution(node->right, lash);
 		exit(lash->exit_code);
 	}
-	waitpid(pid, &lash->exit_code, 0); // &status, 0); // &lash->exit_code, 0);
+	waitpid(pid, &lash->exit_code, 0);
 	if (WIFEXITED(lash->exit_code))
-	{
-//		child_exit_code = WEXITSTATUS(status);
-//		lash->exit_code = child_exit_code;
 		lash->exit_code = WEXITSTATUS(lash->exit_code);
-	}
 }

@@ -93,12 +93,16 @@ _Bool	check_existing(char *str, t_envi *env)
 	return (0);
 }
 
-void	add_to_env(char *str, t_envi *env)
+int	add_to_env(char *str, t_envi *env)
 {
+	int	exit_code;
+
+	exit_code = 0;
 	if (str[0] == '_' && str[1] == '\0')
-		return ;
+		return (0);
 	if (check_existing(str, env))
 		modify_existing(str, env);
 	else
-		add_new(str, env);
+		exit_code = add_new(str, env);
+	return (exit_code);
 }

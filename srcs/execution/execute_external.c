@@ -35,9 +35,11 @@ char	*get_path(char **args, t_mini *lash)
 	if (path_env == NULL)
 	{
 		lash->exit_code = 12;
+		free(path_env);
 		return (NULL);
 	}
 	res = create_path(path_env, args[0]);
+	free(path_env);
 	return (res);
 }
 
