@@ -7,7 +7,11 @@ SRCS =	srcs/minishell.c srcs/utils/utils.c srcs/parsing/tokenization.c srcs/pars
 		srcs/utils/free.c \
 		srcs/builtins/cd.c srcs/builtins/echo.c srcs/builtins/env.c \
 		srcs/builtins/exit.c srcs/builtins/export.c srcs/builtins/pwd.c \
-		srcs/builtins/unset.c srcs/execution/begin_execution.c \
+		srcs/builtins/unset.c srcs/builtins/builtin_utils.c \
+		srcs/execution/begin_execution.c srcs/execution/execute_command.c \
+		srcs/execution/execute_external.c srcs/execution/exit_process.c \
+		srcs/execution/execute_pipe.c srcs/execution/execute_redirs.c \
+		srcs/env/add_to_env.c srcs/env/print_alphabetised.c srcs/env/list_to_array.c \
 
 NAME =	minishell
 
@@ -49,6 +53,10 @@ clean:
 	@echo "$(GREEN)----------------------------------------$(RESET)"
 	@echo "$(ORANGE)Cleaning object files...$(RESET)"
 	@echo "$(GREEN)----------------------------------------$(RESET)"
+	rm -f srcs/*.o
+	rm -f srcs/builtins/*.o
+	rm -f srcs/execution/*.o
+	rm -f srcs/env/*.o
 	rm -f $(OBJS)
 	make clean --no-print-directory -C $(LIBFT_DIR)
 

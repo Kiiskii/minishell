@@ -1,5 +1,12 @@
 #include "../minishell.h"
 
+int	protected_env(char *str)
+{
+	if (str[0] == '_' && str[1] == '\0')
+		return (1);
+	return (0);
+}
+
 void	remove_env(char	*str, t_envi **env)
 {
 	t_envi	*trav;
@@ -7,6 +14,8 @@ void	remove_env(char	*str, t_envi **env)
 
 	trav = *env;
 	prev = NULL;
+	if (protected_env(str))
+		return ;
 	while (trav != NULL)
 	{
 		if (ft_strcmp(trav->key, str) == 0)
@@ -27,7 +36,7 @@ void	remove_env(char	*str, t_envi **env)
 
 int	builtin_unset(char **array, t_envi *env)
 {
-	int	 i;
+	int	i;
 
 	i = 1;
 	if (!array[1])
