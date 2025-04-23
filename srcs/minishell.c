@@ -12,6 +12,8 @@ void	start_readline(t_mini *lash)
 	while (1)
 	{
 		input = readline("lash$: ");
+		if (!input)
+			return ;
 		add_history(input);
 		tokenize_input(input, &tokens);
 		free(input);

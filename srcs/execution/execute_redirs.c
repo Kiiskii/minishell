@@ -1,6 +1,5 @@
 #include "../minishell.h"
 
-//TO DO: test with > out1.txt > out2.txt echo which one will this > out3.txt go to
 //TODO: when does opening fail in out and append?
 //TODO: get fds from lash struct instead?
 
@@ -59,9 +58,9 @@ void	redirect_in(t_ast *node, t_mini *lash)
 		ft_putstr_fd(node->filename, 2);
 		ft_putstr_fd(": No such file or directory\n", 2);
 		lash->exit_code = 1;
-		exit(lash->exit_code); //exit here, as we are inside child? close fd?
+		exit(lash->exit_code);
 	}
-	if (dup2(fd, STDIN_FILENO) == -1) //error check
+	if (dup2(fd, STDIN_FILENO) == -1)
 	{
 		close(fd);
 		perror("lash: dup2");
@@ -84,8 +83,8 @@ void	execute_redirs(t_ast *node, t_mini *lash)
 			redirect_out(node, lash);
 		else if (node->type == REDIR_APP)
 			redirect_append(node, lash);
-//		else
-//			heredoc
+		else
+			execute_heredoc(node, lash);
 		if (lash->exit_code == 0)
 			begin_execution(node->left, lash);
 		if (lash->exit_code == 0)

@@ -1,13 +1,28 @@
 #include "../minishell.h"
 
-char	*create_path(char **paths, char *cmd)
+int	check_access(char *path, t_mini *lash)
+{
+	if (access(path, F_OK) == 0)
+	{
+		if (access(path, X_OK) == 0)
+			return (0);
+		ft_putstr_fd("Bash :", 2);
+		ft_putstr_fd(path, 2);
+		ft_putstr_fd(": Permission denied\n", 2);
+		lash->exit_code = 126;
+		return (1);
+	}
+	return (2);
+}
+
+char	*create_path(char **paths, char *cmd, t_mini *lash)
 {
 	int		i;
 	char	*tmp;
 	char	*path;
 
 	i = 0;
-	while (paths[i] != NULL)
+	while (paths[i++] != NULL)
 	{
 		tmp = ft_strjoin(paths[i], "/");
 		if (tmp == NULL)
@@ -16,11 +31,16 @@ char	*create_path(char **paths, char *cmd)
 		if (path == NULL)
 			ft_putstr_fd("Cannot allocate memory, please exit lash\n", 2);
 		free(tmp);
-		if (access(path, X_OK) == 0)
+		if (check_access(path, lash) == 0)
 			return (path);
+		else if (check_access(path, lash) == 1)
+			return (NULL);
 		free(path);
-		i++;
 	}
+	ft_putstr_fd("Command '", 2);
+	ft_putstr_fd(cmd, 2);
+	ft_putstr_fd("' not found\n", 2);
+	lash->exit_code = 127;
 	return (NULL);
 }
 
@@ -29,7 +49,9 @@ char	*get_path(char **args, t_mini *lash)
 	char	*res;
 	char	**path_env;
 
-	if (access(args[0], X_OK) == 0)
+	if (check_access(args[0], lash) == 1)
+		return (NULL);
+	else if (check_access(args[0], lash) == 0)
 		return (args[0]);
 	path_env = get_env_path(args, lash, lash->env);
 	if (path_env == NULL)
@@ -38,7 +60,7 @@ char	*get_path(char **args, t_mini *lash)
 		free(path_env);
 		return (NULL);
 	}
-	res = create_path(path_env, args[0]);
+	res = create_path(path_env, args[0], lash);
 	free(path_env);
 	return (res);
 }
@@ -65,13 +87,7 @@ void	execute_external(char **args, t_mini *lash)
 
 	path = get_path(args, lash);
 	if (!path)
-	{
-		ft_putstr_fd("Command '", 2);
-		ft_putstr_fd(args[0], 2);
-		ft_putstr_fd("' not found\n", 2);
-		lash->exit_code = 127;
 		return ;
-	}
 	pid = fork();
 	if (pid == -1)
 	{

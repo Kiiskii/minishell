@@ -11,5 +11,4 @@ void	begin_execution(t_ast *ast, t_mini *lash)
 	else if (ast->type == REDIR_IN || ast->type == REDIR_OUT
 		|| ast->type == REDIR_APP) //HEREDOC can you say >= REDIR_IN && <= REDIR_APP
 		execute_redirs(ast, lash);
-	printf("Exit code at the end: %i\n", lash->exit_code); //TODO: remove
 }
