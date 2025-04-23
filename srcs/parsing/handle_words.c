@@ -25,12 +25,12 @@ char	*word_in_quotes(char *word, t_indexer *s)
 	if (s->i > 0 && !word)
 		word = ft_substr(s->str, 0, s->i);
 	s->j = 0;
-	s->i++;
+	//s->i++;
 	start = s->i;
 	while (s->str[s->i] && s->str[s->i] != quote)
 		s->i++;
-	word = concat_word(word, &s->str[start], s->i - start);
 	s->i++;
+	word = concat_word(word, &s->str[start], s->i - start);
 	return (word);
 }
 

@@ -1,11 +1,5 @@
 #include "../minishell.h"
 
-/*
-char	*expansion_in_quotes(char quote, char *word, t_indexer *s)
-{
-}
-*/
-
 char	*find_env_match(char *my_key, t_envi *env)
 {
 	t_envi	*tmp;
@@ -16,7 +10,7 @@ char	*find_env_match(char *my_key, t_envi *env)
 	keylen = ft_strlen(my_key);
 	while (tmp)
 	{
-		if (!(ft_strncmp(my_key, tmp->key, keylen)))
+		if (!(ft_strcmp(my_key, tmp->key)))
 		{
 			my_value = ft_strdup(tmp->value);
 			if (my_value == NULL)
@@ -28,47 +22,83 @@ char	*find_env_match(char *my_key, t_envi *env)
 	return (NULL);
 }
 
-char	*handle_expansions(t_indexer *s, t_envi *env)
+char	*find_key(char *token, t_envi *env)
 {
-	char	*temp;
 	char	*value;
-	int		len;
 	int		i;
 
-	len = 0;
-	i = s->i;
-	while (ft_isalnum(s->str[s->i]))
-	{
-		len++;
-		s->i++;
-	}
-	temp = malloc(len + 1);
-	temp[len] = '\0';
-	ft_strlcpy(temp, &s->str[s->i], len);
-	value = find_env_match(temp, env);
+	i = 0;
+	while (ft_isalnum(token[i]) || token[i] == '_')
+		i++;
+	value = find_env_match(ft_substr(token, 0, i), env);
 	return (value);
 }
 
-char	*parse_expansions(char *input, t_envi *env)
+int	iterate_key(char *token)
 {
-	char		*my_input;
-	char		*temp;
-	t_indexer	s;
+	int	i;
 
-	ft_memset(&s, 0, sizeof(t_indexer));
-	my_input = NULL;
-	s.str = ft_strdup(input);
-	while (s.str[s.i])
+	i = 0;
+	while (ft_isalnum(token[i]) || token[i] == '_')
+		i++;
+	return (i);
+}
+
+char	*iterate_token_exp(char *token, t_envi *env)
+{
+	char	*word;
+	char	*new_token;
+	int		i;
+	int		start;
+	
+	word = NULL;
+	new_token = "";
+	i = 0;
+	start = 0;
+	while (token[i])
 	{
-		if (s.str[s.i] == '$')
+		if (token[i] == '\'')
 		{
-			s.i++;
-			my_input = handle_expansions(&s, env);
-			if (!my_input)
-				my_input = ft_strdup(temp);
-			return (my_input);
+			i++;
+			while (token[i] && token[i] != '\'')
+				i++;
+			new_token = ft_strjoin(new_token, ft_substr(token, start, i - start));
+			start = i;
 		}
-		s.i++;
+		if (token[i] == '$')
+		{
+			if (start < i)
+				new_token = ft_strjoin(new_token, ft_substr(token, start, i - start));
+			word = find_key(&token[i + 1], env);
+			if (word)
+			{
+				new_token = ft_strjoin(new_token, word);
+				free(word);
+			}
+			i += iterate_key(&token[i + 1]);
+			start = i + 1;
+		}
+		else
+			i++;
 	}
-	return (input);
+	if (start < i)
+		new_token = ft_strjoin(new_token, ft_substr(token, start, i - start));
+	if (!new_token)
+		return ("");
+	return (new_token);
+}
+
+void	expand_tokens(t_token *tokens, t_envi *env)
+{
+	t_token		*temp;
+
+	temp = tokens;
+	while (temp)
+	{
+		if (temp->type == HEREDOC)
+			temp = temp->next->next;
+		//free(temp->token);
+		temp->token = iterate_token_exp(temp->token, env);
+		temp = temp->next;
+	}
 }

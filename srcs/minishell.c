@@ -1,5 +1,7 @@
 #include "../minishell.h"
 
+//TODO: Expand before getting rid of quotes!
+
 void	print_args(char **args)
 {
 	int	i = 0;
@@ -41,10 +43,24 @@ void	print_ast(t_ast *tree)
 	}
 }
 
+void	print_tokens(t_token *tokens)
+{
+	t_token	*tmp;
+
+	tmp = tokens;
+	while (tmp)
+	{
+		printf("%s --- ", tmp->token);
+		tmp = tmp->next;
+	}
+	printf("\n");
+}
+
 //void	start_readline()
 void	start_readline(t_envi *env)
 {
 	char	*input;
+	//char	*my_input;
 	t_token	*tokens;
 	t_ast	*tree;
 
@@ -53,11 +69,13 @@ void	start_readline(t_envi *env)
 	{
 		input = readline("lash$: ");
 		add_history(input);
-		parse_expansions(input, env);
 		tokenize_input(input, &tokens);
 		free(input);
 		if (!tokens)
 			continue ;
+		expand_tokens(tokens, env);
+		//re_tokenize(tokens, env);
+		//print_tokens(tokens);
 		tree = build_ast(tokens);
 		print_ast(tree);
 		//begin_execution(input, env);

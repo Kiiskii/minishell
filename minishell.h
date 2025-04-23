@@ -52,6 +52,7 @@ typedef struct s_indexer
 	char	*str;
 }		t_indexer;
 
+//void	start_readline();
 void	start_readline(t_envi *env);
 void	env_to_list(t_envi **envi, char **env);
 
@@ -66,9 +67,16 @@ char	*concat_word(char *word, char *str, int len);
 char	*word_in_quotes(char *word, t_indexer *s);
 char	*iterate_word(t_indexer *s);
 
-// expansions
-//char	*handle_expansions(char *input, t_envi *env);
-char	*parse_expansions(char *input, t_envi *env);
+// expansions & quotes
+char	*handle_squotes(char *new_token, t_indexer *s);
+char	*handle_dquotes(char *new_token, t_indexer *s, t_envi *env);
+//char	*handle_exps(char *new_token, t_indexer *s, t_envi *env);
+char	*iterate_token_exp(char *token, t_envi *env);
+void	expand_tokens(t_token *tokens, t_envi *env);
+char	*find_env_match(char *my_key, t_envi *env);
+char	*find_key(char *token, t_envi *env);
+char	*iterate_token(t_indexer *s, t_envi *env);
+void	re_tokenize(t_token *tokens, t_envi *env);
 
 // building ast
 t_envi	*create_node(t_envi *new_node, char *env, int j, int has_value);
