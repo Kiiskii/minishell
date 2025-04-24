@@ -72,9 +72,16 @@ int		ft_isblank(int c);
 int		handle_redirs(t_token **list, char *str);
 void	add_token(t_token **list, char *content, t_token_type type);
 int		handle_words(t_token **list, char *str);
-char	*concat_word(char *word, char *str, int len);
-char	*word_in_quotes(char *word, t_indexer *s);
-char	*iterate_word(t_indexer *s);
+//char	*concat_word(char *word, char *str, int len);
+//char	*word_in_quotes(char *word, t_indexer *s);
+void	iterate_word(t_indexer *s);
+
+// re-tokenize
+void	re_tokenize(t_token *tokens, t_mini *lash);
+void	parse_token(t_token *current, t_mini *lash);
+int		iterate_quotes(char *str, char quote);
+void	add_next_token(t_token **new_tokens, char *word);
+void	replace_tokens(t_token **current, t_token *new_tokens);
 
 // expansions & quotes
 char	*handle_quotes(char *new_token, t_indexer *s, char quote);

@@ -45,7 +45,7 @@ void	remove_quotes(t_token *tokens, t_mini *lash)
 		if (temp->type == HEREDOC)
 			temp = temp->next->next;
 		s.str = ft_strdup(temp->token);
-		free(temp->token);
+		//free(temp->token);
 		temp->token = iterate_token(&s, lash);
 		temp = temp->next;
 		free(s.str);

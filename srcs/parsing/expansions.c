@@ -4,10 +4,8 @@ char	*find_env_match(char *my_key, t_envi *env)
 {
 	t_envi	*tmp;
 	char	*my_value;
-	int		keylen;
 
 	tmp = env;
-	keylen = ft_strlen(my_key);
 	while (tmp)
 	{
 		if (!(ft_strcmp(my_key, tmp->key)))

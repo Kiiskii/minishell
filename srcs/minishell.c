@@ -1,6 +1,6 @@
 #include "../minishell.h"
 
-//TODO: Expand before getting rid of quotes!
+//TODO: FUCKING REFACTOR
 
 void	print_args(char **args)
 {
@@ -72,11 +72,12 @@ void	start_readline(t_mini *lash)
 		if (!tokens)
 			continue ;
 		expand_tokens(tokens, lash);
+		re_tokenize(tokens, lash);
 		remove_quotes(tokens, lash);
-		//print_tokens(tokens);
+		print_tokens(tokens);
 		tree = build_ast(tokens);
-		print_ast(tree);
-		//begin_execution(tree, lash);
+		//print_ast(tree);
+		begin_execution(tree, lash);
 		free_tokens(tokens);
 		free_ast(tree);
 		tokens = NULL;
