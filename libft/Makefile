@@ -27,7 +27,7 @@ SRCS = 	ascii/ft_isalpha.c ascii/ft_isascii.c ascii/ft_isdigit.c \
 		string/ft_striteri.c string/ft_atoi.c string/ft_strcmp.c \
 		memory/ft_memset.c memory/ft_memcmp.c memory/ft_bzero.c \
 		memory/ft_memchr.c memory/ft_memcpy.c memory/ft_memmove.c \
-		memory/ft_calloc.c \
+		memory/ft_calloc.c memory/free_arr.c \
 		print/ft_putchar_fd.c print/ft_putstr_fd.c print/ft_putendl_fd.c \
 		print/ft_printf.c print/ft_unbr_fd.c print/ft_pointer.c \
 		print/ft_hexnbr.c print/ft_putnbr_fd.c \

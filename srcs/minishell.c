@@ -77,27 +77,30 @@ void	start_readline(t_envi *env)
 		//re_tokenize(tokens, env);
 		//print_tokens(tokens);
 		tree = build_ast(tokens);
-		print_ast(tree);
-		//begin_execution(input, env);
+		begin_execution(tree, lash);
 		free_tokens(tokens);
-		free_ast(tree);
 		tokens = NULL;
 	}
+	tokens = NULL;
 }
 
 int	main(int argc, char **argv, char **env)
 {
 	t_envi	*envi;
+	t_mini	lash;
 
 	if (argc != 1)
-		return (1);
+		return (1); //exit with 1?
 	(void)argv;
 	envi = NULL;
 	env_to_list(&envi, env);
-	//if (!envi)
-	start_readline(envi);
-	//start_readline();
+	ft_memset(&lash, 0, sizeof(t_mini));
+	lash.env = envi;
+	lash.exit_code = 0;
+	lash.fd_out = -1;
+	lash.fd_in = -1;
+	start_readline(&lash);
 	printf("\nExiting lash...\n");
 	// implement signalhandling
-	return (0);
+	return (0); //exit with lash->exit_code instead
 }

@@ -10,6 +10,8 @@
 # include <sys/types.h>
 # include <readline/readline.h>
 # include <readline/history.h>
+# include <errno.h>
+#include <limits.h>
 
 typedef enum e_token_type
 {
@@ -52,7 +54,14 @@ typedef struct s_indexer
 	char	*str;
 }		t_indexer;
 
-//void	start_readline();
+typedef struct s_mini
+{
+	t_envi	*env;
+	int		fd_in;
+	int		fd_out;
+	int		exit_code;
+}		t_mini;
+
 void	start_readline(t_envi *env);
 void	env_to_list(t_envi **envi, char **env);
 
@@ -80,7 +89,12 @@ void	re_tokenize(t_token *tokens, t_envi *env);
 
 // building ast
 t_envi	*create_node(t_envi *new_node, char *env, int j, int has_value);
-void	add_back(t_envi *tmp, t_envi *new);
+void	add_back(t_envi *tmp, t_envi *new); //why is new a different colour?
+
+//for testing
+void	execute_command(char **args, t_mini *lash);
+void	begin_execution(t_ast *ast, t_mini *lash);
+void	exit_process(t_mini *lash); //(t_ast *ast, t_mini *lash);
 t_ast	*build_ast(t_token *list);
 t_ast	*create_tree(t_ast *tree, t_token *list, t_token_type type);
 t_ast	*build_right(t_token *list);
@@ -99,17 +113,43 @@ void	free_args(char **args);
 void	free_branch(t_ast *branch);
 void	free_env(t_envi *env);
 
-//for testing
-void	execute_command(char **args, t_envi *env);
-void	begin_execution(char *str, t_envi *env);
-
 //builtins
 int		builtin_cd(char **array, t_envi *env);
 int		builtin_echo(char **array);
 int		builtin_env(char **array, t_envi *env);
-int		builtin_exit(char **array);
-int		builtin_export(char **array, t_envi *env);
-int		builtin_pwd(char **array);
+int		builtin_exit(char **array, t_mini *lash);
+void		builtin_export(char **array, t_envi *env, t_mini *lash);
+int		builtin_pwd(char **array, t_envi *env);
 int		builtin_unset(char **array, t_envi *env);
+
+//env functions
+int	add_to_env(char *str, t_envi *env);
+char	*find_key(char *str);
+int	print_alphabetised(t_envi *env);
+int	add_new(char *str, t_envi *env);
+
+//builtin utils
+void	free_list(t_envi **head);
+
+//pipes
+void	execute_pipe(t_ast *root, t_mini *lash);
+int		go_left(t_ast *node, t_mini *lash, int *fds);
+void	go_right(t_ast *node, t_mini *lash, int *fds, int *pid);
+//void	prepare_pipe(int *fds, t_mini *lash);
+
+//externals
+void	execute_external(char **args, t_mini *lash);
+char	**get_env_path(char **args, t_mini *lash, t_envi *env);
+//char	**get_bin(char **args, t_mini *lash, t_envi *env);
+//char	*find_path(char **paths, char *path, char *cmd);
+char	**env_to_arr(t_envi *env);
+//int		env_size(t_envi *env);
+//void	node_to_str(t_envi *env, char *tmp, int *i);
+
+//redirections
+void		execute_redirs(t_ast *head, t_mini *lash);
+void	redirect_in(t_ast *head, t_mini *lash);
+void	redirect_out(t_ast *head, t_mini *lash);
+void	redirect_outapp(t_ast *head, t_mini *lash);
 
 #endif
