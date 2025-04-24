@@ -77,8 +77,7 @@ char	*word_in_quotes(char *word, t_indexer *s);
 char	*iterate_word(t_indexer *s);
 
 // expansions & quotes
-char	*handle_squotes(char *new_token, t_indexer *s);
-char	*handle_dquotes(char *new_token, t_indexer *s);
+char	*handle_quotes(char *new_token, t_indexer *s, char quote);
 char	*handle_exps(t_indexer *s, t_mini *lash, char *new_token);
 int		iterate_key(char *token);
 char	*iterate_token_exp(t_indexer *s, t_mini *lash);

@@ -1,22 +1,6 @@
 #include "../minishell.h"
 
-char	*handle_squotes(char *new_token, t_indexer *s)
-{
-	int	i;
-	int	len;
-
-	s->i++;
-	i = s->i;
-	while (s->str[i] && s->str[i] != '\'')
-		i++;
-	len = i - s->i;
-	if (!new_token)
-		new_token = ft_substr(s->str, s->i, len);
-	s->i = i - 1;
-	return (new_token);
-}
-
-char	*handle_dquotes(char *new_token, t_indexer *s)
+char	*handle_quotes(char *new_token, t_indexer *s, char quote)
 {
 	int	start;
 
@@ -24,7 +8,7 @@ char	*handle_dquotes(char *new_token, t_indexer *s)
 		new_token = ft_strjoin(new_token, ft_substr(s->str, s->j, s->i - s->j));
 	s->i++;
 	start = s->i;
-	while (s->str[s->i] && s->str[s->i] != '"')
+	while (s->str[s->i] && s->str[s->i] != quote)
 		s->i++;
 	new_token = ft_strjoin(new_token, ft_substr(s->str, start, s->i - start));
 	s->j = s->i + 1;
@@ -39,10 +23,8 @@ char	*iterate_token(t_indexer *s, t_mini *lash)
 	new_token = "";
 	while (s->str[s->i])
 	{
-		if (s->str[s->i] == '"')
-			new_token = handle_dquotes(new_token, s);
-		else if (s->str[s->i] == '\'')
-			new_token = handle_squotes(new_token, s);
+		if (s->str[s->i] == '"' || s->str[s->i] == '\'')
+			new_token = handle_quotes(new_token, s, s->str[s->i]);
 		s->i++;
 	}
 	if (new_token[0] == '\0')
