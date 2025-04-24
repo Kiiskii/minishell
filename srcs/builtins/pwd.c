@@ -16,7 +16,7 @@ char	*check_pwd(t_envi *env)
 		env = env->next;
 	}
 	return (NULL);
-}			
+}
 
 int	builtin_pwd(char **array, t_envi *env)
 {

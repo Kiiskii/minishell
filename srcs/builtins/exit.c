@@ -5,7 +5,7 @@ int	check_min_max(const char *str, long long nb, int sign, char *arg)
 	if (nb > LLONG_MAX / 10 || (nb == INT64_MAX / 10 && ((sign == 1 && (*str
 						- '0') > (LLONG_MAX % 10)) || (sign == -1 && (*str
 						- '0') > (LLONG_MIN % 10)))))
-	{	
+	{
 		ft_putstr_fd("lash: exit: ", 2);
 		ft_putstr_fd(arg, 2);
 		ft_putstr_fd(": numeric argument required\n", 2);

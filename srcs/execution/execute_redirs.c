@@ -83,8 +83,8 @@ void	execute_redirs(t_ast *node, t_mini *lash)
 			redirect_out(node, lash);
 		else if (node->type == REDIR_APP)
 			redirect_append(node, lash);
-		else
-			execute_heredoc(node, lash);
+//		else
+//			execute_heredoc(node, lash);
 		if (lash->exit_code == 0)
 			begin_execution(node->left, lash);
 		if (lash->exit_code == 0)

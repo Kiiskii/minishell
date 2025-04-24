@@ -124,6 +124,6 @@ void		execute_redirs(t_ast *head, t_mini *lash);
 void	redirect_in(t_ast *head, t_mini *lash);
 void	redirect_out(t_ast *head, t_mini *lash);
 void	redirect_outapp(t_ast *head, t_mini *lash);
-void	execute_heredoc(t_ast *node, t_mini *lash);
+//void	execute_heredoc(t_ast *node, t_mini *lash);
 
 #endif

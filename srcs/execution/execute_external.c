@@ -22,20 +22,22 @@ char	*create_path(char **paths, char *cmd, t_mini *lash)
 	char	*path;
 
 	i = 0;
-	while (paths[i++] != NULL)
+	while (paths[i] != NULL)
 	{
 		tmp = ft_strjoin(paths[i], "/");
 		if (tmp == NULL)
-			ft_putstr_fd("Cannot allocate memory, please exit lash\n", 2);
+			ft_putstr_fd("Cannot allocate memory, please exit lash\n", 2); //TODO: can we ever enter
+			//with empty string, or can NULL only be because malloc failing?
 		path = ft_strjoin(tmp, cmd);
 		if (path == NULL)
-			ft_putstr_fd("Cannot allocate memory, please exit lash\n", 2);
+			ft_putstr_fd("Cannot allocate memory, please exit lash\n", 2); //TODO: as above
 		free(tmp);
 		if (check_access(path, lash) == 0)
 			return (path);
 		else if (check_access(path, lash) == 1)
 			return (NULL);
 		free(path);
+		i++;
 	}
 	ft_putstr_fd("Command '", 2);
 	ft_putstr_fd(cmd, 2);
@@ -61,7 +63,7 @@ char	*get_path(char **args, t_mini *lash)
 		return (NULL);
 	}
 	res = create_path(path_env, args[0], lash);
-	free(path_env);
+	free_arr(path_env);
 	return (res);
 }
 
@@ -85,6 +87,8 @@ void	execute_external(char **args, t_mini *lash)
 	char	*path;
 	pid_t	pid;
 
+	if (!args[0]) //TODO: test with $US when expansions ready
+		return ;
 	path = get_path(args, lash);
 	if (!path)
 		return ;
