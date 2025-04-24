@@ -56,11 +56,9 @@ void	print_tokens(t_token *tokens)
 	printf("\n");
 }
 
-//void	start_readline()
-void	start_readline(t_envi *env)
+void	start_readline(t_mini *lash)
 {
 	char	*input;
-	//char	*my_input;
 	t_token	*tokens;
 	t_ast	*tree;
 
@@ -73,15 +71,16 @@ void	start_readline(t_envi *env)
 		free(input);
 		if (!tokens)
 			continue ;
-		expand_tokens(tokens, env);
-		//re_tokenize(tokens, env);
+		expand_tokens(tokens, lash);
+		remove_quotes(tokens, lash);
 		//print_tokens(tokens);
 		tree = build_ast(tokens);
-		begin_execution(tree, lash);
+		print_ast(tree);
+		//begin_execution(tree, lash);
 		free_tokens(tokens);
+		free_ast(tree);
 		tokens = NULL;
 	}
-	tokens = NULL;
 }
 
 int	main(int argc, char **argv, char **env)

@@ -15,3 +15,13 @@ int	ft_isblank(int c)
 		return (1);
 	return (0);
 }
+
+int	iterate_key(char *token)
+{
+	int	i;
+
+	i = 0;
+	while (ft_isalnum(token[i]) || token[i] == '_')
+		i++;
+	return (i);
+}

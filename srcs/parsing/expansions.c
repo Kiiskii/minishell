@@ -22,7 +22,7 @@ char	*find_env_match(char *my_key, t_envi *env)
 	return (NULL);
 }
 
-char	*find_key(char *token, t_envi *env)
+char	*exps_find_key(char *token, t_envi *env)
 {
 	char	*value;
 	int		i;
@@ -34,71 +34,71 @@ char	*find_key(char *token, t_envi *env)
 	return (value);
 }
 
-int	iterate_key(char *token)
-{
-	int	i;
-
-	i = 0;
-	while (ft_isalnum(token[i]) || token[i] == '_')
-		i++;
-	return (i);
-}
-
-char	*iterate_token_exp(char *token, t_envi *env)
+char	*handle_exps(t_indexer *s, t_mini *lash, char *new_token)
 {
 	char	*word;
-	char	*new_token;
-	int		i;
-	int		start;
-	
-	word = NULL;
-	new_token = "";
-	i = 0;
-	start = 0;
-	while (token[i])
+
+	if (s->j < s->i)
+		new_token = ft_strjoin(new_token, ft_substr(s->str, s->j, s->i - s->j));
+	if (s->str[s->i + 1] == '?')
 	{
-		if (token[i] == '\'')
+		word = ft_itoa(lash->exit_code);
+		s->i++;
+	}
+	else
+		word = exps_find_key(&s->str[s->i + 1], lash->env);
+	if (word)
+		new_token = ft_strjoin(new_token, word);
+	free(word);
+	s->i += iterate_key(&s->str[s->i + 1]);
+	s->j = s->i + 1;
+	return (new_token);
+}
+
+char	*iterate_token_exp(t_indexer *s, t_mini *lash)
+{
+	char	*new_token;
+
+	new_token = "";
+	while (s->str[s->i])
+	{
+		if (s->str[s->i] == '\'')
 		{
-			i++;
-			while (token[i] && token[i] != '\'')
-				i++;
-			new_token = ft_strjoin(new_token, ft_substr(token, start, i - start));
-			start = i;
+			s->i++;
+			while (s->str[s->i] && s->str[s->i] != '\'')
+				s->i++;
+			new_token = ft_strjoin(new_token, ft_substr(s->str, s->j, s->i - s->j));
+			s->j = s->i;
 		}
-		if (token[i] == '$')
+		if (s->str[s->i] == '$')
 		{
-			if (start < i)
-				new_token = ft_strjoin(new_token, ft_substr(token, start, i - start));
-			word = find_key(&token[i + 1], env);
-			if (word)
-			{
-				new_token = ft_strjoin(new_token, word);
-				free(word);
-			}
-			i += iterate_key(&token[i + 1]);
-			start = i + 1;
+			new_token = handle_exps(s, lash, new_token);
 		}
 		else
-			i++;
+			s->i++;
 	}
-	if (start < i)
-		new_token = ft_strjoin(new_token, ft_substr(token, start, i - start));
+	if (s->j < s->i)
+		new_token = ft_strjoin(new_token, ft_substr(s->str, s->j, s->i - s->j));
 	if (!new_token)
 		return ("");
 	return (new_token);
 }
 
-void	expand_tokens(t_token *tokens, t_envi *env)
+void	expand_tokens(t_token *tokens, t_mini *lash)
 {
 	t_token		*temp;
+	t_indexer	s;
 
 	temp = tokens;
 	while (temp)
 	{
+		ft_memset(&s, 0, sizeof(t_indexer));
 		if (temp->type == HEREDOC)
 			temp = temp->next->next;
-		//free(temp->token);
-		temp->token = iterate_token_exp(temp->token, env);
+		s.str = ft_strdup(temp->token);
+		free(temp->token);
+		temp->token = iterate_token_exp(&s, lash);
+		free(s.str);
 		temp = temp->next;
 	}
 }

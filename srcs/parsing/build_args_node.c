@@ -60,6 +60,7 @@ int	count_tokens(t_token *list)
 		list = list->next;
 	while (list && list->type != PIPE)
 	{
+		//Make sure this no break
 		if (list->type >= REDIR_IN && list->type <= REDIR_APP)
 			list = list->next->next;
 		else
