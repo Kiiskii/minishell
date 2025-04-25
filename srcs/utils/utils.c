@@ -25,3 +25,13 @@ int	iterate_key(char *token)
 		i++;
 	return (i);
 }
+
+int	iterate_quotes(char *str, char quote)
+{
+	int	i;
+
+	i = 0;
+	while (str[i] && str[i] != quote)
+		i++;
+	return (i);
+}

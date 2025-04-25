@@ -62,25 +62,26 @@ void	start_readline(t_mini *lash)
 	t_token	*tokens;
 	t_ast	*tree;
 
-	tokens = NULL;
 	while (1)
 	{
+		tokens = NULL;
 		input = readline("lash$: ");
 		add_history(input);
+		if (!input)
+			break ;
 		tokenize_input(input, &tokens);
 		free(input);
 		if (!tokens)
 			continue ;
-		expand_tokens(tokens, lash);
-		re_tokenize(tokens, lash);
-		remove_quotes(tokens, lash);
-		print_tokens(tokens);
-		tree = build_ast(tokens);
+		expand_tokens(&tokens, lash);
+		re_tokenize(&tokens);
+		remove_quotes(&tokens, lash);
+		//print_tokens(tokens);
+		tree = build_ast(&tokens);
 		//print_ast(tree);
+		free_tokens(&tokens);
 		begin_execution(tree, lash);
-		free_tokens(tokens);
 		free_ast(tree);
-		tokens = NULL;
 	}
 }
 

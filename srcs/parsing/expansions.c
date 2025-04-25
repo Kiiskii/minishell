@@ -75,28 +75,28 @@ char	*iterate_token_exp(t_indexer *s, t_mini *lash)
 		else
 			s->i++;
 	}
+	if (!new_token || new_token[0] == '\0')
+		return (s->str);
 	if (s->j < s->i)
 		new_token = ft_strjoin(new_token, ft_substr(s->str, s->j, s->i - s->j));
-	if (!new_token)
-		return ("");
 	return (new_token);
 }
 
-void	expand_tokens(t_token *tokens, t_mini *lash)
+void	expand_tokens(t_token **tokens, t_mini *lash)
 {
 	t_token		*temp;
 	t_indexer	s;
 
-	temp = tokens;
+	temp = *tokens;
 	while (temp)
 	{
 		ft_memset(&s, 0, sizeof(t_indexer));
 		if (temp->type == HEREDOC)
 			temp = temp->next->next;
-		s.str = ft_strdup(temp->token);
-		free(temp->token);
+		s.str = temp->token;
+		//free(temp->token);
 		temp->token = iterate_token_exp(&s, lash);
-		free(s.str);
+		//free(s.str);
 		temp = temp->next;
 	}
 }

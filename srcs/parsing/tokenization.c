@@ -28,18 +28,18 @@ int	handle_redirs(t_token **list, char *str)
 {
 	if (str[0] == '<' && str[1] == '<')
 	{
-		add_token(list, ft_strdup("<<"), HEREDOC);
+		add_token(list, "<<", HEREDOC);
 		return (2);
 	}
 	else if (str[0] == '>' && str[1] == '>')
 	{
-		add_token(list, ft_strdup(">>"), REDIR_APP);
+		add_token(list, ">>", REDIR_APP);
 		return (2);
 	}
 	else if (str[0] == '<')
-		add_token(list, ft_strdup("<"), REDIR_IN);
+		add_token(list, "<", REDIR_IN);
 	else
-		add_token(list, ft_strdup(">"), REDIR_OUT);
+		add_token(list, ">", REDIR_OUT);
 	return (1);
 }
 
@@ -54,6 +54,8 @@ void	tokenize_input(char *input, t_token **list)
 		len = 0;
 		while (ft_isblank(input[i]))
 			i++;
+		if (input[i] == '\0')
+			break ;
 		if (is_specialchar(input[i]))
 		{
 			if (input[i] == '|')

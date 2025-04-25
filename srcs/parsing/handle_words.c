@@ -26,11 +26,12 @@ int	handle_words(t_token **list, char *str)
 	t_indexer	s;
 
 	ft_memset(&s, 0, sizeof(t_indexer));
-	s.str = ft_strdup(str);
+	s.str = str;
 	word = NULL;
 	iterate_word(&s);
 	word = ft_substr(s.str, 0, s.i);
 	add_token(list, word, WORD);
-	free(s.str);
+	//free(word);
+	//free(s.str);
 	return (s.i);
 }

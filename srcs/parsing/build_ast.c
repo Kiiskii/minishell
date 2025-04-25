@@ -84,25 +84,25 @@ t_ast	*create_tree(t_ast *tree, t_token *list, t_token_type type)
 	return (tree);
 }
 
-t_ast	*build_ast(t_token *list)
+t_ast	*build_ast(t_token **list)
 {
 	t_token	*tmp;
 	t_ast	*tree;
 
 	tree = NULL;
-	if (list->type == PIPE)
-		tmp = list->next;
+	if ((*list)->type == PIPE)
+		tmp = (*list)->next;
 	else
-		tmp = list;
+		tmp = *list;
 	while (tmp)
 	{
 		if (tmp->type == PIPE)
 		{
-			tree = build_ast(tmp);
+			tree = build_ast(&tmp);
 			break ;
 		}
 		tmp = tmp->next;
 	}
-	tree = create_tree(tree, list, list->type);
+	tree = create_tree(tree, *list, (*list)->type);
 	return (tree);
 }

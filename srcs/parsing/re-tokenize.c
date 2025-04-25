@@ -7,12 +7,11 @@ void	replace_tokens(t_token **current, t_token *new_tokens)
 
 	temp = (*current)->next;
 	temp2 = new_tokens;
+	free((*current)->token);
 	(*current)->token = new_tokens->token;
 	(*current)->next = new_tokens->next;
-	printf("replace newtoken: %s\n", new_tokens->token);
 	while (new_tokens->next)
 	{
-		printf("replace: %s\n", new_tokens->token);
 		new_tokens = new_tokens->next;
 	}
 	new_tokens->next = temp;
@@ -24,7 +23,8 @@ void	add_next_token(t_token **new_tokens, char *word)
 	t_token	*new_node;
 	t_token	*tmp;
 
-	printf("HERE\n");
+	if (!word)
+		return ;
 	new_node = malloc(sizeof(t_token));
 	if (!new_node)
 		printf("MALLOC FAIL\n");
@@ -42,26 +42,11 @@ void	add_next_token(t_token **new_tokens, char *word)
 	}
 }
 
-int	iterate_quotes(char *str, char quote)
+void	parse_token(t_token *current, int i, int j)
 {
-	int	i;
-
-	i = 0;
-	while (str[i] && str[i] != quote)
-		i++;
-	return (i);
-}
-
-void	parse_token(t_token *current, t_mini *lash)
-{
-	int		i;
-	int		j;
 	char	*word;
 	t_token	*new_tokens;
 
-	i = 0;
-	j = 0;
-	(void)lash;
 	new_tokens = NULL;
 	while (current->token[i])
 	{
@@ -86,16 +71,16 @@ void	parse_token(t_token *current, t_mini *lash)
 	replace_tokens(&current, new_tokens);
 }
 
-void	re_tokenize(t_token *tokens, t_mini *lash)
+void	re_tokenize(t_token **tokens)
 {
 	t_token		*temp;
 
-	temp = tokens;
+	temp = *tokens;
 	while (temp)
 	{
 		if (temp->type == HEREDOC)
 			temp = temp->next->next;
-		parse_token(temp, lash);
+		parse_token(temp, 0, 0);
 		temp = temp->next;
 	}
 }

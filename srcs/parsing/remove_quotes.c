@@ -32,12 +32,12 @@ char	*iterate_token(t_indexer *s, t_mini *lash)
 	return (new_token);
 }
 
-void	remove_quotes(t_token *tokens, t_mini *lash)
+void	remove_quotes(t_token **tokens, t_mini *lash)
 {
 	t_token		*temp;
 	t_indexer	s;
 
-	temp = tokens;
+	temp = *tokens;
 	(void)lash;
 	while (temp)
 	{
