@@ -1,6 +1,6 @@
 #include "../minishell.h"
 
-//TODO: FUCKING REFACTOR
+//TODO: HANDLE $$$ STUFF, TREAT AS A STRING
 
 void	print_args(char **args)
 {
@@ -66,12 +66,19 @@ void	start_readline(t_mini *lash)
 	{
 		tokens = NULL;
 		input = readline("lash$: ");
-		add_history(input);
+		if (error_input(input, lash) == 0)
+		{
+			free(input);
+			continue ;
+		}
 		if (!input)
 			break ;
+		add_history(input);
 		tokenize_input(input, &tokens);
 		free(input);
 		if (!tokens)
+			continue ;
+		if (error_token(tokens, lash) == 0)
 			continue ;
 		expand_tokens(&tokens, lash);
 		re_tokenize(&tokens);

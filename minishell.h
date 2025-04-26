@@ -66,6 +66,13 @@ typedef struct s_mini
 void	start_readline(t_mini *lash);
 void	env_to_list(t_envi **envi, char **env);
 
+// parsing errors
+int	error_redir(t_token *tokens, t_mini *lash);
+int	error_token(t_token *tokens, t_mini *lash);
+int	error_input(char *input, t_mini *lash);
+int	error_quotes(char *input);
+int	error_pipe_end(char *input);
+
 // tokenizing
 void	tokenize_input(char *input, t_token **list);
 int		is_specialchar(char c);

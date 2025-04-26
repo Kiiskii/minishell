@@ -5,16 +5,14 @@ void	free_tokens(t_token **list)
 	t_token	*tmp;
 
 	tmp = *list;
-	while (*list)
+	while (tmp)
 	{
-		*list = (*list)->next;
-		if (tmp)
-		{
-			if (tmp->token || tmp->token[0] != '\0')
-				free(tmp->token);
-			free(tmp);
-		}
-		tmp = *list;
+		tmp = tmp->next;
+		if ((*list)->token)
+			free((*list)->token);
+		if (*list)
+			free(*list);
+		*list = tmp;
 	}
 }
 
