@@ -92,6 +92,7 @@ void	add_next_token(t_token **new_tokens, char *word, int *malloc_fail);
 void	replace_tokens(t_token **current, t_token *new_tokens);
 
 // expansions & quotes
+char	*iterate_token_help(t_indexer *s, t_mini *lash, char *new_token, int *in_dquotes);
 char	*handle_quotes(char *new_token, t_indexer *s, char quote);
 char	*handle_exps(t_indexer *s, t_mini *lash, char *new_token);
 int		iterate_key(char *token);
