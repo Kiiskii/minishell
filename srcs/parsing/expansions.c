@@ -43,6 +43,8 @@ char	*iterate_token_exp(t_indexer *s, t_mini *lash)
 	char	*new_token;
 
 	new_token = "";
+	if (!s->str)
+		return (NULL);
 	while (s->str[s->i])
 	{
 		if (s->str[s->i] == '\'')
@@ -80,14 +82,12 @@ void	expand_tokens(t_token **tokens, t_mini *lash)
 		{
 			s.str = ft_strdup(temp->token);
 			temp->token = iterate_token_exp(&s, lash);
-			free(s.str);
 			if (!temp || !temp->token)
 			{
-				free(tokens);
-				tokens = NULL;
-				ft_putstr_fd("Cannot allocate memory, please CTRL + D!\n", 2);
+				malloc_fail_message(tokens);
 				return ;
 			}
+			free(s.str);
 			temp = temp->next;
 		}
 	}

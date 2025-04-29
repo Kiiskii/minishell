@@ -1,5 +1,12 @@
 #include "../minishell.h"
 
+void	malloc_fail_message(t_token **tokens)
+{
+	free_tokens(tokens);
+	tokens = NULL;
+	ft_putstr_fd("Cannot allocate memory, please CTRL + D!\n", 2);
+}
+
 void	free_tokens(t_token **list)
 {
 	t_token	*tmp;

@@ -28,34 +28,6 @@ char	**fill_array(t_token *list, char **args)
 	args[i] = NULL;
 	return (args);
 }
-/*
-char	**alloc_args(t_token *list, char **args)
-{
-	int	len;
-	int	i;
-
-	i = 0;
-	if (list->type == PIPE)
-		list = list->next;
-	while (list && list->type != PIPE)
-	{
-		len = 0;
-		if (list->type >= REDIR_IN && list->type <= REDIR_APP)
-			list = list->next->next;
-		else
-		{
-			len = ft_strlen(list->token);
-			args[i] = malloc(len + 1);
-			if (!args[i])
-				return (NULL);
-			list = list->next;
-			i++;
-		}
-	}
-	args[i] = NULL;
-	return (args);
-}
-*/
 
 int	count_tokens(t_token *list)
 {

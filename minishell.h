@@ -123,6 +123,7 @@ t_ast	*add_node_right(t_ast *node, t_ast *new_node);
 t_ast	*add_node_left(t_ast *node, t_ast *new_node);
 
 // free functions
+void	malloc_fail_message(t_token **tokens);
 void	free_tokens(t_token **list);
 void	free_ast(t_ast *tree);
 void	free_args(char **args);
