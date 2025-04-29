@@ -35,6 +35,8 @@ char	*iterate_token(t_indexer *s)
 		new_token = ft_strdup("");
 	else if (new_token[0] == '\0')
 		new_token = s->str;
+	else if (s->i > s->j)
+		new_token = ft_strjoin(new_token, ft_substr(s->str, s->j, s->i - s->j));
 	return (new_token);
 }
 
