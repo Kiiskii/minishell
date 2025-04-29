@@ -1,6 +1,78 @@
-#include <readline/readline.h>
-#include <readline/history.h>
 #include "../minishell.h"
+
+//TODO: REFACTOR HANDLE EXPS, GO THROUGH ALL MALLOCS, CHECK RETURNS AND ATTEMPT TO RETURN TO READLINE WITH NULL, FIX INVALID EXPANSIONS, CHECK "" STUFF
+//TALK WITH LAURA ABOUTN REDIR EXPANSION HANDLING FOR AMBIGOUS REDIR
+
+void	print_args(char **args)
+{
+	int	i = 0;
+
+	while (args[i])
+	{
+		printf("%s ", args[i]);
+		i++;
+	}
+}
+
+void	print_ast(t_ast *tree)
+{
+	t_ast	*tmp;
+
+	while (tree)
+	{
+		tmp = tree;
+		if (tmp->type == PIPE)
+			printf("PIPE -- ");
+		else if (tmp->type >= REDIR_IN && tmp->type <= REDIR_APP)
+			printf("%s -- ", tmp->filename);
+		else
+			print_args(tmp->args);
+		if (tmp->right)
+		{
+			tmp = tmp->right;
+			while (tmp)
+			{
+				if (tmp->type >= REDIR_IN && tmp->type <= REDIR_APP)
+					printf("%s -- ", tmp->filename);
+				else
+					print_args(tmp->args);
+				tmp = tmp->right;
+			}
+		}
+		tree = tree->left;
+		printf("\n");
+	}
+}
+
+void	print_tokens(t_token *tokens)
+{
+	t_token	*tmp;
+
+	tmp = tokens;
+	while (tmp)
+	{
+		printf("%s %d - ", tmp->token, tmp->type);
+		tmp = tmp->next;
+	}
+	printf("\n");
+}
+
+int	begin_tokenizing(t_token **tokens, t_mini *lash, char *input)
+{
+	tokenize_input(input, tokens);
+	free(input);
+	if (!tokens)
+		return (0);
+	if (error_iterate_list(*tokens, lash) == 0)
+		return (0);
+	expand_tokens(tokens, lash);
+	//re_tokenize(tokens);
+	remove_quotes(tokens, lash);
+	if (!*tokens)
+		return (0);
+	print_tokens(*tokens);
+	return (1);
+}
 
 void	start_readline(t_mini *lash)
 {
@@ -8,21 +80,32 @@ void	start_readline(t_mini *lash)
 	t_token	*tokens;
 	t_ast	*tree;
 
-	tokens = NULL;
 	while (1)
 	{
-		input = readline("lash$: ");
-		add_history(input);
-		tokenize_input(input, &tokens);
-		free(input);
-		if (!tokens)
-			continue ;
-		tree = build_ast(tokens);
-		begin_execution(tree, lash);
-		free_tokens(tokens);
 		tokens = NULL;
+		input = readline("lash$: ");
+		if (!input)
+			break ;
+		if (input[0] == '\0' || error_input(input, lash) == 0)
+		{
+			free(input);
+			continue ;
+		}
+		add_history(input);
+		if (begin_tokenizing(&tokens, lash, input) == 0)
+			continue ;
+		tree = build_ast(&tokens);
+		if (!tree)
+		{
+			free_ast(tree);
+			printf("Cannot allocate memory, please CTRL + D!\n");
+			continue ;
+		}
+		//print_ast(tree);
+		free_tokens(&tokens);
+		begin_execution(tree, lash);
+		free_ast(tree);
 	}
-	tokens = NULL;
 }
 
 int	main(int argc, char **argv, char **env)

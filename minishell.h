@@ -8,8 +8,11 @@
 # include <fcntl.h>
 # include <sys/wait.h>
 # include <sys/types.h>
+# include <readline/readline.h>
+# include <readline/history.h>
 # include <errno.h>
-#include <limits.h>
+# include <limits.h>
+# include <signal.h>
 
 typedef enum e_token_type
 {
@@ -45,6 +48,13 @@ typedef struct s_token
 	struct s_token	*next;
 }		t_token;
 
+typedef struct s_indexer
+{
+	int		i;
+	int		j;
+	char	*str;
+}		t_indexer;
+
 typedef struct s_mini
 {
 	t_envi	*env;
@@ -53,8 +63,16 @@ typedef struct s_mini
 	int		exit_code;
 }		t_mini;
 
-void	start_readline();
+void	start_readline(t_mini *lash);
 void	env_to_list(t_envi **envi, char **env);
+
+// parsing errors
+int		error_iterate_list(t_token *tokens, t_mini *lash);
+void	error_redir(t_token *tokens, t_mini *lash);
+int		error_token(t_token *tokens, t_mini *lash);
+int		error_input(char *input, t_mini *lash);
+int		error_quotes(char *input);
+int		error_pipe_end(char *input);
 
 // tokenizing
 void	tokenize_input(char *input, t_token **list);
@@ -63,18 +81,37 @@ int		ft_isblank(int c);
 int		handle_redirs(t_token **list, char *str);
 void	add_token(t_token **list, char *content, t_token_type type);
 int		handle_words(t_token **list, char *str);
-char	*concat_word(char *word, char *str, int len);
-int		word_in_quotes(char **word, char *str, int i, int *j);
+void	iterate_word(t_indexer *s);
+int		begin_tokenizing(t_token **tokens, t_mini *lash, char *input);
+
+// re-tokenize
+void	re_tokenize(t_token **tokens);
+void	parse_token(t_token *current, int i, int j, int *malloc_fail);
+int		iterate_quotes(char *str, char quote);
+void	add_next_token(t_token **new_tokens, char *word, int *malloc_fail);
+void	replace_tokens(t_token **current, t_token *new_tokens);
+
+// expansions & quotes
+char	*handle_quotes(char *new_token, t_indexer *s, char quote);
+char	*handle_exps(t_indexer *s, t_mini *lash, char *new_token);
+int		iterate_key(char *token);
+char	*iterate_token_exp(t_indexer *s, t_mini *lash);
+void	expand_tokens(t_token **tokens, t_mini *lash);
+char	*find_env_match(char *my_key, t_envi *env);
+char	*exps_find_key(char *token, t_envi *env);
+char	*iterate_token(t_indexer *s);
+int		iterate_quotes(char *str, char quote);
+void	remove_quotes(t_token **tokens, t_mini *lash);
 
 // building ast
 t_envi	*create_node(t_envi *new_node, char *env, int j, int has_value);
 void	add_back(t_envi *tmp, t_envi *new); //why is new a different colour?
+t_ast	*build_ast(t_token **list);
 
 //for testing
 void	execute_command(char **args, t_mini *lash);
 void	begin_execution(t_ast *ast, t_mini *lash);
 void	exit_process(t_mini *lash); //(t_ast *ast, t_mini *lash);
-t_ast	*build_ast(t_token *list);
 t_ast	*create_tree(t_ast *tree, t_token *list, t_token_type type);
 t_ast	*build_right(t_token *list);
 t_ast	*create_redir(t_token_type redir, char *filename, t_ast *branch);
@@ -82,9 +119,16 @@ t_ast	*create_args(char **args, t_ast *branch);
 char	**list_to_array(t_token *list);
 char	**alloc_args(t_token *list, char **args);
 char	**fill_array(t_token *list, char **args);
+t_ast	*add_node_right(t_ast *node, t_ast *new_node);
+t_ast	*add_node_left(t_ast *node, t_ast *new_node);
 
 // free functions
-void	free_tokens(t_token *list);
+void	malloc_fail_message(t_token **tokens);
+void	free_tokens(t_token **list);
+void	free_ast(t_ast *tree);
+void	free_args(char **args);
+void	free_branch(t_ast *branch);
+void	free_env(t_envi *env);
 
 //builtins
 int		builtin_cd(char **array, t_envi *env);
