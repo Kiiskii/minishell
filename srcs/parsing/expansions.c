@@ -1,41 +1,24 @@
 #include "../minishell.h"
 
-char	*find_env_match(char *my_key, t_envi *env)
+char	*handle_multiple_dollar(t_indexer *s, char *new_token)
 {
-	t_envi	*tmp;
-	char	*my_value;
-
-	tmp = env;
-	while (tmp)
-	{
-		if (!(ft_strcmp(my_key, tmp->key)))
-		{
-			my_value = ft_strdup(tmp->value);
-			if (my_value == NULL)
-				return (NULL);
-			return (my_value);
-		}
-		tmp = tmp->next;
-	}
-	return (NULL);
-}
-
-char	*exps_find_key(char *token, t_envi *env)
-{
-	char	*value;
-	int		i;
-
-	i = 0;
-	while (ft_isalnum(token[i]) || token[i] == '_')
-		i++;
-	value = find_env_match(ft_substr(token, 0, i), env);
-	return (value);
+	if (!new_token)
+		return (NULL);
+	s->j = s->i;
+	while (s->str[s->i] == '$')
+		s->i++;
+	new_token = ft_strjoin(new_token, ft_substr(s->str, s->j, s->i - s->j));
+	s->j = s->i;
+	return (new_token);
 }
 
 char	*handle_exps(t_indexer *s, t_mini *lash, char *new_token)
 {
 	char	*word;
 
+	if (!new_token)
+		return (NULL);
+	word = NULL;
 	if (s->j < s->i)
 		new_token = ft_strjoin(new_token, ft_substr(s->str, s->j, s->i - s->j));
 	if (s->str[s->i + 1] == '?')
@@ -43,6 +26,8 @@ char	*handle_exps(t_indexer *s, t_mini *lash, char *new_token)
 		word = ft_itoa(lash->exit_code);
 		s->i++;
 	}
+	else if (s->str[s->i + 1] == '$' || !s->str[s->i + 1])
+		return (handle_multiple_dollar(s, new_token));
 	else
 		word = exps_find_key(&s->str[s->i + 1], lash->env);
 	if (word)
@@ -62,21 +47,19 @@ char	*iterate_token_exp(t_indexer *s, t_mini *lash)
 	{
 		if (s->str[s->i] == '\'')
 		{
-			s->i++;
-			while (s->str[s->i] && s->str[s->i] != '\'')
-				s->i++;
+			s->i += iterate_quotes(&s->str[s->i + 1], s->str[s->i]) + 1;
 			new_token = ft_strjoin(new_token, ft_substr(s->str, s->j, s->i - s->j));
 			s->j = s->i;
 		}
 		if (s->str[s->i] == '$')
-		{
 			new_token = handle_exps(s, lash, new_token);
-		}
 		else
 			s->i++;
+		if (!new_token)
+			return (NULL);
 	}
-	if (!new_token || new_token[0] == '\0')
-		return (s->str);
+	if ((!new_token || new_token[0] == '\0') && s->i <= s->j)
+		return (ft_strdup(""));
 	if (s->j < s->i)
 		new_token = ft_strjoin(new_token, ft_substr(s->str, s->j, s->i - s->j));
 	return (new_token);
@@ -93,10 +76,19 @@ void	expand_tokens(t_token **tokens, t_mini *lash)
 		ft_memset(&s, 0, sizeof(t_indexer));
 		if (temp->type == HEREDOC)
 			temp = temp->next->next;
-		s.str = temp->token;
-		//free(temp->token);
-		temp->token = iterate_token_exp(&s, lash);
-		//free(s.str);
-		temp = temp->next;
+		else
+		{
+			s.str = ft_strdup(temp->token);
+			temp->token = iterate_token_exp(&s, lash);
+			free(s.str);
+			if (!temp || !temp->token)
+			{
+				free(tokens);
+				tokens = NULL;
+				ft_putstr_fd("Cannot allocate memory, please CTRL + D!\n", 2);
+				return ;
+			}
+			temp = temp->next;
+		}
 	}
 }

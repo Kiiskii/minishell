@@ -18,16 +18,18 @@ void	replace_tokens(t_token **current, t_token *new_tokens)
 	free(temp2);
 }
 
-void	add_next_token(t_token **new_tokens, char *word)
+void	add_next_token(t_token **new_tokens, char *word, int *malloc_fail)
 {
 	t_token	*new_node;
 	t_token	*tmp;
 
-	if (!word)
-		return ;
 	new_node = malloc(sizeof(t_token));
-	if (!new_node)
-		printf("MALLOC FAIL\n");
+	if (!new_node || !word)
+	{
+		*malloc_fail = 1;
+		free_tokens(new_tokens);
+		return ;
+	}
 	new_node->token = word;
 	new_node->type = WORD;
 	new_node->next = NULL;
@@ -42,7 +44,7 @@ void	add_next_token(t_token **new_tokens, char *word)
 	}
 }
 
-void	parse_token(t_token *current, int i, int j)
+void	parse_token(t_token *current, int i, int j, int *malloc_fail)
 {
 	char	*word;
 	t_token	*new_tokens;
@@ -55,7 +57,7 @@ void	parse_token(t_token *current, int i, int j)
 		else if (ft_isblank(current->token[i]))
 		{
 			word = ft_substr(current->token, j, i - j);
-			add_next_token(&new_tokens, word);
+			add_next_token(&new_tokens, word, malloc_fail);
 			i += iterate_quotes(&current->token[i], current->token[i]);
 			j = i + 1;
 		}
@@ -66,7 +68,7 @@ void	parse_token(t_token *current, int i, int j)
 	if (j < i)
 	{
 		word = ft_substr(current->token, j, i - j);
-		add_next_token(&new_tokens, word);
+		add_next_token(&new_tokens, word, malloc_fail);
 	}
 	replace_tokens(&current, new_tokens);
 }
@@ -74,13 +76,25 @@ void	parse_token(t_token *current, int i, int j)
 void	re_tokenize(t_token **tokens)
 {
 	t_token		*temp;
+	int			malloc_fail;
 
 	temp = *tokens;
+	malloc_fail = 0;
 	while (temp)
 	{
 		if (temp->type == HEREDOC)
 			temp = temp->next->next;
-		parse_token(temp, 0, 0);
+		else
+		{
+			parse_token(temp, 0, 0, &malloc_fail);
+			if (malloc_fail == 1)
+			{
+				free_tokens(tokens);
+				tokens = NULL;
+				ft_putstr_fd("Cannot allocate memory, please exit lash!\n", 2);
+				return ;
+			}
 		temp = temp->next;
+		}
 	}
 }

@@ -1,6 +1,7 @@
 #include "../minishell.h"
 
-//TODO: HANDLE $$$ STUFF, TREAT AS A STRING
+//TODO: REFACTOR HANDLE EXPS, GO THROUGH ALL MALLOCS, CHECK RETURNS AND ATTEMPT TO RETURN TO READLINE WITH NULL, FIX INVALID EXPANSIONS, CHECK "" STUFF
+//TALK WITH LAURA ABOUTN REDIR EXPANSION HANDLING FOR AMBIGOUS REDIR
 
 void	print_args(char **args)
 {
@@ -50,10 +51,27 @@ void	print_tokens(t_token *tokens)
 	tmp = tokens;
 	while (tmp)
 	{
-		printf("%s --- ", tmp->token);
+		printf("%s %d - ", tmp->token, tmp->type);
 		tmp = tmp->next;
 	}
 	printf("\n");
+}
+
+int	begin_tokenizing(t_token **tokens, t_mini *lash, char *input)
+{
+	tokenize_input(input, tokens);
+	free(input);
+	if (!tokens)
+		return (0);
+	if (error_iterate_list(*tokens, lash) == 0)
+		return (0);
+	expand_tokens(tokens, lash);
+	//re_tokenize(tokens);
+	remove_quotes(tokens, lash);
+	if (!*tokens)
+		return (0);
+	print_tokens(*tokens);
+	return (1);
 }
 
 void	start_readline(t_mini *lash)
@@ -66,25 +84,23 @@ void	start_readline(t_mini *lash)
 	{
 		tokens = NULL;
 		input = readline("lash$: ");
-		if (error_input(input, lash) == 0)
+		if (!input)
+			break ;
+		if (input[0] == '\0' || error_input(input, lash) == 0)
 		{
 			free(input);
 			continue ;
 		}
-		if (!input)
-			break ;
 		add_history(input);
-		tokenize_input(input, &tokens);
-		free(input);
-		if (!tokens)
+		if (begin_tokenizing(&tokens, lash, input) == 0)
 			continue ;
-		if (error_token(tokens, lash) == 0)
-			continue ;
-		expand_tokens(&tokens, lash);
-		re_tokenize(&tokens);
-		remove_quotes(&tokens, lash);
-		//print_tokens(tokens);
 		tree = build_ast(&tokens);
+		if (!tree)
+		{
+			free_ast(tree);
+			printf("Cannot allocate memory, please CTRL + D!\n");
+			continue ;
+		}
 		//print_ast(tree);
 		free_tokens(&tokens);
 		begin_execution(tree, lash);

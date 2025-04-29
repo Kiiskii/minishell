@@ -39,7 +39,7 @@ char	*get_path(char **args, t_mini *lash)
 		return (NULL);
 	}
 	res = create_path(path_env, args[0]);
-	free(path_env);
+	free_arr(path_env);
 	return (res);
 }
 

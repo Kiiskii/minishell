@@ -31,7 +31,7 @@ int	handle_words(t_token **list, char *str)
 	iterate_word(&s);
 	word = ft_substr(s.str, 0, s.i);
 	add_token(list, word, WORD);
-	//free(word);
-	//free(s.str);
+	if (!*list || !word)
+		return (-1);
 	return (s.i);
 }

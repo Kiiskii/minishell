@@ -16,19 +16,6 @@ void	free_tokens(t_token **list)
 	}
 }
 
-void	free_args(char **args)
-{
-	int	i;
-
-	i = 0;
-	while (args[i])
-	{
-		free(args[i]);
-		i++;
-	}
-	free(args);
-}
-
 void	free_ast(t_ast *tree)
 {
 	if (!tree)
@@ -38,7 +25,7 @@ void	free_ast(t_ast *tree)
 	if (tree->filename)
 		free(tree->filename);
 	if (tree->args)
-		free_args(tree->args);
+		free_arr(tree->args);
 	free(tree);
 }
 

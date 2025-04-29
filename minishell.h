@@ -67,11 +67,12 @@ void	start_readline(t_mini *lash);
 void	env_to_list(t_envi **envi, char **env);
 
 // parsing errors
-int	error_redir(t_token *tokens, t_mini *lash);
-int	error_token(t_token *tokens, t_mini *lash);
-int	error_input(char *input, t_mini *lash);
-int	error_quotes(char *input);
-int	error_pipe_end(char *input);
+int		error_iterate_list(t_token *tokens, t_mini *lash);
+void	error_redir(t_token *tokens, t_mini *lash);
+int		error_token(t_token *tokens, t_mini *lash);
+int		error_input(char *input, t_mini *lash);
+int		error_quotes(char *input);
+int		error_pipe_end(char *input);
 
 // tokenizing
 void	tokenize_input(char *input, t_token **list);
@@ -81,12 +82,13 @@ int		handle_redirs(t_token **list, char *str);
 void	add_token(t_token **list, char *content, t_token_type type);
 int		handle_words(t_token **list, char *str);
 void	iterate_word(t_indexer *s);
+int		begin_tokenizing(t_token **tokens, t_mini *lash, char *input);
 
 // re-tokenize
 void	re_tokenize(t_token **tokens);
-void	parse_token(t_token *current, int i, int j);
+void	parse_token(t_token *current, int i, int j, int *malloc_fail);
 int		iterate_quotes(char *str, char quote);
-void	add_next_token(t_token **new_tokens, char *word);
+void	add_next_token(t_token **new_tokens, char *word, int *malloc_fail);
 void	replace_tokens(t_token **current, t_token *new_tokens);
 
 // expansions & quotes
@@ -97,7 +99,7 @@ char	*iterate_token_exp(t_indexer *s, t_mini *lash);
 void	expand_tokens(t_token **tokens, t_mini *lash);
 char	*find_env_match(char *my_key, t_envi *env);
 char	*exps_find_key(char *token, t_envi *env);
-char	*iterate_token(t_indexer *s, t_mini *lash);
+char	*iterate_token(t_indexer *s);
 int		iterate_quotes(char *str, char quote);
 void	remove_quotes(t_token **tokens, t_mini *lash);
 

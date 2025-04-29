@@ -49,6 +49,8 @@ t_ast	*build_right(t_token *list)
 		if (tmp->type >= REDIR_IN && tmp->type <= REDIR_APP)
 		{
 			branch = create_redir(tmp->type, tmp->next->token, branch);
+			if (!branch)
+				return (NULL);
 			tmp = tmp->next->next;
 		}
 		else
@@ -104,5 +106,7 @@ t_ast	*build_ast(t_token **list)
 		tmp = tmp->next;
 	}
 	tree = create_tree(tree, *list, (*list)->type);
+	if (!tree)
+		return (NULL);
 	return (tree);
 }

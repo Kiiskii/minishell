@@ -1,5 +1,4 @@
 #include "../minishell.h"
-#include <string.h>
 
 char	**fill_array(t_token *list, char **args)
 {
@@ -16,14 +15,20 @@ char	**fill_array(t_token *list, char **args)
 			list = list->next->next;
 		else
 		{
-			args[i] = strcpy(args[i], list->token);
+			args[i] = ft_strdup(list->token);
+			if (!args[i])
+			{
+				free_arr(args);
+				return (NULL);
+			}
 			list = list->next;
 			i++;
 		}
 	}
+	args[i] = NULL;
 	return (args);
 }
-
+/*
 char	**alloc_args(t_token *list, char **args)
 {
 	int	len;
@@ -50,6 +55,7 @@ char	**alloc_args(t_token *list, char **args)
 	args[i] = NULL;
 	return (args);
 }
+*/
 
 int	count_tokens(t_token *list)
 {
@@ -84,7 +90,7 @@ char	**list_to_array(t_token *list)
 	args = malloc((token_count + 1) * (sizeof(char *)));
 	if (!args)
 		return (NULL);
-	args = alloc_args(tmp, args);
+	//args = alloc_args(tmp, args);
 	args = fill_array(tmp, args);
 	return (args);
 }
