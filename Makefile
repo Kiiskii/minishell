@@ -55,6 +55,10 @@ clean:
 	@echo "$(GREEN)----------------------------------------$(RESET)"
 	@echo "$(ORANGE)Cleaning object files...$(RESET)"
 	@echo "$(GREEN)----------------------------------------$(RESET)"
+	rm -f srcs/*.o
+	rm -f srcs/builtins/*.o
+	rm -f srcs/execution/*.o
+	rm -f srcs/env/*.o
 	rm -f $(OBJS)
 	make clean --no-print-directory -C $(LIBFT_DIR)
 

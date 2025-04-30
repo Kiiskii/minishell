@@ -35,7 +35,7 @@ int	go_left(t_ast *node, t_mini *lash, int *fds)
 	{
 		perror("lash: fork\n");
 		lash->exit_code = errno;
-		return (errno); //follow this up, what happens?
+		return (errno);
 	}
 	if (pid == 0)
 	{

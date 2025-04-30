@@ -1,5 +1,18 @@
 #include "../minishell.h"
 
+//Halutaanko lisata exit code malloc failiin?
+
+void	replace_value(t_envi *node, char *replacement)
+{
+	free(node->value);
+	node->value = ft_strdup(replacement);
+	if (node->value == NULL)
+	{
+		ft_putstr_fd("Memory allocation failed, please exit lash\n", 2);
+		return ;
+	}
+}
+
 void	update_env(char *new, char *old, t_envi *env)
 {
 	t_envi	*pwd;
@@ -10,19 +23,13 @@ void	update_env(char *new, char *old, t_envi *env)
 	while (pwd != NULL)
 	{
 		if (ft_strcmp(pwd->key, "PWD") == 0)
-		{
-			free(pwd->value);
-			pwd->value = ft_strdup(new);
-		}
+			replace_value(pwd, new);
 		pwd = pwd->next;
 	}
 	while (old_pwd != NULL)
 	{
 		if (ft_strcmp(old_pwd->key, "OLDPWD") == 0)
-		{
-			free(old_pwd->value);
-			old_pwd->value = ft_strdup(old);
-		}
+			replace_value(old_pwd, old);
 		old_pwd = old_pwd->next;
 	}
 }

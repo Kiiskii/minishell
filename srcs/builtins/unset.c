@@ -42,7 +42,7 @@ int	builtin_unset(char **array, t_envi *env)
 	if (!array[1])
 		return (0);
 	else if (array[1][0] == '-' && array[1][1])
-	{	
+	{
 		ft_putstr_fd("lash: unset: ", 2);
 		ft_putstr_fd(array[1], 2);
 		ft_putstr_fd(": options not supported\n", 2);

@@ -5,7 +5,7 @@ int	check_min_max(const char *str, long long nb, int sign, char *arg)
 	if (nb > LLONG_MAX / 10 || (nb == INT64_MAX / 10 && ((sign == 1 && (*str
 						- '0') > (LLONG_MAX % 10)) || (sign == -1 && (*str
 						- '0') > (LLONG_MIN % 10)))))
-	{	
+	{
 		ft_putstr_fd("lash: exit: ", 2);
 		ft_putstr_fd(arg, 2);
 		ft_putstr_fd(": numeric argument required\n", 2);
@@ -58,11 +58,11 @@ int	only_digits(char *str)
 	return (1);
 }
 
-int	builtin_exit(char **array, t_mini *lash)
+int	builtin_exit(t_ast *ast, char **array, t_mini *lash)
 {
 	ft_putstr_fd("exit\n", 2);
 	if (!array[1])
-		exit_process(lash);
+		exit_process(ast, lash);
 	else if (only_digits(array[1]))
 	{
 		if (array[2])
@@ -70,7 +70,7 @@ int	builtin_exit(char **array, t_mini *lash)
 		else
 		{
 			lash->exit_code = ft_atoll(array[1], array[1]);
-			exit_process(lash);
+			exit_process(ast, lash);
 		}
 	}
 	else
@@ -79,7 +79,7 @@ int	builtin_exit(char **array, t_mini *lash)
 		ft_putstr_fd(array[1], 2);
 		ft_putstr_fd(": numeric argument required\n", 2);
 		lash->exit_code = 2;
-		exit_process(lash);
+		exit_process(ast, lash);
 	}
 	return (1);
 }
