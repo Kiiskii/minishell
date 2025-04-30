@@ -71,9 +71,9 @@ t_envi	*create_node(t_envi *new_node, char *env, int j, int has_value);
 void	add_back(t_envi *tmp, t_envi *new); //why is new a different colour?
 
 //for testing
-void	execute_command(char **args, t_mini *lash);
+void	execute_command(t_ast *ast, char **args, t_mini *lash);
 void	begin_execution(t_ast *ast, t_mini *lash);
-void	exit_process(t_mini *lash); //(t_ast *ast, t_mini *lash);
+void	exit_process(t_ast *ast, t_mini *lash);
 t_ast	*build_ast(t_token *list);
 t_ast	*create_tree(t_ast *tree, t_token *list, t_token_type type);
 t_ast	*build_right(t_token *list);
@@ -85,14 +85,15 @@ char	**fill_array(t_token *list, char **args);
 
 // free functions
 void	free_tokens(t_token *list);
+void    free_ast(t_ast *tree);
 
 //builtins
 int		builtin_cd(char **array, t_envi *env);
 int		builtin_echo(char **array);
 int		builtin_env(char **array, t_envi *env);
-int		builtin_exit(char **array, t_mini *lash);
+int		builtin_exit(t_ast *ast, char **array, t_mini *lash);
 void		builtin_export(char **array, t_envi *env, t_mini *lash);
-int		builtin_pwd(char **array, t_envi *env);
+int		builtin_pwd(char **array);
 int		builtin_unset(char **array, t_envi *env);
 
 //env functions
@@ -103,6 +104,10 @@ int	add_new(char *str, t_envi *env);
 
 //builtin utils
 void	free_list(t_envi **head);
+void	not_valid_msg(char *str);
+char	*find_key(char *str);
+int	check_existing(char *str, t_envi *env);
+void	error_cmd_not_found(char *cmd, t_mini *lash);
 
 //pipes
 void	execute_pipe(t_ast *root, t_mini *lash);

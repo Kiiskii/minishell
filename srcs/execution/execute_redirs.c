@@ -2,6 +2,7 @@
 
 //TODO: when does opening fail in out and append?
 //TODO: get fds from lash struct instead?
+//TODO: instead of exit, enter exit process with ast and lash?
 
 void	redirect_append(t_ast *head, t_mini *lash)
 {
@@ -13,12 +14,12 @@ void	redirect_append(t_ast *head, t_mini *lash)
 		ft_putstr_fd("lash: redirect_append: ", 2);
 		perror(head->filename);
 		lash->exit_code = 1;
-		return ;//or exit?
+		return ;
 	}
 	if (dup2(fd, STDOUT_FILENO) == -1)
 	{
 		close(fd);
-		perror("lash: dup2"); //TODO: make sure other dup2s handle errors like this
+		perror("lash: dup2");
 		lash->exit_code = errno;
 		exit(lash->exit_code);
 	}
@@ -35,7 +36,7 @@ void	redirect_out(t_ast *head, t_mini *lash)
 		ft_putstr_fd("lash: redirect_out: ", 2);
 		perror(head->filename);
 		lash->exit_code = 1;
-		return ;//exit(lash->exit_code);
+		return ;
 	}
 	if (dup2(fd, STDOUT_FILENO) == -1)
 	{
@@ -54,9 +55,8 @@ void	redirect_in(t_ast *node, t_mini *lash)
 	fd = open(node->filename, O_RDONLY);
 	if (fd == -1)
 	{
-		ft_putstr_fd("lash: ", 2); //TODO: use perror?
-		ft_putstr_fd(node->filename, 2);
-		ft_putstr_fd(": No such file or directory\n", 2);
+		ft_putstr_fd("lash: ", 2);
+		perror(node->filename);
 		lash->exit_code = 1;
 		exit(lash->exit_code);
 	}
@@ -83,8 +83,6 @@ void	execute_redirs(t_ast *node, t_mini *lash)
 			redirect_out(node, lash);
 		else if (node->type == REDIR_APP)
 			redirect_append(node, lash);
-//		else
-//			execute_heredoc(node, lash);
 		if (lash->exit_code == 0)
 			begin_execution(node->left, lash);
 		if (lash->exit_code == 0)

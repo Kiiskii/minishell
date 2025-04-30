@@ -61,7 +61,9 @@ char	**env_to_arr(t_envi *env)
 		env = env->next;
 	}
 	tmp[i] = '\0';
-	res = ft_split(tmp, '\n'); //check if exists?
+	res = ft_split(tmp, '\n');
+	if (res == NULL)
+		ft_putstr_fd("Cannot allocate memory, please exit lash\n", 2);
 	free(tmp);
 	return (res);
 }

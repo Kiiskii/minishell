@@ -6,7 +6,7 @@ int	check_access(char *path, t_mini *lash)
 	{
 		if (access(path, X_OK) == 0)
 			return (0);
-		ft_putstr_fd("Bash :", 2);
+		ft_putstr_fd("lash :", 2);
 		ft_putstr_fd(path, 2);
 		ft_putstr_fd(": Permission denied\n", 2);
 		lash->exit_code = 126;
@@ -26,11 +26,10 @@ char	*create_path(char **paths, char *cmd, t_mini *lash)
 	{
 		tmp = ft_strjoin(paths[i], "/");
 		if (tmp == NULL)
-			ft_putstr_fd("Cannot allocate memory, please exit lash\n", 2); //TODO: can we ever enter
-			//with empty string, or can NULL only be because malloc failing?
+			ft_putstr_fd("Cannot allocate memory, please exit lash\n", 2);
 		path = ft_strjoin(tmp, cmd);
 		if (path == NULL)
-			ft_putstr_fd("Cannot allocate memory, please exit lash\n", 2); //TODO: as above
+			ft_putstr_fd("Cannot allocate memory, please exit lash\n", 2);
 		free(tmp);
 		if (check_access(path, lash) == 0)
 			return (path);
@@ -39,10 +38,7 @@ char	*create_path(char **paths, char *cmd, t_mini *lash)
 		free(path);
 		i++;
 	}
-	ft_putstr_fd("Command '", 2);
-	ft_putstr_fd(cmd, 2);
-	ft_putstr_fd("' not found\n", 2);
-	lash->exit_code = 127;
+	error_cmd_not_found(cmd, lash);
 	return (NULL);
 }
 
@@ -88,7 +84,11 @@ void	execute_external(char **args, t_mini *lash)
 	pid_t	pid;
 
 	if (!args[0]) //TODO: test with $US when expansions ready
+	{
+		ft_putstr_fd("Command '' not found\n", 2);
+		lash->exit_code = 127;
 		return ;
+	}
 	path = get_path(args, lash);
 	if (!path)
 		return ;
@@ -102,5 +102,9 @@ void	execute_external(char **args, t_mini *lash)
 	if (pid == 0)
 		exec_ext_child(lash, path, args);
 	waitpid(pid, &lash->exit_code, 0);
+	// if (WIFEXITED(lash->exit_code))
+	// else if (WIFSIGNALED())
+	// TAI if (WIFEXITED(lash->exit_code))
+	//	lash->exit_code = WEXITSTATUS(lash->exit_code);
 	free(path);
 }

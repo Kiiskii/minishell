@@ -23,6 +23,7 @@ void	start_readline(t_mini *lash)
 		begin_execution(tree, lash);
 		free_tokens(tokens);
 		tokens = NULL;
+		free_ast(tree);
 	}
 	tokens = NULL;
 }

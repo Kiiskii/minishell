@@ -7,20 +7,18 @@ int	is_valid_input(char *str)
 
 	i = 0;
 	key = find_key(str);
+	if (key == NULL)
+		return (12);
 	if (key[i] == '\0')
 	{
-		ft_putstr_fd("lash: export: `", 2);
-		ft_putstr_fd(str, 2);
-		ft_putstr_fd("': not a valid identifier\n", 2);
+		not_valid_msg(str);
 		return (0);
 	}
 	while (key[i])
 	{
 		if (ft_isalnum(key[i]) == 0 && key[i] != '_')
 		{
-			ft_putstr_fd("lash: export: `", 2);
-			ft_putstr_fd(str, 2);
-			ft_putstr_fd("': not a valid identifier\n", 2);
+			not_valid_msg(str);
 			return (0);
 		}
 		i++;
@@ -33,14 +31,17 @@ int	add_new(char *str, t_envi *env)
 {
 	t_envi	*new_node;
 	int		equal;
-	int		exit_code;
 
 	equal = 0;
-	exit_code = 0;
 	new_node = malloc(sizeof(t_envi));
 	if (!new_node)
+	{
 		printf("Memory allocation failed, please exit lash\n");
-	if (!is_valid_input(str))
+		return (12);
+	}
+	if (is_valid_input(str) == 12)
+		return (12);
+	else if (is_valid_input(str) == 0)
 		return (1);
 	while (str[equal] && str[equal] != '=')
 		equal++;
@@ -48,6 +49,8 @@ int	add_new(char *str, t_envi *env)
 		new_node = create_node(new_node, str, equal, 1);
 	else
 		new_node = create_node(new_node, str, equal, 0);
+	if (new_node == NULL)
+		return (12);
 	add_back(env, new_node);
 	return (0);
 }

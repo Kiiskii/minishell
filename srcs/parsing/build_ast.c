@@ -34,7 +34,7 @@ t_ast	*create_redir(t_token_type redir, char *filename, t_ast *branch)
 	 malloc check
 	*/
 	new_node->type = redir;
-	new_node->filename = filename;
+	new_node->filename = ft_strdup(filename); // added ft_strdup()
 	new_node->args = NULL;
 	new_node->left = NULL;
 	new_node->right = NULL;
