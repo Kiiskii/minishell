@@ -31,8 +31,10 @@ int	add_new(char *str, t_envi *env)
 {
 	t_envi	*new_node;
 	int		equal;
+	int		exit_code;
 
 	equal = 0;
+	exit_code = 0;
 	new_node = malloc(sizeof(t_envi));
 	if (!new_node)
 	{

@@ -1,5 +1,4 @@
 #include "../minishell.h"
-#include <string.h>
 
 char	**fill_array(t_token *list, char **args)
 {
@@ -16,33 +15,12 @@ char	**fill_array(t_token *list, char **args)
 			list = list->next->next;
 		else
 		{
-			args[i] = strcpy(args[i], list->token);
-			list = list->next;
-			i++;
-		}
-	}
-	return (args);
-}
-
-char	**alloc_args(t_token *list, char **args)
-{
-	int	len;
-	int	i;
-
-	i = 0;
-	if (list->type == PIPE)
-		list = list->next;
-	while (list && list->type != PIPE)
-	{
-		len = 0;
-		if (list->type >= REDIR_IN && list->type <= REDIR_APP)
-			list = list->next->next;
-		else
-		{
-			len = ft_strlen(list->token);
-			args[i] = malloc(len + 1);
+			args[i] = ft_strdup(list->token);
 			if (!args[i])
+			{
+				free_arr(args);
 				return (NULL);
+			}
 			list = list->next;
 			i++;
 		}
@@ -60,6 +38,7 @@ int	count_tokens(t_token *list)
 		list = list->next;
 	while (list && list->type != PIPE)
 	{
+		//Make sure this no break
 		if (list->type >= REDIR_IN && list->type <= REDIR_APP)
 			list = list->next->next;
 		else
@@ -83,7 +62,7 @@ char	**list_to_array(t_token *list)
 	args = malloc((token_count + 1) * (sizeof(char *)));
 	if (!args)
 		return (NULL);
-	args = alloc_args(tmp, args);
+	//args = alloc_args(tmp, args);
 	args = fill_array(tmp, args);
 	return (args);
 }
