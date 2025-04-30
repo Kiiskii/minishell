@@ -38,25 +38,40 @@ char	*handle_exps(t_indexer *s, t_mini *lash, char *new_token)
 	return (new_token);
 }
 
+char	*iterate_token_help(t_indexer *s, t_mini *lash, char *new_token, int *in_dquotes)
+{
+	if (s->str[s->i] == '"')
+	{
+		*in_dquotes *= -1;
+		s->i++;
+	}
+	if (s->str[s->i] == '\'' && *in_dquotes == -1)
+	{
+		s->i += iterate_quotes(&s->str[s->i + 1], s->str[s->i]) + 1;
+		new_token = ft_strjoin(new_token, ft_substr(s->str, s->j, s->i - s->j));
+		s->j = s->i;
+	}
+	if (s->str[s->i] == '$')
+		new_token = handle_exps(s, lash, new_token);
+	else
+		s->i++;
+	if (!new_token)
+		return (NULL);
+	return (new_token);
+}
+
 char	*iterate_token_exp(t_indexer *s, t_mini *lash)
 {
 	char	*new_token;
+	int		in_dquotes;
 
+	in_dquotes = -1;
 	new_token = "";
 	if (!s->str)
 		return (NULL);
 	while (s->str[s->i])
 	{
-		if (s->str[s->i] == '\'')
-		{
-			s->i += iterate_quotes(&s->str[s->i + 1], s->str[s->i]) + 1;
-			new_token = ft_strjoin(new_token, ft_substr(s->str, s->j, s->i - s->j));
-			s->j = s->i;
-		}
-		if (s->str[s->i] == '$')
-			new_token = handle_exps(s, lash, new_token);
-		else
-			s->i++;
+		new_token = iterate_token_help(s, lash, new_token, &in_dquotes);
 		if (!new_token)
 			return (NULL);
 	}
