@@ -1,10 +1,10 @@
 #include "../minishell.h"
 
-void	exit_process(t_mini *lash) //(t_ast *ast, t_mini *lash)
+void	exit_process(t_ast *ast, t_mini *lash)
 {
 	t_envi	*tmp;
 
-//	free_tree(ast);
+	free_ast(ast);
 	tmp = lash->env;
 	while (lash->env)
 	{

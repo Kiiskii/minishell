@@ -27,21 +27,26 @@ void	add_to_copy(t_envi **copy, t_envi *new_node)
 	}
 }
 
-t_envi	*sort_env(t_envi *env)
+t_envi	*sort_env(t_envi *env, t_envi *copy)
 {
-	t_envi	*copy;
 	t_envi	*trav;
 	t_envi	*new_node;
 
 	trav = env;
-	copy = NULL;
 	while (trav != NULL)
 	{
 		new_node = malloc(sizeof(t_envi));
 		if (!new_node)
 			return (NULL);
 		new_node->key = ft_strdup(trav->key);
-		new_node->value = ft_strdup(trav->value);
+		if (new_node->key == NULL)
+			return (NULL);
+		if (trav->has_value)
+		{
+			new_node->value = ft_strdup(trav->value);
+			if (new_node->value == NULL)
+				return (NULL);
+		}
 		new_node->has_value = trav->has_value;
 		new_node->next = NULL;
 		add_to_copy(&copy, new_node);
@@ -53,17 +58,22 @@ t_envi	*sort_env(t_envi *env)
 int	print_alphabetised(t_envi *env)
 {
 	t_envi	*alphalist;
+	t_envi	*copy;
 
-	alphalist = sort_env(env);
-	if (alphalist == NULL)
-		return (1);
+	copy = NULL;
+	alphalist = sort_env(env, copy);
+	if (!alphalist)
+	{
+		ft_putstr_fd("Memory allocation failed, please exit lash\n", 2);
+		return (12);
+	}
 	while (alphalist != NULL)
 	{
 		printf("declare -x ");
 		if (alphalist->has_value == 1)
 			printf("%s=\"%s\"\n", alphalist->key, alphalist->value);
 		else
-			printf("\"%s\"\n", alphalist->key);
+			printf("%s\n", alphalist->key);
 		alphalist = alphalist->next;
 	}
 	free_list(&alphalist);
