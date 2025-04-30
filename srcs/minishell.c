@@ -1,7 +1,6 @@
 #include "../minishell.h"
 
-//TODO: REFACTOR HANDLE EXPS, GO THROUGH ALL MALLOCS, CHECK RETURNS AND ATTEMPT TO RETURN TO READLINE WITH NULL, FIX INVALID EXPANSIONS, CHECK "" STUFF
-//TALK WITH LAURA ABOUTN REDIR EXPANSION HANDLING FOR AMBIGOUS REDIR
+//TODO: INPUT MAX LEN, NEW VALUE IN HEADERFILE!
 
 void	print_args(char **args)
 {
@@ -57,6 +56,8 @@ void	print_tokens(t_token *tokens)
 	printf("\n");
 }
 
+sig_atomic_t	g_signum = 0;
+
 int	begin_tokenizing(t_token **tokens, t_mini *lash, char *input)
 {
 	tokenize_input(input, tokens);
@@ -82,6 +83,7 @@ void	start_readline(t_mini *lash)
 
 	while (1)
 	{
+		init_signals();
 		tokens = NULL;
 		input = readline("lash$: ");
 		if (!input)

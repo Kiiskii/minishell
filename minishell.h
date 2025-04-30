@@ -66,6 +66,9 @@ typedef struct s_mini
 void	start_readline(t_mini *lash);
 void	env_to_list(t_envi **envi, char **env);
 
+// signals
+void	init_signals(void);
+
 // parsing errors
 int		error_iterate_list(t_token *tokens, t_mini *lash);
 void	error_redir(t_token *tokens, t_mini *lash);
