@@ -108,6 +108,7 @@ void	start_readline(t_mini *lash)
 		begin_execution(tree, lash);
 		free_ast(tree);
 	}
+	tokens = NULL;
 }
 
 int	main(int argc, char **argv, char **env)
