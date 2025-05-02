@@ -1,6 +1,7 @@
 #include "../minishell.h"
 
 //TODO: INPUT MAX LEN, NEW VALUE IN HEADERFILE!
+// LS & RM ADD A NEWLINE
 
 void	print_args(char **args)
 {
@@ -71,7 +72,7 @@ int	begin_tokenizing(t_token **tokens, t_mini *lash, char *input)
 	remove_quotes(tokens, lash);
 	if (!*tokens)
 		return (0);
-	print_tokens(*tokens);
+	//print_tokens(*tokens);
 	return (1);
 }
 
@@ -127,7 +128,7 @@ int	main(int argc, char **argv, char **env)
 	lash.fd_out = -1;
 	lash.fd_in = -1;
 	start_readline(&lash);
-	printf("\nExiting lash...\n");
+	printf("Exiting lash...\n");
 	// implement signalhandling
-	return (0); //exit with lash->exit_code instead
+	return (lash.exit_code);
 }

@@ -67,6 +67,8 @@ void	start_readline(t_mini *lash);
 void	env_to_list(t_envi **envi, char **env);
 
 // signals
+void	reset_default_signals(void);
+void	handle_sig_int(int signum);
 void	init_signals(void);
 
 // parsing errors
@@ -159,11 +161,12 @@ void	error_cmd_not_found(char *cmd, t_mini *lash);
 
 //pipes
 void	execute_pipe(t_ast *root, t_mini *lash);
-int		go_left(t_ast *node, t_mini *lash, int *fds);
+void	go_left(t_ast *node, t_mini *lash, int *fds, int *pid);
 void	go_right(t_ast *node, t_mini *lash, int *fds, int *pid);
 //void	prepare_pipe(int *fds, t_mini *lash);
 
 //externals
+void	handle_exit_status(char *path, t_mini *lash);
 void	execute_external(char **args, t_mini *lash);
 char	**get_env_path(char **args, t_mini *lash, t_envi *env);
 //char	**get_bin(char **args, t_mini *lash, t_envi *env);
