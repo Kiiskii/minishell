@@ -66,6 +66,9 @@ typedef struct s_mini
 void	start_readline(t_mini *lash);
 void	env_to_list(t_envi **envi, char **env);
 
+// signals
+void	init_signals(void);
+
 // parsing errors
 int		error_iterate_list(t_token *tokens, t_mini *lash);
 void	error_redir(t_token *tokens, t_mini *lash);
@@ -137,7 +140,7 @@ int		builtin_cd(char **array, t_envi *env);
 int		builtin_echo(char **array);
 int		builtin_env(char **array, t_envi *env);
 int		builtin_exit(t_ast *ast, char **array, t_mini *lash);
-void		builtin_export(char **array, t_envi *env, t_mini *lash);
+void	builtin_export(char **array, t_envi *env, t_mini *lash);
 int		builtin_pwd(char **array);
 int		builtin_unset(char **array, t_envi *env);
 
