@@ -1,6 +1,6 @@
 #include "../minishell.h"
 
-int	builtin_pwd(char **array, t_envi *env)
+int	builtin_pwd(char **array)
 {
 	char	*pathname;
 
