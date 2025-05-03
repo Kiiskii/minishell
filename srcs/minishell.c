@@ -62,7 +62,6 @@ sig_atomic_t	g_signum = 0;
 int	begin_tokenizing(t_token **tokens, t_mini *lash, char *input)
 {
 	tokenize_input(input, tokens);
-	free(input);
 	if (!tokens)
 		return (0);
 	if (error_iterate_list(*tokens, lash) == 0)
@@ -81,11 +80,14 @@ void	start_readline(t_mini *lash)
 	char	*input;
 	t_token	*tokens;
 	t_ast	*tree;
+	int		original_stdin;
 
+	original_stdin = dup(STDIN_FILENO);
 	while (1)
 	{
 		init_signals();
 		tokens = NULL;
+		dup2(original_stdin, STDIN_FILENO);
 		input = readline("lash$: ");
 		if (!input)
 			break ;
@@ -97,18 +99,20 @@ void	start_readline(t_mini *lash)
 		add_history(input);
 		if (begin_tokenizing(&tokens, lash, input) == 0)
 			continue ;
+		free(input);
 		tree = build_ast(&tokens);
 		if (!tree)
 		{
-			free_ast(tree);
-			printf("Cannot allocate memory, please CTRL + D!\n");
+			malloc_fail_message_tree(tree);
 			continue ;
 		}
 		//print_ast(tree);
-		free_tokens(&tokens);
+		iterate_heredoc(tree);
+		//free_tokens(&tokens);
 		begin_execution(tree, lash);
 		free_ast(tree);
 	}
+	close(original_stdin);
 	tokens = NULL;
 }
 
