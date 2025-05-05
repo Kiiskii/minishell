@@ -16,11 +16,11 @@ void	malloc_fail_message_tree(t_ast *tree)
 
 void	free_tokens(t_token **list)
 {
-	t_token *current;
-	t_token *next;
-	
+	t_token	*current;
+	t_token	*next;
+
 	if (!list || !(*list))
-		return;
+		return ;
 	current = *list;
 	while (current)
 	{
@@ -30,7 +30,7 @@ void	free_tokens(t_token **list)
 		free(current);
 		current = next;
 	}
-    *list = NULL; 
+	*list = NULL;
 }
 
 void	free_env(t_envi *env)
@@ -48,7 +48,7 @@ void	free_env(t_envi *env)
 	}
 }
 
-void    free_ast(t_ast *tree)
+void	free_ast(t_ast *tree)
 {
 	if (!tree)
 		return ;
@@ -56,8 +56,8 @@ void    free_ast(t_ast *tree)
 	free_ast(tree->right);
 	if (tree->fd != -1)
 	{
-		close(tree->fd);
 		unlink(tree->filename);
+		close(tree->fd);
 	}
 	if (tree->filename)
 		free(tree->filename);

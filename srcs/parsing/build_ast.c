@@ -38,7 +38,7 @@ t_ast	*create_redir(t_token_type redir, char *filename, t_ast *branch)
 
 t_ast	*build_right(t_token *list)
 {
-	t_token *tmp;
+	t_token	*tmp;
 	t_ast	*branch;
 	char	**cmd_args;
 

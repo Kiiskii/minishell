@@ -2,7 +2,7 @@
 
 //TODO: INPUT MAX LEN, NEW VALUE IN HEADERFILE!
 // LS & RM ADD A NEWLINE
-
+/*
 void	print_args(char **args)
 {
 	int	i = 0;
@@ -56,6 +56,7 @@ void	print_tokens(t_token *tokens)
 	}
 	printf("\n");
 }
+*/
 
 sig_atomic_t	g_signum = 0;
 
@@ -75,19 +76,35 @@ int	begin_tokenizing(t_token **tokens, t_mini *lash, char *input)
 	return (1);
 }
 
-void	start_readline(t_mini *lash)
+int	begin_ast_heredoc(t_token **tokens, t_mini *lash)
+{
+	t_ast	*tree;
+
+	tree = build_ast(tokens);
+	if (!tree)
+	{
+		malloc_fail_message_tree(tree);
+		return (0);
+	}
+	free_tokens(tokens);
+	//print_ast(tree);
+	iterate_heredoc(tree, lash);
+	if (g_signum != SIGINT)
+		begin_execution(tree, lash);
+	free_ast(tree);
+	return (1);
+}
+
+void	start_readline(t_mini *lash, int fd)
 {
 	char	*input;
 	t_token	*tokens;
-	t_ast	*tree;
-	int		original_stdin;
 
-	original_stdin = dup(STDIN_FILENO);
 	while (1)
 	{
 		init_signals();
+		dup2(fd, STDIN_FILENO);
 		tokens = NULL;
-		dup2(original_stdin, STDIN_FILENO);
 		input = readline("lash$: ");
 		if (!input)
 			break ;
@@ -99,27 +116,17 @@ void	start_readline(t_mini *lash)
 		add_history(input);
 		if (begin_tokenizing(&tokens, lash, input) == 0)
 			continue ;
-		free(input);
-		tree = build_ast(&tokens);
-		if (!tree)
-		{
-			malloc_fail_message_tree(tree);
+		if (begin_ast_heredoc(&tokens, lash) == 0)
 			continue ;
-		}
-		//print_ast(tree);
-		iterate_heredoc(tree);
-		//free_tokens(&tokens);
-		begin_execution(tree, lash);
-		free_ast(tree);
+		free(input);
 	}
-	close(original_stdin);
-	tokens = NULL;
 }
 
 int	main(int argc, char **argv, char **env)
 {
 	t_envi	*envi;
 	t_mini	lash;
+	int		original_stdin;
 
 	if (argc != 1)
 		return (1); //exit with 1?
@@ -131,7 +138,9 @@ int	main(int argc, char **argv, char **env)
 	lash.exit_code = 0;
 	lash.fd_out = -1;
 	lash.fd_in = -1;
-	start_readline(&lash);
+	original_stdin = dup(STDIN_FILENO);
+	start_readline(&lash, original_stdin);
+	close(original_stdin);
 	printf("Exiting lash...\n");
 	// implement signalhandling
 	return (lash.exit_code);

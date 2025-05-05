@@ -1,28 +1,5 @@
 #include "../minishell.h"
 
-char	*create_unique_filename(void)
-{
-	char	*filename;
-	char	*num;
-	int		i;
-
-	i = 0;
-	while (1)
-	{
-		num = ft_itoa(i);
-		if (!num)
-			return (NULL);
-		filename = ft_strjoin("heredoc_temp_", num);
-		free(num);
-		if (!filename)
-			return (NULL);
-		if (access(filename, F_OK) != 0)
-			return (filename);
-		free(filename);
-		i++;
-	}
-}
-
 char	*create_temp_file(t_ast *leaf)
 {
 	char	*filename;
@@ -36,44 +13,83 @@ char	*create_temp_file(t_ast *leaf)
 	return (filename);
 }
 
-void	handle_heredoc(t_ast *leaf)
+char	*expand_heredoc(char *line, t_mini *lash)
+{
+	t_indexer	s;
+	char		*newline;
+
+	ft_memset(&s, 0, sizeof(t_indexer));
+	s.str = line;
+	newline = "";
+	while (s.str[s.i])
+	{
+		if (s.str[s.i] == '$')
+			newline = handle_exps(&s, lash, newline);
+		s.i++;
+	}
+	if (s.j < s.i)
+		newline = ft_strjoin(newline, ft_substr(s.str, s.j, s.i - s.j));
+	free(line);
+	return (newline);
+}
+
+void	handle_heredoc(t_ast *leaf, int dont_expand, t_mini *lash)
 {
 	char	*line;
 	char	*filename;
+	int		heredoc_stdin;
 
 	filename = create_temp_file(leaf);
+	init_signals_heredoc();
+	heredoc_stdin = dup(STDIN_FILENO);
 	while (1)
 	{
 		line = readline("> ");
+		if (g_signum == SIGINT)
+			signal_exit_heredoc(line, lash, heredoc_stdin);
 		if (!line)
 			break ;
 		if (!(ft_strcmp(line, leaf->filename)))
 			break ;
+		if (dont_expand == 0 && ft_strchr(line, '$') != NULL)
+			line = expand_heredoc(line, lash);
 		ft_putstr_fd(line, leaf->fd);
 		write(leaf->fd, "\n", 1);
 		free(line);
-		//malloc fail
 	}
-	free(line);
-	free(leaf->filename);
-	leaf->filename = filename;
-	leaf->type = REDIR_IN;
+	if (g_signum != SIGINT)
+		heredoc_cleanup(leaf, line, heredoc_stdin, filename);
 }
 
-void	iterate_branch_right(t_ast *branch)
+void	iterate_branch_right(t_ast *branch, t_mini *lash)
 {
 	t_ast	*tmp;
+	int		dont_expand;
+	char	*new_filename;
 
 	tmp = branch;
 	while (tmp)
 	{
+		dont_expand = 0;
 		if (tmp->type == HEREDOC)
-			handle_heredoc(tmp);
+		{
+			if (ft_strchr(tmp->filename, '"') != NULL)
+				dont_expand = 1;
+			else if (ft_strchr(tmp->filename, '\'') != NULL)
+				dont_expand = 1;
+			if (dont_expand == 1)
+			{
+				new_filename = heredoc_rm_quotes(tmp);
+				free(tmp->filename);
+				tmp->filename = new_filename;
+			}
+			handle_heredoc(tmp, dont_expand, lash);
+		}
 		tmp = tmp->right;
 	}
 }
 
-void	iterate_heredoc(t_ast *tree)
+void	iterate_heredoc(t_ast *tree, t_mini *lash)
 {
 	t_ast	*tmp;
 
@@ -81,7 +97,7 @@ void	iterate_heredoc(t_ast *tree)
 	if (!tmp)
 		return ;
 	if (tmp->type == HEREDOC)
-		iterate_branch_right(tmp);
-	iterate_heredoc(tmp->left);
-	iterate_branch_right(tmp->right);
+		iterate_branch_right(tmp, lash);
+	iterate_heredoc(tmp->left, lash);
+	iterate_branch_right(tmp->right, lash);
 }
