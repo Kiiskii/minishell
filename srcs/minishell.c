@@ -2,6 +2,7 @@
 
 //TODO: INPUT MAX LEN, NEW VALUE IN HEADERFILE!
 // LS & RM ADD A NEWLINE
+
 /*
 void	print_args(char **args)
 {
@@ -69,8 +70,8 @@ int	begin_tokenizing(t_token **tokens, t_mini *lash, char *input)
 		return (0);
 	expand_tokens(tokens, lash);
 	//re_tokenize(tokens);
-	remove_quotes(tokens, lash);
-	if (!*tokens)
+	remove_quotes(tokens);
+	if (!tokens || !*tokens)
 		return (0);
 	//print_tokens(*tokens);
 	return (1);

@@ -70,16 +70,18 @@ void	start_readline(t_mini *lash, int fd);
 void	env_to_list(t_envi **envi, char **env);
 
 //heredoc
+int		remove_delim_quotes(t_ast *branch);
+void	write_heredoc(char **line, int fd);
 void	heredoc_cleanup(t_ast *leaf, char *line, int fd, char *filename);
 void	signal_exit_heredoc(char *line, t_mini *lash, int fd);
 int		count_delim_len(char *filename);
-char	*heredoc_rm_quotes(t_ast *node);
-char	*create_unique_filename(void);
-char	*create_temp_file(t_ast *leaf);
+void	heredoc_rm_quotes(char *filename, char *new_filename);
+int		create_unique_filename(char **filename);
+int		create_temp_file(t_ast *leaf, char **filename, int error);
 char	*expand_heredoc(char *line, t_mini *lash);
 void	iterate_heredoc(t_ast *tree, t_mini *lash);
-void	iterate_branch_right(t_ast *branch, t_mini *lash);
-void	handle_heredoc(t_ast *leaf, int dont_expand, t_mini *lash);
+int		iterate_branch_right(t_ast *branch, t_mini *lash, int error);
+int		handle_heredoc(t_ast *leaf, int dont_expand, t_mini *lash, int error);
 
 // signals
 void	handle_sig_int_heredoc(int signum);
@@ -114,6 +116,8 @@ void	add_next_token(t_token **new_tokens, char *word, int *malloc_fail);
 void	replace_tokens(t_token **current, t_token *new_tokens);
 
 // expansions & quotes
+void	delete_empty_token(t_token **tokens, t_token **prev, t_token **current);
+int		prep_quote_removal(t_token **tokens, t_token *temp);
 char	*iterate_token_help(t_indexer *s, t_mini *lash, char *new_token, int *in_dquotes);
 char	*handle_quotes(char *new_token, t_indexer *s, char quote);
 char	*handle_exps(t_indexer *s, t_mini *lash, char *new_token);
@@ -124,7 +128,7 @@ char	*find_env_match(char *my_key, t_envi *env);
 char	*exps_find_key(char *token, t_envi *env);
 char	*iterate_token(t_indexer *s);
 int		iterate_quotes(char *str, char quote);
-void	remove_quotes(t_token **tokens, t_mini *lash);
+void	remove_quotes(t_token **tokens);
 
 // building ast
 t_envi	*create_node(t_envi *new_node, char *env, int j, int has_value);

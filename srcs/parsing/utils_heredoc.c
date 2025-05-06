@@ -37,33 +37,27 @@ int	count_delim_len(char *filename)
 	return (len);
 }
 
-char	*heredoc_rm_quotes(t_ast *node)
+void	heredoc_rm_quotes(char *filename, char *new_filename)
 {
-	char	*new_filename;
 	int		i;
 	int		j;
-	int		len;
 
-	len = count_delim_len(node->filename);
 	i = 0;
 	j = 0;
-	new_filename = malloc(len + 1);
-	while (node->filename[i])
+	while (filename[i])
 	{
-		if (node->filename[i] != '"' && node->filename[i] != '\'')
+		if (filename[i] != '"' && filename[i] != '\'')
 		{
-			new_filename[j] = node->filename[i];
+			new_filename[j] = filename[i];
 			j++;
 		}
 		i++;
 	}
 	new_filename[j] = '\0';
-	return (new_filename);
 }
 
-char	*create_unique_filename(void)
+int	create_unique_filename(char **filename)
 {
-	char	*filename;
 	char	*num;
 	int		i;
 
@@ -72,14 +66,14 @@ char	*create_unique_filename(void)
 	{
 		num = ft_itoa(i);
 		if (!num)
-			return (NULL);
-		filename = ft_strjoin("heredoc_temp_", num);
+			return (-2);
+		*filename = ft_strjoin("heredoc_temp_", num);
 		free(num);
-		if (!filename)
-			return (NULL);
-		if (access(filename, F_OK) != 0)
-			return (filename);
-		free(filename);
+		if (!*filename)
+			return (-2);
+		if (access(*filename, F_OK) != 0)
+			return (0);
+		free(*filename);
 		i++;
 	}
 }

@@ -31,6 +31,8 @@ char	*iterate_token(t_indexer *s)
 		}
 		s->i++;
 	}
+	if (!new_token)
+		return (NULL);
 	if (new_token[0] == '\0' && has_quotes == 1)
 		new_token = ft_strdup("");
 	else if (new_token[0] == '\0')
@@ -40,29 +42,59 @@ char	*iterate_token(t_indexer *s)
 	return (new_token);
 }
 
-void	remove_quotes(t_token **tokens, t_mini *lash)
+void	delete_empty_token(t_token **tokens, t_token **prev, t_token **current)
 {
-	t_token		*temp;
+	t_token	*tmp;
+
+	tmp = (*current)->next;
+	if (!*prev)
+		*tokens = tmp;
+	else
+		(*prev)->next = tmp;
+	free((*current)->token);
+	free(*current);
+	*current = tmp;
+}
+
+int	prep_quote_removal(t_token **tokens, t_token *temp)
+{
 	t_indexer	s;
 
+	ft_memset(&s, 0, sizeof(t_indexer));
+	s.str = temp->token;
+	temp->token = iterate_token(&s);
+	if (!temp->token)
+	{
+		malloc_fail_message(tokens);
+		return (-2);
+	}
+	return (0);
+}
+
+void	remove_quotes(t_token **tokens)
+{
+	t_token		*temp;
+	t_token		*prev;
+
 	temp = *tokens;
-	(void)lash;
+	prev = NULL;
 	while (temp)
 	{
-		ft_memset(&s, 0, sizeof(t_indexer));
 		if (temp->type == HEREDOC)
+		{
+			prev = temp->next;
 			temp = temp->next->next;
+			continue ;
+		}
+		//if (temp->token[0] == '\0')
+		if (ft_strcmp("\"\"", temp->token) == 0
+			|| ft_strcmp("''", temp->token) == 0 || temp->token[0] == '\0')
+			delete_empty_token(tokens, &prev, &temp);
 		else
 		{
-			s.str = temp->token;
-			temp->token = iterate_token(&s);
-			if (!temp->token)
-			{
-				free_tokens(tokens);
-				tokens = NULL;
-				ft_putstr_fd("Cannot allocate memory, please CTRL + D!\n", 2);
+			if (prep_quote_removal(tokens, temp) != 0)
 				return ;
-			}
+			prev = temp;
 			temp = temp->next;
 		}
 	}
