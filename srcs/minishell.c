@@ -71,7 +71,7 @@ int	begin_tokenizing(t_token **tokens, t_mini *lash, char *input)
 	remove_quotes(tokens, lash);
 	if (!*tokens)
 		return (0);
-	print_tokens(*tokens);
+//	print_tokens(*tokens);
 	return (1);
 }
 

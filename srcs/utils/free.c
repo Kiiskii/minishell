@@ -46,7 +46,7 @@ void    free_ast(t_ast *tree)
     free_ast(tree->right);
     if (tree->filename)
         free(tree->filename);
-    if (tree->args)
-        free_arr(tree->args);
+//    if (tree->args)
+//        free_arr(tree->args);
     free(tree);
 }

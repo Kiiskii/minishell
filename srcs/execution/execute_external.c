@@ -54,7 +54,7 @@ char	*get_path(char **args, t_mini *lash)
 	path_env = get_env_path(args, lash, lash->env);
 	if (path_env == NULL)
 	{
-		lash->exit_code = 12;
+		lash->exit_code = 127;
 		free(path_env);
 		return (NULL);
 	}
@@ -104,7 +104,7 @@ void	execute_external(char **args, t_mini *lash)
 	waitpid(pid, &lash->exit_code, 0);
 	// if (WIFEXITED(lash->exit_code))
 	// else if (WIFSIGNALED())
-	// TAI if (WIFEXITED(lash->exit_code))
-	//	lash->exit_code = WEXITSTATUS(lash->exit_code);
+	if (WIFEXITED(lash->exit_code))
+		lash->exit_code = WEXITSTATUS(lash->exit_code);
 	free(path);
 }

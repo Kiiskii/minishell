@@ -41,10 +41,10 @@ int	add_new(char *str, t_envi *env)
 		printf("Memory allocation failed, please exit lash\n");
 		return (12);
 	}
-	if (is_valid_input(str) == 12)
-		return (12);
-	else if (is_valid_input(str) == 0)
+	if (is_valid_input(str) == 0)
 		return (1);
+	else if (is_valid_input(str) == 12)
+		return (12);
 	while (str[equal] && str[equal] != '=')
 		equal++;
 	if (str[equal] == '=')
