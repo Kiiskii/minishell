@@ -77,6 +77,7 @@ void	execute_redirs(t_ast *node, t_mini *lash)
 	pid = fork();
 	if (pid == 0)
 	{
+		reset_default_signals();
 		if (node->type == REDIR_IN)
 			redirect_in(node, lash);
 		else if (node->type == REDIR_OUT)

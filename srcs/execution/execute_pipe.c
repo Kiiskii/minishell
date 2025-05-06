@@ -11,6 +11,7 @@ void	go_right(t_ast *node, t_mini *lash, int *fds, int *pid)
 	}
 	if (*pid == 0)
 	{
+		reset_default_signals();
 		close(fds[1]);
 		if (dup2(fds[0], STDIN_FILENO) == -1)
 		{
@@ -26,19 +27,18 @@ void	go_right(t_ast *node, t_mini *lash, int *fds, int *pid)
 	}
 }
 
-int	go_left(t_ast *node, t_mini *lash, int *fds)
+void	go_left(t_ast *node, t_mini *lash, int *fds, int *pid)
 {
-	int	pid;
-
-	pid = fork();
-	if (pid == -1)
+	*pid = fork();
+	if (*pid == -1)
 	{
 		perror("lash: fork\n");
 		lash->exit_code = errno;
-		return (errno);
+		return ;
 	}
-	if (pid == 0)
+	if (*pid == 0)
 	{
+		reset_default_signals();
 		close(fds[0]);
 		if (dup2(fds[1], STDOUT_FILENO) == -1)
 		{
@@ -52,7 +52,6 @@ int	go_left(t_ast *node, t_mini *lash, int *fds)
 		lash->exit_code = 0;
 		exit(lash->exit_code);
 	}
-	return (pid);
 }
 
 void	execute_pipe(t_ast *root, t_mini *lash)
@@ -67,7 +66,7 @@ void	execute_pipe(t_ast *root, t_mini *lash)
 		lash->exit_code = errno;
 		return ;
 	}
-	left_pid = go_left(root->left, lash, fds);
+	go_left(root->left, lash, fds, &left_pid);
 	close(fds[1]);
 	go_right(root->right, lash, fds, &right_pid);
 	close(fds[0]);

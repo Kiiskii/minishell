@@ -2,7 +2,8 @@
 
 void	iterate_word(t_indexer *s)
 {
-	while (s->str[s->i] && !ft_isblank(s->str[s->i]) && !is_specialchar(s->str[s->i]))
+	while (s->str[s->i] && !ft_isblank(s->str[s->i])
+		&& !is_specialchar(s->str[s->i]))
 	{
 		if (s->str[s->i] == '"')
 		{

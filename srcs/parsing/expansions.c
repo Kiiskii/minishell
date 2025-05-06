@@ -26,7 +26,8 @@ char	*handle_exps(t_indexer *s, t_mini *lash, char *new_token)
 		word = ft_itoa(lash->exit_code);
 		s->i++;
 	}
-	else if (s->str[s->i + 1] == '$' || !s->str[s->i + 1])
+	else if (s->str[s->i + 1] == '$' || s->str[s->i + 1] == '"'
+		|| ft_isblank(s->str[s->i + 1]) || !s->str[s->i + 1])
 		return (handle_multiple_dollar(s, new_token));
 	else
 		word = exps_find_key(&s->str[s->i + 1], lash->env);
@@ -38,14 +39,15 @@ char	*handle_exps(t_indexer *s, t_mini *lash, char *new_token)
 	return (new_token);
 }
 
-char	*iterate_token_help(t_indexer *s, t_mini *lash, char *new_token, int *in_dquotes)
+char	*iterate_token_help(t_indexer *s, t_mini *lash,
+			char *new_token, int *dquotes)
 {
 	if (s->str[s->i] == '"')
 	{
-		*in_dquotes *= -1;
+		*dquotes = *dquotes * -1;
 		s->i++;
 	}
-	if (s->str[s->i] == '\'' && *in_dquotes == -1)
+	if (s->str[s->i] == '\'' && *dquotes == -1)
 	{
 		s->i += iterate_quotes(&s->str[s->i + 1], s->str[s->i]) + 1;
 		new_token = ft_strjoin(new_token, ft_substr(s->str, s->j, s->i - s->j));

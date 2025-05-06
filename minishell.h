@@ -31,6 +31,7 @@ typedef struct s_ast
 	t_token_type	type;
 	char			*filename;
 	char			**args;
+	int				fd;
 }		t_ast;
 
 typedef struct s_envi
@@ -63,10 +64,28 @@ typedef struct s_mini
 	int		exit_code;
 }		t_mini;
 
-void	start_readline(t_mini *lash);
+extern sig_atomic_t	g_signum;
+
+void	start_readline(t_mini *lash, int fd);
 void	env_to_list(t_envi **envi, char **env);
 
+//heredoc
+void	heredoc_cleanup(t_ast *leaf, char *line, int fd, char *filename);
+void	signal_exit_heredoc(char *line, t_mini *lash, int fd);
+int		count_delim_len(char *filename);
+char	*heredoc_rm_quotes(t_ast *node);
+char	*create_unique_filename(void);
+char	*create_temp_file(t_ast *leaf);
+char	*expand_heredoc(char *line, t_mini *lash);
+void	iterate_heredoc(t_ast *tree, t_mini *lash);
+void	iterate_branch_right(t_ast *branch, t_mini *lash);
+void	handle_heredoc(t_ast *leaf, int dont_expand, t_mini *lash);
+
 // signals
+void	handle_sig_int_heredoc(int signum);
+void	init_signals_heredoc(void);
+void	reset_default_signals(void);
+void	handle_sig_int(int signum);
 void	init_signals(void);
 
 // parsing errors
@@ -128,6 +147,7 @@ t_ast	*add_node_right(t_ast *node, t_ast *new_node);
 t_ast	*add_node_left(t_ast *node, t_ast *new_node);
 
 // free functions
+void	malloc_fail_message_tree(t_ast *tree);
 void	malloc_fail_message(t_token **tokens);
 void	free_tokens(t_token **list);
 void	free_ast(t_ast *tree);
@@ -159,11 +179,12 @@ void	error_cmd_not_found(char *cmd, t_mini *lash);
 
 //pipes
 void	execute_pipe(t_ast *root, t_mini *lash);
-int		go_left(t_ast *node, t_mini *lash, int *fds);
+void	go_left(t_ast *node, t_mini *lash, int *fds, int *pid);
 void	go_right(t_ast *node, t_mini *lash, int *fds, int *pid);
 //void	prepare_pipe(int *fds, t_mini *lash);
 
 //externals
+void	handle_exit_status(char *path, t_mini *lash);
 void	execute_external(char **args, t_mini *lash);
 char	**get_env_path(char **args, t_mini *lash, t_envi *env);
 //char	**get_bin(char **args, t_mini *lash, t_envi *env);

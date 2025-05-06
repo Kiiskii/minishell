@@ -12,6 +12,7 @@ t_ast	*create_args(char **args, t_ast *branch)
 	new_node->args = args;
 	new_node->left = NULL;
 	new_node->right = NULL;
+	new_node->fd = -1;
 	branch = add_node_right(branch, new_node);
 	return (branch);
 }
@@ -30,13 +31,14 @@ t_ast	*create_redir(t_token_type redir, char *filename, t_ast *branch)
 	new_node->args = NULL;
 	new_node->left = NULL;
 	new_node->right = NULL;
+	new_node->fd = -1;
 	branch = add_node_right(branch, new_node);
 	return (branch);
 }
 
 t_ast	*build_right(t_token *list)
 {
-	t_token *tmp;
+	t_token	*tmp;
 	t_ast	*branch;
 	char	**cmd_args;
 
@@ -81,7 +83,11 @@ t_ast	*create_tree(t_ast *tree, t_token *list, t_token_type type)
 			return (NULL);
 	}
 	else
+	{
 		new_node = build_right(list);
+		if (!new_node)
+			return (NULL);
+	}
 	tree = add_node_left(tree, new_node);
 	return (tree);
 }
