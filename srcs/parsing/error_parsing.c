@@ -5,12 +5,12 @@ int	error_quotes(char *input)
 	int	i;
 
 	i = 0;
-	while(input[i])
+	while (input[i])
 	{
 		if (input[i] == '"')
 		{
 			i++;
-			while(input[i] && input[i] != '"')
+			while (input[i] && input[i] != '"')
 				i++;
 			if (input[i] == '\0')
 				return (0);
@@ -18,7 +18,7 @@ int	error_quotes(char *input)
 		if (input[i] == '\'')
 		{
 			i++;
-			while(input[i] && input[i] != '\'')
+			while (input[i] && input[i] != '\'')
 				i++;
 			if (input[i] == '\0')
 				return (0);
@@ -32,7 +32,7 @@ int	error_pipe_end(char *input)
 {
 	int	last;
 
-	last =  ft_strlen(input) - 1;
+	last = ft_strlen(input) - 1;
 	if (input[last] == '|')
 		return (0);
 	return (1);
@@ -101,7 +101,7 @@ int	error_token(t_token *tokens, t_mini *lash)
 int	error_iterate_list(t_token *tokens, t_mini *lash)
 {
 	int		error;
-	t_token *tmp;
+	t_token	*tmp;
 
 	tmp = tokens;
 	error = 1;

@@ -67,6 +67,7 @@ void	exec_ext_child(t_mini *lash, char *path, char **args)
 {
 	char	**env_array;
 
+	reset_default_signals();
 	env_array = env_to_arr(lash->env);
 	if (!env_array)
 		ft_putstr_fd("Cannot allocate memory, please exit lash\n", 2);
@@ -101,10 +102,8 @@ void	execute_external(char **args, t_mini *lash)
 	}
 	if (pid == 0)
 		exec_ext_child(lash, path, args);
+	signal(SIGINT, SIG_IGN);
 	waitpid(pid, &lash->exit_code, 0);
-	// if (WIFEXITED(lash->exit_code))
-	// else if (WIFSIGNALED())
-	// TAI if (WIFEXITED(lash->exit_code))
-	//	lash->exit_code = WEXITSTATUS(lash->exit_code);
-	free(path);
+	handle_sig_int(0);
+	handle_exit_status(path, lash);
 }

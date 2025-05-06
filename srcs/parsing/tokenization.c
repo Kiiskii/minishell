@@ -31,18 +31,18 @@ int	handle_redirs(t_token **list, char *str)
 {
 	if (str[0] == '<' && str[1] == '<')
 	{
-		add_token(list, "<<", HEREDOC);
+		add_token(list, ft_strdup("<<"), HEREDOC);
 		return (2);
 	}
 	else if (str[0] == '>' && str[1] == '>')
 	{
-		add_token(list, ">>", REDIR_APP);
+		add_token(list, ft_strdup(">>"), REDIR_APP);
 		return (2);
 	}
 	else if (str[0] == '<')
-		add_token(list, "<", REDIR_IN);
+		add_token(list, ft_strdup("<"), REDIR_IN);
 	else
-		add_token(list, ">", REDIR_OUT);
+		add_token(list, ft_strdup(">"), REDIR_OUT);
 	if (!*list)
 		return (-1);
 	return (1);

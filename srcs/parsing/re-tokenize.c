@@ -94,7 +94,7 @@ void	re_tokenize(t_token **tokens)
 				ft_putstr_fd("Cannot allocate memory, please exit lash!\n", 2);
 				return ;
 			}
-		temp = temp->next;
+			temp = temp->next;
 		}
 	}
 }
