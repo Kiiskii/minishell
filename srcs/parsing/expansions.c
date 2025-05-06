@@ -34,7 +34,8 @@ char	*handle_exps(t_indexer *s, t_mini *lash, char *new_token)
 	if (word)
 		new_token = ft_strjoin(new_token, word);
 	free(word);
-	s->i += iterate_key(&s->str[s->i + 1]);
+	if (s->str[s->i] != '?')
+		s->i += iterate_key(&s->str[s->i + 1]);
 	s->j = s->i + 1;
 	return (new_token);
 }
