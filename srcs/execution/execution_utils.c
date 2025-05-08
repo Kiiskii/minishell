@@ -4,7 +4,6 @@ int	check_access(char *path, t_mini *lash)
 {
 	if (access(path, F_OK) == 0)
 	{
-		//printf("PATH in CHECK ACCESS: %s\n", path); //TODO remove
 		if (access(path, X_OK) == 0)
 			return (0);
 		ft_putstr_fd("lash :", 2);
@@ -25,18 +24,8 @@ void	*fail_to_malloc(t_mini *lash)
 
 void	cmd_error(char *cmd, t_mini *lash)
 {
-	//struct stat	stbuf;
-
 	ft_putstr_fd("lash: ", 2);
 	ft_putstr_fd(cmd, 2);
-	// if (stat(cmd, &stbuf) == -1)
-	// {
-	// 	if (ft_strchr(cmd, '/') != NULL)
-	// 		ft_putstr_fd(": No such file or directory\n", 2);
-	// 	else
-	// 		ft_putstr_fd(": command not found\n", 2);
-	// 	lash->exit_code = 127;
-	// }
 	if (ft_strchr(cmd, '/') != NULL)
 			ft_putstr_fd(": No such file or directory\n", 2);
 	else
