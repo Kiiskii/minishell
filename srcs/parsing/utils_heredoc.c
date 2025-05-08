@@ -15,7 +15,6 @@ void	signal_exit_heredoc(char *line, t_mini *lash, int fd, t_ast *leaf)
 void	heredoc_cleanup(t_ast *leaf, int fd, char *filename)
 {
 	close(leaf->fd);
-	leaf->fd = -1;
 	free(leaf->filename);
 	leaf->filename = NULL;
 	leaf->filename = filename;

@@ -7,7 +7,7 @@ SRCS =	srcs/minishell.c srcs/utils/utils.c srcs/parsing/tokenization.c srcs/pars
 		srcs/utils/free.c srcs/utils/add_node.c srcs/parsing/remove_quotes.c srcs/parsing/expansions.c \
 		srcs/parsing/re-tokenize.c srcs/parsing/error_parsing.c srcs/parsing/env_expansions.c \
 		srcs/signals/init_signals.c srcs/parsing/heredoc.c srcs/parsing/utils_heredoc.c \
-		srcs/parsing/more_utils_heredoc.c srcs/utils/utils2.c \
+		srcs/parsing/more_utils_heredoc.c srcs/utils/utils2.c srcs/parsing/error2_parsing.c  \
 		srcs/builtins/cd.c srcs/builtins/echo.c srcs/builtins/env.c \
 		srcs/builtins/exit.c srcs/builtins/export.c srcs/builtins/pwd.c \
 		srcs/builtins/unset.c srcs/builtins/builtin_utils.c \

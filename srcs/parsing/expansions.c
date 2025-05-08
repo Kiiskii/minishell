@@ -100,14 +100,14 @@ void	expand_tokens(t_token **tokens, t_mini *lash)
 			temp = temp->next->next;
 		else
 		{
-			s.str = ft_strdup(temp->token);
+			s.str = temp->token;
 			temp->token = iterate_token_exp(&s, lash);
+			free(s.str);
 			if (!temp || !temp->token)
 			{
 				malloc_fail_message(tokens);
 				return ;
 			}
-			free(s.str);
 			temp = temp->next;
 		}
 	}

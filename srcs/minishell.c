@@ -88,6 +88,7 @@ int	begin_ast_heredoc(t_token **tokens, t_mini *lash)
 		return (0);
 	}
 	//print_ast(tree);
+	free_tokens(tokens);
 	error = iterate_heredoc(tree, lash, 0);
 	if (error == -2)
 	{
@@ -98,7 +99,6 @@ int	begin_ast_heredoc(t_token **tokens, t_mini *lash)
 		return (0);
 	if (g_signum != SIGINT)
 		begin_execution(tree, lash);
-	free_tokens(tokens);
 	free_ast(tree);
 	return (1);
 }

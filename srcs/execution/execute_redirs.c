@@ -58,7 +58,7 @@ void	redirect_in(t_ast *node, t_mini *lash)
 		ft_putstr_fd("lash: ", 2);
 		perror(node->filename);
 		lash->exit_code = 1;
-		exit(lash->exit_code);
+		exit_process(node, lash);
 	}
 	if (dup2(fd, STDIN_FILENO) == -1)
 	{
@@ -101,7 +101,7 @@ void	execute_redirs(t_ast *node, t_mini *lash)
 			begin_execution(node->left, lash);
 		if (lash->exit_code == 0 && node->right)
 			begin_execution(node->right, lash);
-		exit(lash->exit_code);
+		exit_process(node, lash);
 	}
 	wait_child(pid, lash);
 }

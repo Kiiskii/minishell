@@ -39,10 +39,7 @@ int	iterate_quotes(char *str, char quote)
 void	handle_exit_status(char *path, t_mini *lash)
 {
 	if (WIFEXITED(lash->exit_code))
-	{
 		lash->exit_code = WEXITSTATUS(lash->exit_code);
-		return ;
-	}
 	else if (WIFSIGNALED(lash->exit_code))
 	{
 		write(STDOUT_FILENO, "\n", 1);

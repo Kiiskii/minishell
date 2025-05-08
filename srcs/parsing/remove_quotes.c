@@ -36,7 +36,7 @@ char	*iterate_token(t_indexer *s, int has_quotes)
 	else if (new_token[0] == '\0')
 	{
 		free(new_token);
-		new_token = s->str;
+		new_token = ft_strdup(s->str);
 	}
 	else if (s->i > s->j)
 		new_token = wrap_join(new_token, ft_substr(s->str, s->j, s->i - s->j));
@@ -64,6 +64,7 @@ int	prep_quote_removal(t_token **tokens, t_token *temp)
 	ft_memset(&s, 0, sizeof(t_indexer));
 	s.str = temp->token;
 	temp->token = iterate_token(&s, 0);
+	free(s.str);
 	if (!temp->token)
 	{
 		malloc_fail_message(tokens);

@@ -10,6 +10,7 @@ int	check_access(char *path, t_mini *lash)
 		ft_putstr_fd(path, 2);
 		ft_putstr_fd(": Permission denied\n", 2);
 		lash->exit_code = 126;
+		free(path);
 		return (1);
 	}
 	return (2);
