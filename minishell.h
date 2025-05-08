@@ -13,6 +13,7 @@
 # include <errno.h>
 # include <limits.h>
 # include <signal.h>
+# include <sys/stat.h> //stat
 
 typedef enum e_token_type
 {
@@ -161,7 +162,7 @@ int		builtin_echo(char **array);
 int		builtin_env(char **array, t_envi *env);
 int		builtin_exit(t_ast *ast, char **array, t_mini *lash);
 void	builtin_export(char **array, t_envi *env, t_mini *lash);
-int		builtin_pwd(char **array);
+int		builtin_pwd(char **array, t_envi *env);
 int		builtin_unset(char **array, t_envi *env);
 
 //env functions

@@ -12,6 +12,7 @@ int	is_valid_input(char *str)
 	if (key[i] == '\0')
 	{
 		not_valid_msg(str);
+		free(key);
 		return (0);
 	}
 	while (key[i])
@@ -19,6 +20,7 @@ int	is_valid_input(char *str)
 		if (ft_isalnum(key[i]) == 0 && key[i] != '_')
 		{
 			not_valid_msg(str);
+			free(key);
 			return (0);
 		}
 		i++;
@@ -27,24 +29,37 @@ int	is_valid_input(char *str)
 	return (1);
 }
 
+int	only_numbers(char *str)
+{
+	int	i;
+
+	i = 0;
+	while (str[i] && str[i] != '=')
+	{
+		if (str[i] < '0' || str[i] > '9')
+			return (0);
+		i++;
+	}
+	not_valid_msg(str);
+	return (1);
+}
+
 int	add_new(char *str, t_envi *env)
 {
 	t_envi	*new_node;
 	int		equal;
-	int		exit_code;
 
 	equal = 0;
-	exit_code = 0;
 	new_node = malloc(sizeof(t_envi));
 	if (!new_node)
 	{
 		printf("Memory allocation failed, please exit lash\n");
 		return (12);
 	}
-	if (is_valid_input(str) == 0)
+	if (is_valid_input(str) == 0 || is_valid_input(str) == 12)
 		return (1);
-	else if (is_valid_input(str) == 12)
-		return (12);
+	if (only_numbers(str) == 1)
+		return (1);
 	while (str[equal] && str[equal] != '=')
 		equal++;
 	if (str[equal] == '=')

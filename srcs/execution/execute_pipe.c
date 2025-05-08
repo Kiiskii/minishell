@@ -22,7 +22,6 @@ void	go_right(t_ast *node, t_mini *lash, int *fds, int *pid)
 		}
 		close(fds[0]);
 		begin_execution(node, lash);
-		lash->exit_code = 0;
 		exit(lash->exit_code);
 	}
 }
@@ -49,7 +48,6 @@ void	go_left(t_ast *node, t_mini *lash, int *fds, int *pid)
 		}
 		close(fds[1]);
 		begin_execution(node, lash);
-		lash->exit_code = 0;
 		exit(lash->exit_code);
 	}
 }
@@ -72,4 +70,6 @@ void	execute_pipe(t_ast *root, t_mini *lash)
 	close(fds[0]);
 	waitpid(left_pid, NULL, 0);
 	waitpid(right_pid, &lash->exit_code, 0);
+	if (WIFEXITED(lash->exit_code))
+		lash->exit_code = WEXITSTATUS(lash->exit_code);
 }
