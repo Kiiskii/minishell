@@ -1,16 +1,17 @@
 #include "../minishell.h"
 
-//Halutaanko lisata exit code malloc failiin?
-
-void	replace_value(t_envi *node, char *replacement)
+int	replace_value(t_envi *node, char *replacement)
 {
 	free(node->value);
+	if (!replacement)
+		replacement = "";
 	node->value = ft_strdup(replacement);
 	if (node->value == NULL)
 	{
 		ft_putstr_fd("Memory allocation failed, please exit lash\n", 2);
-		return ;
+		return (1);
 	}
+	return (0);
 }
 
 void	update_env(char *new, char *old, t_envi *env)
@@ -23,7 +24,8 @@ void	update_env(char *new, char *old, t_envi *env)
 	while (pwd != NULL)
 	{
 		if (ft_strcmp(pwd->key, "PWD") == 0)
-			replace_value(pwd, new);
+			if (replace_value(pwd, new) == 1)
+				return ;
 		pwd = pwd->next;
 	}
 	while (old_pwd != NULL)
@@ -41,10 +43,7 @@ int	change_dir(char *path, t_envi *env)
 
 	old = getcwd(NULL, 0);
 	if (!old)
-	{
-		perror("lash: getcwd\n");
-		return (errno);
-	}
+		perror("lash: cd: getcwd: OLDPWD");
 	if (chdir(path) != 0)
 	{
 		ft_putstr_fd("lash: cd: ", 2);
@@ -54,10 +53,7 @@ int	change_dir(char *path, t_envi *env)
 	}
 	current = getcwd(NULL, 0);
 	if (!current)
-	{
-		perror("lash: getcwd\n");
-		return (errno);
-	}
+		perror("lash: cd: getcwd: PWD");
 	update_env(current, old, env);
 	return (0);
 }
@@ -69,10 +65,7 @@ int	go_home(t_envi *env)
 
 	current = getcwd(NULL, 0);
 	if (!current)
-	{
-		perror("lash: getcwd\n");
-		return (errno);
-	}
+		perror("lash: getcwd: OLDPWD");
 	seeker = env;
 	while (seeker != NULL)
 	{

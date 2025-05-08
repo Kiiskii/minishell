@@ -1,6 +1,6 @@
 #include "../minishell.h"
 
-void	add_to_copy(t_envi **copy, t_envi *new_node)
+static void	add_to_copy(t_envi **copy, t_envi *new_node)
 {
 	int		comp;
 	t_envi	*trav;
@@ -27,7 +27,7 @@ void	add_to_copy(t_envi **copy, t_envi *new_node)
 	}
 }
 
-t_envi	*sort_env(t_envi *env, t_envi *copy)
+static t_envi	*sort_env(t_envi *env, t_envi *copy)
 {
 	t_envi	*trav;
 	t_envi	*new_node;
@@ -65,7 +65,7 @@ int	print_alphabetised(t_envi *env)
 	if (!alphalist)
 	{
 		ft_putstr_fd("Memory allocation failed, please exit lash\n", 2);
-		return (12);
+		return (1);
 	}
 	while (alphalist != NULL)
 	{
