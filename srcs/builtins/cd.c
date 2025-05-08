@@ -1,6 +1,6 @@
 #include "../minishell.h"
 
-void	replace_value(t_envi *node, char *replacement)
+int	replace_value(t_envi *node, char *replacement)
 {
 	free(node->value);
 	if (!replacement)
@@ -9,8 +9,9 @@ void	replace_value(t_envi *node, char *replacement)
 	if (node->value == NULL)
 	{
 		ft_putstr_fd("Memory allocation failed, please exit lash\n", 2);
-		return ;
+		return (1);
 	}
+	return (0);
 }
 
 void	update_env(char *new, char *old, t_envi *env)
@@ -23,7 +24,8 @@ void	update_env(char *new, char *old, t_envi *env)
 	while (pwd != NULL)
 	{
 		if (ft_strcmp(pwd->key, "PWD") == 0)
-			replace_value(pwd, new);
+			if (replace_value(pwd, new) == 1)
+				return ;
 		pwd = pwd->next;
 	}
 	while (old_pwd != NULL)

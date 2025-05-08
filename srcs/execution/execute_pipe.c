@@ -16,7 +16,7 @@ void	go_right(t_ast *node, t_mini *lash, int *fds, int *pid)
 		if (dup2(fds[0], STDIN_FILENO) == -1)
 		{
 			close(fds[0]);
-			perror("lash: dup2\n");
+			perror("lash: dup2");
 			lash->exit_code = errno;
 			exit(errno);
 		}
@@ -31,7 +31,7 @@ void	go_left(t_ast *node, t_mini *lash, int *fds, int *pid)
 	*pid = fork();
 	if (*pid == -1)
 	{
-		perror("lash: fork\n");
+		perror("lash: fork");
 		lash->exit_code = errno;
 		return ;
 	}
@@ -42,7 +42,7 @@ void	go_left(t_ast *node, t_mini *lash, int *fds, int *pid)
 		if (dup2(fds[1], STDOUT_FILENO) == -1)
 		{
 			close(fds[1]);
-			perror("lash: dup2\n");
+			perror("lash: dup2");
 			lash->exit_code = errno;
 			exit(errno);
 		}
@@ -60,7 +60,7 @@ void	execute_pipe(t_ast *root, t_mini *lash)
 
 	if (pipe(fds) == -1)
 	{
-		perror("lash: pipe\n");
+		perror("lash: pipe");
 		lash->exit_code = errno;
 		return ;
 	}

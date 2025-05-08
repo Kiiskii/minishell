@@ -1,119 +1,80 @@
 #include "../minishell.h"
 
-void	update_values(char *new, int count, t_envi *env, char *key)
+static int	check_key_valid(char *key, int i, char *str)
 {
-	t_envi	*trav;
-	char	*seeker;
-
-	trav = env;
-	seeker = ft_substr(key, 0, count);
-	if (seeker == NULL)
+	while (key[i])
 	{
-		ft_putstr_fd("Memory allocation failed, please exit lash\n", 2);
-		return ;
-	}
-	while (trav != NULL)
-	{
-		if (ft_strcmp(trav->key, seeker) == 0)
+		if (ft_isalnum(key[i]) == 0 && key[i] != '_')
 		{
-			trav->value = ft_strjoin(trav->value, new);
-			if (trav-> value == NULL)
-			{
-				free(seeker);
-				ft_putstr_fd("Memory allocation failed, please exit lash\n", 2);
-				return ;
-			}
+			not_valid_msg(str);
+			free(key);
+			return (0);
 		}
-		trav = trav->next;
+		i++;
 	}
-	free (seeker);
+	return (1);
 }
 
-void	append_env(char *str, int count, t_envi *env)
+static int	is_valid_input(char *str)
 {
+	int		i;
 	char	*key;
 
+	i = 0;
 	key = find_key(str);
-	if (!key)
-		return ;
-	while (*str)
-	{
-		if (*str == '=')
-		{
-			str++;
-			break ;
-		}
-		str++;
-	}
-	if (!str)
-		str = "";
-	update_values(str, count, env, key);
-}
-
-void	replace_env(char *str, t_envi *trav, int count)
-{
-	char	*seeker;
-
-	seeker = ft_substr(str, 0, count);
-	if (seeker == NULL)
+	if (key == NULL)
 	{
 		ft_putstr_fd("Memory allocation failed, please exit lash\n", 2);
-		return ;
-	}
-	while (trav != NULL)
-	{
-		if (ft_strcmp(trav->key, seeker) == 0)
-		{
-			free(trav->value);
-			trav->value = ft_strdup(&str[count + 1]);
-			if (trav-> value == NULL)
-			{
-				free(seeker);
-				ft_putstr_fd("Memory allocation failed, please exit lash\n", 2);
-				return ;
-			}
-		}
-		trav = trav->next;
-	}
-	free(seeker);
-}
-
-void	modify_existing(char *str, t_envi *env)
-{
-	int		count;
-	t_envi	*trav;
-
-	trav = env;
-	count = 0;
-	while (str[count] && str[count] != '=')
-		count++;
-	if (str[count] == '=' && str[count - 1] == '+')
-	{
-		count--;
-		append_env(str, count, env);
-		return ;
-	}
-	replace_env(str, trav, count);
-}
-
-int	add_to_env(char *str, t_envi *env)
-{
-	int	exit_code;
-	int	check;
-
-	exit_code = 0;
-	check = 0;
-	if (str[0] == '_' && str[1] == '\0')
 		return (0);
-	check = check_existing(str, env);
-	if (check == 12)
-	{
-		ft_putstr_fd("Memory allocation failed, please exit lash\n", 2);
-		return (check);
 	}
-	else if (check == 1)
-		modify_existing(str, env);
+	if (key[0] == '\0')
+	{
+		not_valid_msg(str);
+		free(key);
+		return (0);
+	}
+	if (check_key_valid(key, i, str) == 0)
+		return (0);
+	free(key);
+	return (1);
+}
+
+static int	only_numbers(char *str)
+{
+	int	i;
+
+	i = 0;
+	while (str[i] && str[i] != '=')
+	{
+		if (str[i] < '0' || str[i] > '9')
+			return (0);
+		i++;
+	}
+	not_valid_msg(str);
+	return (1);
+}
+
+int	add_new_env(char *str, t_envi *env)
+{
+	t_envi	*new_node;
+	int		equal;
+
+	equal = 0;
+	new_node = malloc(sizeof(t_envi));
+	if (!new_node)
+		return (12);
+	if (is_valid_input(str) == 0)
+		return (1);
+	if (only_numbers(str) == 1)
+		return (1);
+	while (str[equal] && str[equal] != '=')
+		equal++;
+	if (str[equal] == '=')
+		new_node = create_node(new_node, str, equal, 1);
 	else
-		exit_code = add_new(str, env);
-	return (exit_code);
+		new_node = create_node(new_node, str, equal, 0);
+	if (new_node == NULL)
+		return (12);
+	add_back(env, new_node);
+	return (0);
 }

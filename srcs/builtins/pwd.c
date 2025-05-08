@@ -1,21 +1,38 @@
 #include "../minishell.h"
 
-char	*check_pwd(t_envi *env)
+int	check_pwd(t_envi *env, char **pwd_path)
 {
-	char	*path;
-
 	while (env != NULL)
 	{
 		if (ft_strcmp(env->key, "PWD") == 0)
 		{
-			path = ft_strdup(env->value);
-			if (!path)
-				return (NULL);
-			return (path);
+			if (env->value)
+			{
+				*pwd_path = ft_strdup(env->value);
+				if (!(*pwd_path))
+				{
+					ft_putstr_fd("Memory allocation failed,", 2);
+					ft_putstr_fd(" please exit lash\n", 2);
+					return (12);
+				}
+				return (0);
+			}
 		}
 		env = env->next;
 	}
-	return (NULL);
+	return (1);
+}
+
+int	print_from_env(char *pwd_path)
+{
+	if (pwd_path)
+	{
+		if (pwd_path)
+			printf("%s\n", pwd_path);
+		free(pwd_path);
+		return (0);
+	}
+	return (1);
 }
 
 int	builtin_pwd(char **array, t_envi *env)
@@ -23,30 +40,27 @@ int	builtin_pwd(char **array, t_envi *env)
 	char	*pathname;
 	char	*pwd_path;
 
+	pwd_path = NULL;
 	if (array[1] && array[1][0] == '-')
 	{
 		printf("lash: pwd: options for pwd are not supported\n");
 		return (2);
 	}
-	pwd_path = check_pwd(env);
+	if (check_pwd(env, &pwd_path) != 0)
+		return (1);
 	pathname = getcwd(NULL, 0);
 	if (!pathname)
 	{
-		if (pwd_path)
-		{
-			if (pwd_path)
-				printf("%s\n", pwd_path);
-			free(pwd_path);
+		if (print_from_env(pwd_path) == 0)
 			return (0);
-		}
 		perror("lash: pwd: getcwd");
 	}
 	if (pathname)
 		printf("%s\n", pathname);
 	free(pathname);
+	free(pwd_path);
 	return (0);
 }
-
 
 /*int	builtin_pwd(char **array)
 {
