@@ -66,29 +66,41 @@ static char	**get_env_path(char **args, t_mini *lash, t_envi *env)
 	return (paths);
 }
 
-char	*get_exec_path(char **args, t_mini *lash)
+int	path_not_created(char **path_env, t_mini *lash)
 {
-	char	*res;
-	char	**path_env;
-
-	if (check_access(args[0], lash) == 1)
-		return (NULL);
-	else if (check_access(args[0], lash) == 0)
-	{
-		if (is_directory(args[0]) == 1)
-		{
-			lash->exit_code = 126;
-			return (NULL);
-		}
-		return (args[0]);
-	}
-	path_env = get_env_path(args, lash, lash->env);
 	if (path_env == NULL)
 	{
 		lash->exit_code = 127;
 		free(path_env);
+		return (1);
+	}
+	return (0);
+}
+
+char	*get_exec_path(char **args, t_mini *lash)
+{
+	char	*res;
+	char	**path_env;
+	int		access;
+
+	if (ft_strchr(args[0], '/'))
+	{
+		if (is_directory(args[0]))
+		{
+			lash->exit_code = 126;
+			return (NULL);
+		}
+		access = check_access(args[0], lash);
+		if (access == 0)
+			return (args[0]);
+		else if (access == 1)
+			return (NULL);
+		cmd_error(args[0], lash);
 		return (NULL);
 	}
+	path_env = get_env_path(args, lash, lash->env);
+	if (path_not_created(path_env, lash))
+		return (NULL);
 	res = create_path(path_env, args[0], lash);
 	free_arr(path_env);
 	return (res);

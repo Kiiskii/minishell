@@ -25,16 +25,11 @@ void	*fail_to_malloc(t_mini *lash)
 
 void	cmd_error(char *cmd, t_mini *lash)
 {
-	struct stat	stbuf;
-
 	ft_putstr_fd("lash: ", 2);
 	ft_putstr_fd(cmd, 2);
-	if (stat(cmd, &stbuf) == -1)
-	{
-		if (ft_strchr(cmd, '/') != NULL)
+	if (ft_strchr(cmd, '/') != NULL)
 			ft_putstr_fd(": No such file or directory\n", 2);
-		else
-			ft_putstr_fd(": command not found\n", 2);
-		lash->exit_code = 127;
-	}
+	else
+		ft_putstr_fd(": command not found\n", 2);
+	lash->exit_code = 127;
 }
