@@ -70,11 +70,24 @@ void	redirect_in(t_ast *node, t_mini *lash)
 	close(fd);
 }
 
+void	wait_child(pid_t pid, t_mini *lash)
+{
+	waitpid(pid, &lash->exit_code, 0);
+	if (WIFEXITED(lash->exit_code))
+		lash->exit_code = WEXITSTATUS(lash->exit_code);
+}
+
 void	execute_redirs(t_ast *node, t_mini *lash)
 {
 	pid_t	pid;
 
 	pid = fork();
+	if (pid == -1)
+	{
+		perror("lash: fork");
+		lash->exit_code = errno;
+		return ;
+	}
 	if (pid == 0)
 	{
 		reset_default_signals();
@@ -84,13 +97,11 @@ void	execute_redirs(t_ast *node, t_mini *lash)
 			redirect_out(node, lash);
 		else if (node->type == REDIR_APP)
 			redirect_append(node, lash);
-		if (lash->exit_code == 0)
+		if (lash->exit_code == 0 && node->left)
 			begin_execution(node->left, lash);
-		if (lash->exit_code == 0)
+		if (lash->exit_code == 0 && node->right)
 			begin_execution(node->right, lash);
 		exit(lash->exit_code);
 	}
-	waitpid(pid, &lash->exit_code, 0);
-	if (WIFEXITED(lash->exit_code))
-		lash->exit_code = WEXITSTATUS(lash->exit_code);
+	wait_child(pid, lash);
 }

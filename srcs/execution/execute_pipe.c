@@ -16,13 +16,12 @@ void	go_right(t_ast *node, t_mini *lash, int *fds, int *pid)
 		if (dup2(fds[0], STDIN_FILENO) == -1)
 		{
 			close(fds[0]);
-			perror("lash: dup2\n");
+			perror("lash: dup2");
 			lash->exit_code = errno;
 			exit(errno);
 		}
 		close(fds[0]);
 		begin_execution(node, lash);
-		lash->exit_code = 0;
 		exit(lash->exit_code);
 	}
 }
@@ -32,7 +31,7 @@ void	go_left(t_ast *node, t_mini *lash, int *fds, int *pid)
 	*pid = fork();
 	if (*pid == -1)
 	{
-		perror("lash: fork\n");
+		perror("lash: fork");
 		lash->exit_code = errno;
 		return ;
 	}
@@ -43,13 +42,12 @@ void	go_left(t_ast *node, t_mini *lash, int *fds, int *pid)
 		if (dup2(fds[1], STDOUT_FILENO) == -1)
 		{
 			close(fds[1]);
-			perror("lash: dup2\n");
+			perror("lash: dup2");
 			lash->exit_code = errno;
 			exit(errno);
 		}
 		close(fds[1]);
 		begin_execution(node, lash);
-		lash->exit_code = 0;
 		exit(lash->exit_code);
 	}
 }
@@ -62,7 +60,7 @@ void	execute_pipe(t_ast *root, t_mini *lash)
 
 	if (pipe(fds) == -1)
 	{
-		perror("lash: pipe\n");
+		perror("lash: pipe");
 		lash->exit_code = errno;
 		return ;
 	}
@@ -72,4 +70,6 @@ void	execute_pipe(t_ast *root, t_mini *lash)
 	close(fds[0]);
 	waitpid(left_pid, NULL, 0);
 	waitpid(right_pid, &lash->exit_code, 0);
+	if (WIFEXITED(lash->exit_code))
+		lash->exit_code = WEXITSTATUS(lash->exit_code);
 }

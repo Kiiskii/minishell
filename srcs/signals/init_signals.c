@@ -50,4 +50,6 @@ void	init_signals(void)
 	sa_int.sa_flags = SA_RESTART;
 	sigaction(SIGINT, &sa_int, NULL);
 	signal(SIGQUIT, SIG_IGN);
+	//if (WIFEXITED(lash->exit_code))
+	//	lash->exit_code = WEXITSTATUS(lash->exit_code);
 }

@@ -13,6 +13,7 @@
 # include <errno.h>
 # include <limits.h>
 # include <signal.h>
+# include <sys/stat.h> //stat
 
 typedef enum e_token_type
 {
@@ -161,14 +162,20 @@ int		builtin_echo(char **array);
 int		builtin_env(char **array, t_envi *env);
 int		builtin_exit(t_ast *ast, char **array, t_mini *lash);
 void	builtin_export(char **array, t_envi *env, t_mini *lash);
-int		builtin_pwd(char **array);
+int		builtin_pwd(char **array, t_envi *env);
 int		builtin_unset(char **array, t_envi *env);
 
 //env functions
-int	add_to_env(char *str, t_envi *env);
+int		modify_env(char *str, t_envi *env);
 char	*find_key(char *str);
 int	print_alphabetised(t_envi *env);
-int	add_new(char *str, t_envi *env);
+int	add_new_env(char *str, t_envi *env);
+char	*get_exec_path(char **args, t_mini *lash);
+
+//execution utils
+int	check_access(char *path, t_mini *lash);
+void	*fail_to_malloc(t_mini *lash);
+void	cmd_error(char *cmd, t_mini *lash);
 
 //builtin utils
 void	free_list(t_envi **head);
@@ -186,7 +193,7 @@ void	go_right(t_ast *node, t_mini *lash, int *fds, int *pid);
 //externals
 void	handle_exit_status(char *path, t_mini *lash);
 void	execute_external(char **args, t_mini *lash);
-char	**get_env_path(char **args, t_mini *lash, t_envi *env);
+//char	**get_env_path(char **args, t_mini *lash, t_envi *env);
 //char	**get_bin(char **args, t_mini *lash, t_envi *env);
 //char	*find_path(char **paths, char *path, char *cmd);
 char	**env_to_arr(t_envi *env);

@@ -104,6 +104,8 @@ void	start_readline(t_mini *lash, int fd)
 	{
 		init_signals();
 		dup2(fd, STDIN_FILENO);
+		//close(fd);
+		//fd = dup(STDIN_FILENO);
 		tokens = NULL;
 		input = readline("lash$: ");
 		if (!input)
