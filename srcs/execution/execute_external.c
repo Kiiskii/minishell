@@ -84,7 +84,7 @@ void	execute_external(char **args, t_mini *lash)
 	char	*path;
 	pid_t	pid;
 
-	if (!args[0]) //TODO: test with $US when expansions ready
+	if (!args[0] || !args[0][0]) //TODO: test with $US when expansions ready
 	{
 		ft_putstr_fd("Command '' not found\n", 2);
 		lash->exit_code = 127;

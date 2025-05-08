@@ -5,23 +5,21 @@ char	*handle_quotes(char *new_token, t_indexer *s, char quote)
 	int	start;
 
 	if (s->j < s->i)
-		new_token = ft_strjoin(new_token, ft_substr(s->str, s->j, s->i - s->j));
+		new_token = wrap_join(new_token, ft_substr(s->str, s->j, s->i - s->j));
 	s->i++;
 	start = s->i;
 	while (s->str[s->i] && s->str[s->i] != quote)
 		s->i++;
-	new_token = ft_strjoin(new_token, ft_substr(s->str, start, s->i - start));
+	new_token = wrap_join(new_token, ft_substr(s->str, start, s->i - start));
 	s->j = s->i + 1;
 	return (new_token);
 }
 
-char	*iterate_token(t_indexer *s)
+char	*iterate_token(t_indexer *s, int has_quotes)
 {
 	char	*new_token;
-	int		has_quotes;
 
-	new_token = "";
-	has_quotes = 0;
+	new_token = ft_strdup("");
 	while (s->str[s->i])
 	{
 		if (s->str[s->i] == '"' || s->str[s->i] == '\'')
@@ -34,11 +32,14 @@ char	*iterate_token(t_indexer *s)
 	if (!new_token)
 		return (NULL);
 	if (new_token[0] == '\0' && has_quotes == 1)
-		new_token = ft_strdup("");
+		return (new_token);
 	else if (new_token[0] == '\0')
+	{
+		free(new_token);
 		new_token = s->str;
+	}
 	else if (s->i > s->j)
-		new_token = ft_strjoin(new_token, ft_substr(s->str, s->j, s->i - s->j));
+		new_token = wrap_join(new_token, ft_substr(s->str, s->j, s->i - s->j));
 	return (new_token);
 }
 
@@ -62,7 +63,7 @@ int	prep_quote_removal(t_token **tokens, t_token *temp)
 
 	ft_memset(&s, 0, sizeof(t_indexer));
 	s.str = temp->token;
-	temp->token = iterate_token(&s);
+	temp->token = iterate_token(&s, 0);
 	if (!temp->token)
 	{
 		malloc_fail_message(tokens);
@@ -86,9 +87,7 @@ void	remove_quotes(t_token **tokens)
 			temp = temp->next->next;
 			continue ;
 		}
-		//if (temp->token[0] == '\0')
-		if (ft_strcmp("\"\"", temp->token) == 0
-			|| ft_strcmp("''", temp->token) == 0 || temp->token[0] == '\0')
+		if (temp->token[0] == '\0')
 			delete_empty_token(tokens, &prev, &temp);
 		else
 		{

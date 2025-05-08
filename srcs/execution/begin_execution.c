@@ -4,6 +4,7 @@
 
 void	begin_execution(t_ast *ast, t_mini *lash)
 {
+	//printf("type: %d\n", ast->type);
 	if (!ast || !lash)
 		return ;
 	if (ast->type == PIPE)

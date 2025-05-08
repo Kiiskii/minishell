@@ -1,19 +1,21 @@
 #include "../minishell.h"
 
-void	signal_exit_heredoc(char *line, t_mini *lash, int fd)
+void	signal_exit_heredoc(char *line, t_mini *lash, int fd, t_ast *leaf)
 {
 	free(line);
 	line = NULL;
 	lash->exit_code = 130;
+	close(leaf->fd);
+	leaf->fd = -1;
 	close(STDIN_FILENO);
 	dup2(fd, STDIN_FILENO);
 	close(fd);
 }
 
-void	heredoc_cleanup(t_ast *leaf, char *line, int fd, char *filename)
+void	heredoc_cleanup(t_ast *leaf, int fd, char *filename)
 {
-	free(line);
-	line = NULL;
+	close(leaf->fd);
+	leaf->fd = -1;
 	free(leaf->filename);
 	leaf->filename = NULL;
 	leaf->filename = filename;

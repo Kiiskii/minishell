@@ -7,7 +7,7 @@ char	*handle_multiple_dollar(t_indexer *s, char *new_token)
 	s->j = s->i;
 	while (s->str[s->i] == '$')
 		s->i++;
-	new_token = ft_strjoin(new_token, ft_substr(s->str, s->j, s->i - s->j));
+	new_token = wrap_join(new_token, ft_substr(s->str, s->j, s->i - s->j));
 	s->j = s->i;
 	return (new_token);
 }
@@ -20,7 +20,7 @@ char	*handle_exps(t_indexer *s, t_mini *lash, char *new_token)
 		return (NULL);
 	word = NULL;
 	if (s->j < s->i)
-		new_token = ft_strjoin(new_token, ft_substr(s->str, s->j, s->i - s->j));
+		new_token = wrap_join(new_token, ft_substr(s->str, s->j, s->i - s->j));
 	if (s->str[s->i + 1] == '?')
 	{
 		word = ft_itoa(lash->exit_code);
@@ -32,8 +32,8 @@ char	*handle_exps(t_indexer *s, t_mini *lash, char *new_token)
 	else
 		word = exps_find_key(&s->str[s->i + 1], lash->env);
 	if (word)
-		new_token = ft_strjoin(new_token, word);
-	free(word);
+		new_token = wrap_join(new_token, word);
+	//free(word);
 	if (s->str[s->i] != '?')
 		s->i += iterate_key(&s->str[s->i + 1]);
 	s->j = s->i + 1;
@@ -51,12 +51,12 @@ char	*iterate_token_help(t_indexer *s, t_mini *lash,
 	if (s->str[s->i] == '\'' && *dquotes == -1)
 	{
 		s->i += iterate_quotes(&s->str[s->i + 1], s->str[s->i]) + 1;
-		new_token = ft_strjoin(new_token, ft_substr(s->str, s->j, s->i - s->j));
+		new_token = wrap_join(new_token, ft_substr(s->str, s->j, s->i - s->j));
 		s->j = s->i;
 	}
 	if (s->str[s->i] == '$')
 		new_token = handle_exps(s, lash, new_token);
-	else
+	else if (s->str[s->i] != '\0')
 		s->i++;
 	if (!new_token)
 		return (NULL);
@@ -69,7 +69,9 @@ char	*iterate_token_exp(t_indexer *s, t_mini *lash)
 	int		in_dquotes;
 
 	in_dquotes = -1;
-	new_token = "";
+	new_token = ft_strdup("");
+	if (!new_token)
+		return (NULL);
 	if (!s->str)
 		return (NULL);
 	while (s->str[s->i])
@@ -81,7 +83,7 @@ char	*iterate_token_exp(t_indexer *s, t_mini *lash)
 	if ((!new_token || new_token[0] == '\0') && s->i <= s->j)
 		return (ft_strdup(""));
 	if (s->j < s->i)
-		new_token = ft_strjoin(new_token, ft_substr(s->str, s->j, s->i - s->j));
+		new_token = wrap_join(new_token, ft_substr(s->str, s->j, s->i - s->j));
 	return (new_token);
 }
 

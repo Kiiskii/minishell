@@ -66,20 +66,22 @@ typedef struct s_mini
 
 extern sig_atomic_t	g_signum;
 
-void	start_readline(t_mini *lash, int fd);
+void	start_readline(t_mini *lash);
 void	env_to_list(t_envi **envi, char **env);
+char	*wrap_join(char *s1, char *s2);
 
 //heredoc
+int		heredoc_readline_loop(t_ast *leaf, t_mini *lash, int fd, int dont_expand);
 int		remove_delim_quotes(t_ast *branch);
 void	write_heredoc(char **line, int fd);
-void	heredoc_cleanup(t_ast *leaf, char *line, int fd, char *filename);
-void	signal_exit_heredoc(char *line, t_mini *lash, int fd);
+void	heredoc_cleanup(t_ast *leaf, int fd, char *filename);
+void	signal_exit_heredoc(char *line, t_mini *lash, int fd, t_ast *leaf);
 int		count_delim_len(char *filename);
 void	heredoc_rm_quotes(char *filename, char *new_filename);
 int		create_unique_filename(char **filename);
-int		create_temp_file(t_ast *leaf, char **filename, int error);
+int		create_temp_file(t_ast *leaf, char **filename, int error, t_mini *lash);
 char	*expand_heredoc(char *line, t_mini *lash);
-void	iterate_heredoc(t_ast *tree, t_mini *lash);
+int		iterate_heredoc(t_ast *tree, t_mini *lash, int error);
 int		iterate_branch_right(t_ast *branch, t_mini *lash, int error);
 int		handle_heredoc(t_ast *leaf, int dont_expand, t_mini *lash, int error);
 
@@ -103,7 +105,7 @@ void	tokenize_input(char *input, t_token **list);
 int		is_specialchar(char c);
 int		ft_isblank(int c);
 int		handle_redirs(t_token **list, char *str);
-void	add_token(t_token **list, char *content, t_token_type type);
+void	add_token(t_token **list, char **content, t_token_type type);
 int		handle_words(t_token **list, char *str);
 void	iterate_word(t_indexer *s);
 int		begin_tokenizing(t_token **tokens, t_mini *lash, char *input);
@@ -126,11 +128,12 @@ char	*iterate_token_exp(t_indexer *s, t_mini *lash);
 void	expand_tokens(t_token **tokens, t_mini *lash);
 char	*find_env_match(char *my_key, t_envi *env);
 char	*exps_find_key(char *token, t_envi *env);
-char	*iterate_token(t_indexer *s);
+char	*iterate_token(t_indexer *s, int has_quotes);
 int		iterate_quotes(char *str, char quote);
 void	remove_quotes(t_token **tokens);
 
 // building ast
+t_ast	*handle_arguments(t_token *list, t_ast *branch);
 t_envi	*create_node(t_envi *new_node, char *env, int j, int has_value);
 void	add_back(t_envi *tmp, t_envi *new); //why is new a different colour?
 

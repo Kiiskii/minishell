@@ -1,9 +1,7 @@
 #include "../minishell.h"
 
 //TODO: INPUT MAX LEN, NEW VALUE IN HEADERFILE!
-// LS & RM ADD A NEWLINE
 
-/*
 void	print_args(char **args)
 {
 	int	i = 0;
@@ -45,6 +43,7 @@ void	print_ast(t_ast *tree)
 	}
 }
 
+/*
 void	print_tokens(t_token *tokens)
 {
 	t_token	*tmp;
@@ -80,6 +79,7 @@ int	begin_tokenizing(t_token **tokens, t_mini *lash, char *input)
 int	begin_ast_heredoc(t_token **tokens, t_mini *lash)
 {
 	t_ast	*tree;
+	int		error;
 
 	tree = build_ast(tokens);
 	if (!tree)
@@ -87,16 +87,23 @@ int	begin_ast_heredoc(t_token **tokens, t_mini *lash)
 		malloc_fail_message_tree(tree);
 		return (0);
 	}
-	free_tokens(tokens);
 	//print_ast(tree);
-	iterate_heredoc(tree, lash);
+	error = iterate_heredoc(tree, lash, 0);
+	if (error == -2)
+	{
+		malloc_fail_message_tree(tree);
+		return (0);
+	}
+	else if (error == -1)
+		return (0);
 	if (g_signum != SIGINT)
 		begin_execution(tree, lash);
+	free_tokens(tokens);
 	free_ast(tree);
 	return (1);
 }
 
-void	start_readline(t_mini *lash, int fd)
+void	start_readline(t_mini *lash)
 {
 	char	*input;
 	t_token	*tokens;
@@ -104,7 +111,7 @@ void	start_readline(t_mini *lash, int fd)
 	while (1)
 	{
 		init_signals();
-		dup2(fd, STDIN_FILENO);
+		//dup2(fd, STDIN_FILENO);
 		tokens = NULL;
 		input = readline("lash$: ");
 		if (!input)
@@ -127,7 +134,7 @@ int	main(int argc, char **argv, char **env)
 {
 	t_envi	*envi;
 	t_mini	lash;
-	int		original_stdin;
+	//int		original_stdin;
 
 	if (argc != 1)
 		return (1); //exit with 1?
@@ -139,9 +146,10 @@ int	main(int argc, char **argv, char **env)
 	lash.exit_code = 0;
 	lash.fd_out = -1;
 	lash.fd_in = -1;
-	original_stdin = dup(STDIN_FILENO);
-	start_readline(&lash, original_stdin);
-	close(original_stdin);
+	//original_stdin = dup(STDIN_FILENO);
+	start_readline(&lash);
+	free_env(envi);
+	//close(original_stdin);
 	printf("Exiting lash...\n");
 	// implement signalhandling
 	return (lash.exit_code);

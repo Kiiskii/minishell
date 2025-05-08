@@ -24,9 +24,24 @@ void	free_tokens(t_token **list)
 	current = *list;
 	while (current)
 	{
+		/*
+		if (current->type >= PIPE && current->type <= REDIR_APP)
+		{
+			next = current->next;
+			free(current);
+			current = next;
+		}
+		else
+		{
+			next = current->next;
+			if (current->token)
+				free(current->token);
+			free(current);
+			current = next;
+		}
+		*/
 		next = current->next;
-		if (current->token)
-			free(current->token);
+		free(current->token);
 		free(current);
 		current = next;
 	}

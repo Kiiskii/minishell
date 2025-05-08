@@ -23,11 +23,16 @@ char	*find_env_match(char *my_key, t_envi *env)
 char	*exps_find_key(char *token, t_envi *env)
 {
 	char	*value;
+	char	*my_key;
 	int		i;
 
 	i = 0;
 	while (ft_isalnum(token[i]) || token[i] == '_')
 		i++;
-	value = find_env_match(ft_substr(token, 0, i), env);
+	my_key = ft_substr(token, 0, i);
+	if (!my_key)
+		return (NULL);
+	value = find_env_match(my_key, env);
+	free(my_key);
 	return (value);
 }
