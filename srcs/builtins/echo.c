@@ -33,12 +33,12 @@ int	builtin_echo(char **array)
 	}
 	while (array[i])
 	{
-		printf("%s", array[i]);
+		write(1, array[i], ft_strlen(array[i]));
 		if (array[i + 1])
-			printf(" ");
+			write(1, " ", 1);
 		i++;
 	}
 	if (nl_check == 1)
-		printf("\n");
+		write(1, "\n", 1);
 	return (0);
 }

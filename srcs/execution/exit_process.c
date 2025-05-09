@@ -1,8 +1,9 @@
 #include "../minishell.h"
 
-void	exit_process(t_ast *ast, t_mini *lash)
+void	exit_process(t_mini *lash)
 {
-	free_ast(ast);
+	if (lash->head)
+		free_ast(lash->head);
 	free_env(lash->env);
 	exit(lash->exit_code);
 }

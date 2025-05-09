@@ -1,6 +1,6 @@
 #include "../minishell.h"
 
-void	go_right(t_ast *node, t_mini *lash, int *fds, int *pid)
+static void	go_right(t_ast *node, t_mini *lash, int *fds, int *pid)
 {
 	*pid = fork();
 	if (*pid == -1)
@@ -11,6 +11,7 @@ void	go_right(t_ast *node, t_mini *lash, int *fds, int *pid)
 	}
 	if (*pid == 0)
 	{
+		close(lash->fd_in);
 		reset_default_signals();
 		close(fds[1]);
 		if (dup2(fds[0], STDIN_FILENO) == -1)
@@ -22,11 +23,11 @@ void	go_right(t_ast *node, t_mini *lash, int *fds, int *pid)
 		}
 		close(fds[0]);
 		begin_execution(node, lash);
-		exit(lash->exit_code);
+		exit_process(lash);
 	}
 }
 
-void	go_left(t_ast *node, t_mini *lash, int *fds, int *pid)
+static void	go_left(t_ast *node, t_mini *lash, int *fds, int *pid)
 {
 	*pid = fork();
 	if (*pid == -1)
@@ -44,15 +45,16 @@ void	go_left(t_ast *node, t_mini *lash, int *fds, int *pid)
 			close(fds[1]);
 			perror("lash: dup2");
 			lash->exit_code = errno;
-			exit(errno);
+			exit_process(lash);
 		}
 		close(fds[1]);
 		begin_execution(node, lash);
-		exit(lash->exit_code);
+		close(lash->fd_in);
+		exit_process(lash);
 	}
 }
 
-void	execute_pipe(t_ast *root, t_mini *lash)
+void	execute_pipe(t_ast *node, t_mini *lash)
 {
 	int	fds[2];
 	int	left_pid;
@@ -64,9 +66,9 @@ void	execute_pipe(t_ast *root, t_mini *lash)
 		lash->exit_code = errno;
 		return ;
 	}
-	go_left(root->left, lash, fds, &left_pid);
+	go_left(node->left, lash, fds, &left_pid);
 	close(fds[1]);
-	go_right(root->right, lash, fds, &right_pid);
+	go_right(node->right, lash, fds, &right_pid);
 	close(fds[0]);
 	waitpid(left_pid, NULL, 0);
 	waitpid(right_pid, &lash->exit_code, 0);

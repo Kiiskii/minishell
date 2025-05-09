@@ -12,16 +12,16 @@ t_envi	*create_node(t_envi *new_node, char *env, int j, int has_value)
 	return (new_node);
 }
 
-void	add_back(t_envi *tmp, t_envi *new)
+void	add_back(t_envi *tmp, t_envi *node)
 {
 	if (tmp)
 	{
 		while (tmp->next)
 			tmp = tmp->next;
-		tmp->next = new;
+		tmp->next = node;
 	}
 	else
-		tmp = new;
+		tmp = node;
 }
 
 void	env_to_list(t_envi **envi, char **env)

@@ -40,10 +40,11 @@ void	handle_sig_int(int signum)
 	}
 }
 
-void	init_signals(void)
+void	init_signals(t_mini *lash)
 {
 	struct sigaction	sa_int;
 
+	(void)lash;//
 	g_signum = 0;
 	sa_int.sa_handler = &handle_sig_int;
 	sigemptyset(&sa_int.sa_mask);
@@ -53,3 +54,4 @@ void	init_signals(void)
 	//if (WIFEXITED(lash->exit_code))
 	//	lash->exit_code = WEXITSTATUS(lash->exit_code);
 }
+

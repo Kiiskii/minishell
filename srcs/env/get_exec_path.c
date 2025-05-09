@@ -19,6 +19,7 @@ static int	is_directory(char *cmd)
 static char	*create_path(char **paths, char *cmd, t_mini *lash)
 {
 	int		i;
+	int		access;
 	char	*tmp;
 	char	*path;
 
@@ -32,11 +33,12 @@ static char	*create_path(char **paths, char *cmd, t_mini *lash)
 		free(tmp);
 		if (path == NULL)
 			return (fail_to_malloc(lash));
-		if (check_access(path, lash) == 0)
+		access = check_access(path, lash);
+		if (access == 0)
 			return (path);
-		else if (check_access(path, lash) == 1)
-			return (NULL);
 		free(path);
+		if (access == 1)
+			return (NULL);
 		i++;
 	}
 	cmd_error(cmd, lash);
@@ -77,31 +79,31 @@ int	path_not_created(char **path_env, t_mini *lash)
 	return (0);
 }
 
-char	*get_exec_path(char **args, t_mini *lash)
+char	*get_exec_path(t_ast *ast, t_mini *lash)
 {
 	char	*res;
 	char	**path_env;
 	int		access;
 
-	if (ft_strchr(args[0], '/'))
+	if (ft_strchr(ast->args[0], '/'))
 	{
-		if (is_directory(args[0]))
+		if (is_directory(ast->args[0]))
 		{
 			lash->exit_code = 126;
 			return (NULL);
 		}
-		access = check_access(args[0], lash);
+		access = check_access(ast->args[0], lash);
 		if (access == 0)
-			return (args[0]);
+			return (ast->args[0]);
 		else if (access == 1)
 			return (NULL);
-		cmd_error(args[0], lash);
+		cmd_error(ast->args[0], lash);
 		return (NULL);
 	}
-	path_env = get_env_path(args, lash, lash->env);
+	path_env = get_env_path(ast->args, lash, lash->env);
 	if (path_not_created(path_env, lash))
 		return (NULL);
-	res = create_path(path_env, args[0], lash);
+	res = create_path(path_env, ast->args[0], lash);
 	free_arr(path_env);
 	return (res);
 }

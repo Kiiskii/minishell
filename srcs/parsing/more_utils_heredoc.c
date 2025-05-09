@@ -11,7 +11,7 @@ int	remove_delim_quotes(t_ast *node)
 {
 	char	*new_filename;
 	int		len;
-	
+
 	len = 0;
 	len = count_delim_len(node->filename);
 	new_filename = malloc(len + 1);

@@ -33,7 +33,6 @@ char	*handle_exps(t_indexer *s, t_mini *lash, char *new_token)
 		word = exps_find_key(&s->str[s->i + 1], lash->env);
 	if (word)
 		new_token = wrap_join(new_token, word);
-	//free(word);
 	if (s->str[s->i] != '?')
 		s->i += iterate_key(&s->str[s->i + 1]);
 	s->j = s->i + 1;

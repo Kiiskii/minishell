@@ -1,9 +1,5 @@
 #include "../minishell.h"
 
-//bash exit returns 125 on invalid option and 
-//127 on "No such file or directory" (when second
-//argument does not begin with '-'.
-
 int	builtin_env(char **array, t_envi *env)
 {
 	t_envi	*trav;

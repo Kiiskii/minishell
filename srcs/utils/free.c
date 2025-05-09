@@ -24,22 +24,6 @@ void	free_tokens(t_token **list)
 	current = *list;
 	while (current)
 	{
-		/*
-		if (current->type >= PIPE && current->type <= REDIR_APP)
-		{
-			next = current->next;
-			free(current);
-			current = next;
-		}
-		else
-		{
-			next = current->next;
-			if (current->token)
-				free(current->token);
-			free(current);
-			current = next;
-		}
-		*/
 		next = current->next;
 		free(current->token);
 		free(current);
@@ -67,13 +51,10 @@ void	free_ast(t_ast *tree)
 {
 	if (!tree)
 		return ;
-	free_ast(tree->left);
-	free_ast(tree->right);
-	if (tree->fd != -1)
-	{
-		unlink(tree->filename);
-		close(tree->fd);
-	}
+	if (tree->left)
+		free_ast(tree->left);
+	if (tree->right)
+		free_ast(tree->right);
 	if (tree->filename)
 		free(tree->filename);
 	if (tree->args)
