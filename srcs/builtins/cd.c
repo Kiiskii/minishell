@@ -1,6 +1,6 @@
 #include "../minishell.h"
 
-int	replace_value(t_envi *node, char *replacement)
+static int	replace_value(t_envi *node, char *replacement)
 {
 	free(node->value);
 	if (!replacement)
@@ -8,13 +8,13 @@ int	replace_value(t_envi *node, char *replacement)
 	node->value = ft_strdup(replacement);
 	if (node->value == NULL)
 	{
-		ft_putstr_fd("Memory allocation failed, please exit lash\n", 2);
+		ft_putstr_fd("Cannot allocate memory, please CTRL + D!\n", 2);
 		return (1);
 	}
 	return (0);
 }
 
-void	update_env(char *new, char *old, t_envi *env)
+static void	update_env(char *new, char *old, t_envi *env)
 {
 	t_envi	*pwd;
 	t_envi	*old_pwd;
@@ -24,19 +24,26 @@ void	update_env(char *new, char *old, t_envi *env)
 	while (pwd != NULL)
 	{
 		if (ft_strcmp(pwd->key, "PWD") == 0)
+		{
 			if (replace_value(pwd, new) == 1)
+			{
+				free(old);
 				return ;
+			}
+		}
 		pwd = pwd->next;
 	}
 	while (old_pwd != NULL)
 	{
 		if (ft_strcmp(old_pwd->key, "OLDPWD") == 0)
-			replace_value(old_pwd, old);
+			if (replace_value(old_pwd, old) == 1)
+				break ;
 		old_pwd = old_pwd->next;
 	}
+	free(old);
 }
 
-int	change_dir(char *path, t_envi *env)
+static int	change_dir(char *path, t_envi *env)
 {
 	char	*current;
 	char	*old;
@@ -49,6 +56,7 @@ int	change_dir(char *path, t_envi *env)
 		ft_putstr_fd("lash: cd: ", 2);
 		ft_putstr_fd(path, 2);
 		ft_putstr_fd(": No such file or directory\n", 2);
+		free(old);
 		return (1);
 	}
 	current = getcwd(NULL, 0);
@@ -58,7 +66,7 @@ int	change_dir(char *path, t_envi *env)
 	return (0);
 }
 
-int	go_home(t_envi *env)
+static int	go_home(t_envi *env)
 {
 	t_envi	*seeker;
 	char	*current;

@@ -1,14 +1,18 @@
 #include "../minishell.h"
 
-static void	exec_ext_child(t_mini *lash, char *path, t_ast *ast)
+static void	exec_ext_child(t_mini *lash, t_ast *ast)
 {
 	char	**env_array;
+	char	*path;
 
+	path = get_exec_path(ast, lash);
+	if (!path)
+		exit_process(lash);
 	close(lash->fd_in);
 	reset_default_signals();
 	env_array = env_to_arr(lash->env);
 	if (!env_array)
-		ft_putstr_fd("Cannot allocate memory, please exit lash\n", 2);
+		ft_putstr_fd("Cannot allocate memory, please CTRL + D!\n", 2);
 	execve(path, ast->args, env_array);
 	ft_putstr_fd("Failed to execute\n", 2);
 	lash->exit_code = 127;
@@ -19,7 +23,6 @@ static void	exec_ext_child(t_mini *lash, char *path, t_ast *ast)
 
 void	execute_external(t_ast *ast, t_mini *lash)
 {
-	char	*path;
 	pid_t	pid;
 
 	if (!ast->args[0] || !ast->args[0][0])
@@ -28,9 +31,6 @@ void	execute_external(t_ast *ast, t_mini *lash)
 		lash->exit_code = 127;
 		return ;
 	}
-	path = get_exec_path(ast, lash);
-	if (!path)
-		return ;
 	pid = fork();
 	if (pid == -1)
 	{
@@ -39,9 +39,9 @@ void	execute_external(t_ast *ast, t_mini *lash)
 		return ;
 	}
 	if (pid == 0)
-		exec_ext_child(lash, path, ast);
+		exec_ext_child(lash, ast);
 	waitpid(pid, &lash->exit_code, 0);
-	init_signals(lash);
+	init_signals();
 	handle_sig_int(0);
-	handle_exit_status(path, lash);
+	handle_exit_status(lash);
 }

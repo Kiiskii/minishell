@@ -93,7 +93,7 @@ void	handle_sig_int_heredoc(int signum);
 void	init_signals_heredoc(void);
 void	reset_default_signals(void);
 void	handle_sig_int(int signum);
-void	init_signals(t_mini *lash);
+void	init_signals(void);
 
 // parsing errors
 int		error_iterate_list(t_token *tokens, t_mini *lash);
@@ -177,11 +177,10 @@ char	**env_to_arr(t_envi *env);
 int		check_access(char *path, t_mini *lash);
 void	*fail_to_malloc(t_mini *lash);
 void	cmd_error(char *cmd, t_mini *lash);
-void	handle_exit_status(char *path, t_mini *lash);
+void	handle_exit_status(t_mini *lash);
 void	wait_child(pid_t pid, t_mini *lash);
 
 // builtin utils
-void	free_list(t_envi **head);
 void	not_valid_msg(char *str);
 char	*find_key(char *str);
 int		check_existing(char *str, t_envi *env);

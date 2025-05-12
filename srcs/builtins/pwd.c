@@ -11,8 +11,8 @@ int	check_pwd(t_envi *env, char **pwd_path)
 				*pwd_path = ft_strdup(env->value);
 				if (!(*pwd_path))
 				{
-					ft_putstr_fd("Memory allocation failed,", 2);
-					ft_putstr_fd(" please exit lash\n", 2);
+					ft_putstr_fd("Cannot allocate memory,", 2);
+					ft_putstr_fd(" please CTRL + D!\n", 2);
 					return (12);
 				}
 				return (0);
@@ -61,23 +61,3 @@ int	builtin_pwd(char **array, t_envi *env)
 	free(pwd_path);
 	return (0);
 }
-
-/*int	builtin_pwd(char **array)
-{
-	char	*pathname;
-
-	if (array[1] && array[1][0] == '-')
-	{
-		printf("lash: pwd: options for pwd are not supported\n");
-		return (2);
-	}
-	pathname = getcwd(NULL, 0);
-	if (!pathname)
-	{
-		perror("lash: getcwd");
-		//return (errno);
-	}
-	printf("%s\n", pathname);
-	free(pathname);
-	return (0);
-}*/

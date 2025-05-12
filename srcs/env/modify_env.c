@@ -1,35 +1,32 @@
 #include "../minishell.h"
 
-static void	update_values(char *new, int count, t_envi *env, char *key)
+static void	update_values(char *new, t_envi *env, char *key)
 {
 	t_envi	*trav;
-	char	*seeker;
+	char	*tmp;
 
+	tmp = NULL;
 	trav = env;
-	seeker = ft_substr(key, 0, count);
-	if (seeker == NULL)
-	{
-		ft_putstr_fd("Memory allocation failed, please exit lash\n", 2);
-		return ;
-	}
 	while (trav != NULL)
 	{
-		if (ft_strcmp(trav->key, seeker) == 0)
+		if (ft_strcmp(trav->key, key) == 0)
 		{
+			tmp = trav->value;
 			trav->value = ft_strjoin(trav->value, new);
+			free(tmp);
 			if (trav-> value == NULL)
 			{
-				free(seeker);
-				ft_putstr_fd("Memory allocation failed, please exit lash\n", 2);
+				free(key);
+				ft_putstr_fd("Cannot allocate memory, please CTRL + D!\n", 2);
 				return ;
 			}
 		}
 		trav = trav->next;
 	}
-	free (seeker);
+	free(key);
 }
 
-static void	append_env(char *str, int count, t_envi *env)
+static void	append_env(char *str, t_envi *env)
 {
 	char	*key;
 
@@ -47,7 +44,7 @@ static void	append_env(char *str, int count, t_envi *env)
 	}
 	if (!str)
 		str = "";
-	update_values(str, count, env, key);
+	update_values(str, env, key);
 }
 
 static void	replace_env(char *str, t_envi *trav, int count)
@@ -57,7 +54,7 @@ static void	replace_env(char *str, t_envi *trav, int count)
 	seeker = ft_substr(str, 0, count);
 	if (seeker == NULL)
 	{
-		ft_putstr_fd("Memory allocation failed, please exit lash\n", 2);
+		ft_putstr_fd("Cannot allocate memory, please CTRL + D!\n", 2);
 		return ;
 	}
 	while (trav != NULL)
@@ -69,7 +66,7 @@ static void	replace_env(char *str, t_envi *trav, int count)
 			if (trav-> value == NULL)
 			{
 				free(seeker);
-				ft_putstr_fd("Memory allocation failed, please exit lash\n", 2);
+				ft_putstr_fd("Cannot allocate memory, please CTRL + D!\n", 2);
 				return ;
 			}
 		}
@@ -90,7 +87,7 @@ static void	modify_existing(char *str, t_envi *env)
 	if (str[count] == '=' && str[count - 1] == '+')
 	{
 		count--;
-		append_env(str, count, env);
+		append_env(str, env);
 		return ;
 	}
 	replace_env(str, trav, count);
@@ -108,7 +105,7 @@ int	modify_env(char *str, t_envi *env)
 	check = check_existing(str, env);
 	if (check == 12)
 	{
-		ft_putstr_fd("Memory allocation failed, please exit lash\n", 2);
+		ft_putstr_fd("Cannot allocate memory, please CTRL + D!\n", 2);
 		return (check);
 	}
 	else if (check == 1)
@@ -117,7 +114,7 @@ int	modify_env(char *str, t_envi *env)
 	{
 		exit_code = add_new_env(str, env);
 		if (exit_code == 12)
-			ft_putstr_fd("Memory allocation failed, please exit lash\n", 2);
+			ft_putstr_fd("Cannot allocate memory, please CTRL + D!\n", 2);
 	}
 	return (exit_code);
 }

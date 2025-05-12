@@ -24,7 +24,7 @@ static int	is_valid_input(char *str)
 	key = find_key(str);
 	if (key == NULL)
 	{
-		ft_putstr_fd("Memory allocation failed, please exit lash\n", 2);
+		ft_putstr_fd("Cannot allocate memory, please CTRL + D!\n", 2);
 		return (0);
 	}
 	if (key[0] == '\0')

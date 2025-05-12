@@ -17,7 +17,7 @@ int	check_access(char *path, t_mini *lash)
 
 void	*fail_to_malloc(t_mini *lash)
 {
-	ft_putstr_fd("Cannot allocate memory, please exit lash\n", 2);
+	ft_putstr_fd("Cannot allocate memory, please CTRL + D!\n", 2);
 	lash->exit_code = 1;
 	return (NULL);
 }

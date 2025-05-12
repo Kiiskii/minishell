@@ -7,9 +7,6 @@ int	begin_tokenizing(t_token **tokens, t_mini *lash, char *input)
 	tokenize_input(input, tokens);
 	if (!tokens)
 		return (0);
-	//if (error_iterate_list(*tokens, lash) == 0)
-	//	return (0);
-	// CHECK WITH LAURA
 	expand_tokens(tokens, lash);
 	remove_quotes(tokens);
 	if (!tokens || !*tokens)
@@ -40,9 +37,7 @@ int	begin_ast_heredoc(t_token **tokens, t_mini *lash)
 	else if (error == -1)
 		return (0);
 	lash->head = tree;
-	// if (g_signum != SIGINT)
-	// 	begin_execution(tree, lash);
-	begin_execution(tree, lash);//TO REMOVE
+	begin_execution(tree, lash);
 	delete_heredoc_temps(tree);
 	free_ast(tree);
 	return (1);
@@ -55,7 +50,7 @@ void	start_readline(t_mini *lash)
 
 	while (1)
 	{
-		init_signals(lash);
+		init_signals();
 		dup2(lash->fd_in, STDIN_FILENO);
 		tokens = NULL;
 		input = readline("lash$: ");

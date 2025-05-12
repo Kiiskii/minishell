@@ -79,8 +79,8 @@ char	*iterate_token_exp(t_indexer *s, t_mini *lash)
 		if (!new_token)
 			return (NULL);
 	}
-	if ((!new_token || new_token[0] == '\0') && s->i <= s->j)
-		return (ft_strdup(""));
+	if (new_token[0] == '\0' && s->i <= s->j)
+		return (new_token);
 	if (s->j < s->i)
 		new_token = wrap_join(new_token, ft_substr(s->str, s->j, s->i - s->j));
 	return (new_token);

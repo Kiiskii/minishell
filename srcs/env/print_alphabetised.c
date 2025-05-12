@@ -27,30 +27,47 @@ static void	add_to_copy(t_envi **copy, t_envi *new_node)
 	}
 }
 
+static int	add_data(t_envi *env, t_envi *new_node, t_envi *copy)
+{
+	new_node->key = ft_strdup(env->key);
+	if (new_node->key == NULL)
+	{
+		free(new_node);
+		free_env(copy);
+		return (1);
+	}
+	if (env->has_value)
+	{
+		new_node->value = ft_strdup(env->value);
+		if (new_node->value == NULL)
+		{
+			free(new_node->key);
+			free(new_node);
+			free_env(copy);
+			return (1);
+		}
+	}
+	return (0);
+}
+
 static t_envi	*sort_env(t_envi *env, t_envi *copy)
 {
-	t_envi	*trav;
 	t_envi	*new_node;
 
-	trav = env;
-	while (trav != NULL)
+	while (env != NULL)
 	{
 		new_node = malloc(sizeof(t_envi));
 		if (!new_node)
-			return (NULL);
-		new_node->key = ft_strdup(trav->key);
-		if (new_node->key == NULL)
-			return (NULL);
-		if (trav->has_value)
 		{
-			new_node->value = ft_strdup(trav->value);
-			if (new_node->value == NULL)
-				return (NULL);
+			free_env(copy);
+			return (NULL);
 		}
-		new_node->has_value = trav->has_value;
+		if (add_data(env, new_node, copy) == 1)
+			return (NULL);
+		new_node->has_value = env->has_value;
 		new_node->next = NULL;
 		add_to_copy(&copy, new_node);
-		trav = trav->next;
+		env = env->next;
 	}
 	return (copy);
 }
@@ -59,14 +76,16 @@ int	print_alphabetised(t_envi *env)
 {
 	t_envi	*alphalist;
 	t_envi	*copy;
+	t_envi	*head;
 
 	copy = NULL;
 	alphalist = sort_env(env, copy);
 	if (!alphalist)
 	{
-		ft_putstr_fd("Memory allocation failed, please exit lash\n", 2);
+		ft_putstr_fd("Cannot allocate memory, please CTRL + D!\n", 2);
 		return (1);
 	}
+	head = alphalist;
 	while (alphalist != NULL)
 	{
 		printf("declare -x ");
@@ -76,6 +95,7 @@ int	print_alphabetised(t_envi *env)
 			printf("%s\n", alphalist->key);
 		alphalist = alphalist->next;
 	}
-	free_list(&alphalist);
+	free_env(alphalist);
+	free_env(head);
 	return (0);
 }
