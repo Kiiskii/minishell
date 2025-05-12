@@ -63,7 +63,7 @@ char	**env_to_arr(t_envi *env)
 	tmp[i] = '\0';
 	res = ft_split(tmp, '\n');
 	if (res == NULL)
-		ft_putstr_fd("Cannot allocate memory, please exit lash\n", 2);
+		ft_putstr_fd("Cannot allocate memory, please CTRL + D!\n", 2);
 	free(tmp);
 	return (res);
 }
@@ -86,7 +86,7 @@ char	**get_env_path(char **args, t_mini *lash, t_envi *env)
 	if (paths == NULL)
 	{
 		lash->exit_code = 12;
-		ft_putstr_fd("Cannot allocate memory, please exit lash\n", 2);
+		ft_putstr_fd("Cannot allocate memory, please CTRL + D!\n", 2);
 	}
 	return (paths);
 }

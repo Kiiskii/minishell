@@ -15,6 +15,7 @@ char	*wrap_join(char *s1, char *s2)
 		return (NULL);
 	return (string);
 }
+
 void	delete_heredoc_temps(t_ast *tree)
 {
 	if (!tree)

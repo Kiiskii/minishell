@@ -24,7 +24,7 @@ static int	is_valid_input(char *str)
 	key = find_key(str);
 	if (key == NULL)
 	{
-		ft_putstr_fd("Memory allocation failed, please exit lash\n", 2);
+		ft_putstr_fd("Cannot allocate memory, please CTRL + D!\n", 2);
 		return (0);
 	}
 	if (key[0] == '\0')
@@ -63,6 +63,7 @@ int	add_new_env(char *str, t_envi *env)
 	new_node = malloc(sizeof(t_envi));
 	if (!new_node)
 		return (12);
+	printf("str = %s\n", str);//
 	if (is_valid_input(str) == 0)
 		return (1);
 	if (only_numbers(str) == 1)

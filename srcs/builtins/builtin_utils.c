@@ -1,17 +1,17 @@
 #include "../minishell.h"
 
-void	free_list(t_envi **head)
-{
-	t_envi	*tmp;
+// void	free_list(t_envi **head)
+// {
+// 	t_envi	*tmp;
 
-	tmp = *head;
-	while (*head)
-	{
-		*head = (*head)->next;
-		free(tmp);
-		tmp = *head;
-	}
-}
+// 	tmp = *head;
+// 	while (*head)
+// 	{
+// 		*head = (*head)->next;
+// 		free(tmp);
+// 		tmp = *head;
+// 	}
+// }
 
 void	not_valid_msg(char *str)
 {
@@ -36,7 +36,7 @@ char	*find_key(char *str)
 		i--;
 	key = ft_substr(str, 0, i);
 	if (key == NULL)
-		ft_putstr_fd("Memory allocation failed, please exit lash\n", 2);
+		ft_putstr_fd("Cannot allocate memory, please CTRL + D!\n", 2);
 	return (key);
 }
 
@@ -58,7 +58,10 @@ int	check_existing(char *str, t_envi *env)
 	while (trav != NULL)
 	{
 		if (ft_strcmp(trav->key, key) == 0)
+		{
+			free(key);
 			return (1);
+		}
 		trav = trav->next;
 	}
 	free(key);
