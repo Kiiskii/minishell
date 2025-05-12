@@ -1,16 +1,14 @@
 #include "../minishell.h"
 
-static int	replace_value(t_envi *node, char *replacement, char *other)
+static int	replace_value(t_envi *node, char *replacement)
 {
 	free(node->value);
 	if (!replacement)
 		replacement = "";
-	node->value = NULL;//ft_strdup(replacement);
+	node->value = ft_strdup(replacement);
 	if (node->value == NULL)
 	{
 		ft_putstr_fd("Cannot allocate memory, please CTRL + D!\n", 2);
-		free(replacement);
-		free(other);
 		return (1);
 	}
 	return (0);
@@ -27,21 +25,21 @@ static void	update_env(char *new, char *old, t_envi *env)
 	{
 		if (ft_strcmp(pwd->key, "PWD") == 0)
 		{
-			if (replace_value(pwd, new, old) == 1)
+			if (replace_value(pwd, new) == 1)
+			{
+				free(old);
 				return ;
+			}
 		}
 		pwd = pwd->next;
 	}
 	while (old_pwd != NULL)
 	{
 		if (ft_strcmp(old_pwd->key, "OLDPWD") == 0)
-		{
-			if (replace_value(old_pwd, old, new) == 1)
-				return ;
-		}
+			if (replace_value(old_pwd, old) == 1)
+				break ;
 		old_pwd = old_pwd->next;
 	}
-	free(new);
 	free(old);
 }
 

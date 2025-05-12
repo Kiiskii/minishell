@@ -63,7 +63,6 @@ int	add_new_env(char *str, t_envi *env)
 	new_node = malloc(sizeof(t_envi));
 	if (!new_node)
 		return (12);
-	printf("str = %s\n", str);//
 	if (is_valid_input(str) == 0)
 		return (1);
 	if (only_numbers(str) == 1)

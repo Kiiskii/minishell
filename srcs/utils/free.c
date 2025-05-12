@@ -40,9 +40,12 @@ void	free_env(t_envi *env)
 	while (env)
 	{
 		env = env->next;
-		free(tmp->value);
-		free(tmp->key);
-		free(tmp);
+		if (tmp->value)
+			free(tmp->value);
+		if (tmp->key)
+			free(tmp->key);
+		if (tmp)
+			free(tmp);
 		tmp = env;
 	}
 }
