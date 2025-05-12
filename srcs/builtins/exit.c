@@ -58,11 +58,11 @@ int	only_digits(char *str)
 	return (1);
 }
 
-int	builtin_exit(t_ast *ast, char **array, t_mini *lash)
+int	builtin_exit(char **array, t_mini *lash)
 {
 	ft_putstr_fd("exit\n", 2);
 	if (!array[1])
-		exit_process(ast, lash);
+		exit_process(lash);
 	else if (only_digits(array[1]))
 	{
 		if (array[2])
@@ -70,7 +70,7 @@ int	builtin_exit(t_ast *ast, char **array, t_mini *lash)
 		else
 		{
 			lash->exit_code = ft_atoll(array[1], array[1]);
-			exit_process(ast, lash);
+			exit_process(lash);
 		}
 	}
 	else
@@ -79,7 +79,7 @@ int	builtin_exit(t_ast *ast, char **array, t_mini *lash)
 		ft_putstr_fd(array[1], 2);
 		ft_putstr_fd(": numeric argument required\n", 2);
 		lash->exit_code = 2;
-		exit_process(ast, lash);
+		exit_process(lash);
 	}
 	return (1);
 }

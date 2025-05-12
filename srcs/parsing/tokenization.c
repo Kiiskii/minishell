@@ -1,6 +1,6 @@
 #include "../minishell.h"
 
-void	add_token(t_token **list, char *content, t_token_type type)
+void	add_token(t_token **list, char **content, t_token_type type)
 {
 	t_token	*new_node;
 	t_token	*tmp;
@@ -8,12 +8,10 @@ void	add_token(t_token **list, char *content, t_token_type type)
 	new_node = malloc(sizeof(t_token));
 	if (!new_node || !content)
 	{
-		free_tokens(list);
-		list = NULL;
-		ft_putstr_fd("Cannot allocate memory, please CTRL + D!\n", 2);
+		malloc_fail_message(list);
 		return ;
 	}
-	new_node->token = content;
+	new_node->token = *content;
 	new_node->type = type;
 	new_node->next = NULL;
 	if (!*list)
@@ -29,20 +27,25 @@ void	add_token(t_token **list, char *content, t_token_type type)
 
 int	handle_redirs(t_token **list, char *str)
 {
+	char	*redir;
+
 	if (str[0] == '<' && str[1] == '<')
 	{
-		add_token(list, ft_strdup("<<"), HEREDOC);
+		redir = ft_strdup("<<");
+		add_token(list, &redir, HEREDOC);
 		return (2);
 	}
 	else if (str[0] == '>' && str[1] == '>')
 	{
-		add_token(list, ft_strdup(">>"), REDIR_APP);
+		redir = ft_strdup(">>");
+		add_token(list, &redir, REDIR_APP);
 		return (2);
 	}
-	else if (str[0] == '<')
-		add_token(list, ft_strdup("<"), REDIR_IN);
+	redir = ft_substr(str, 0, 1);
+	if (str[0] == '<')
+		add_token(list, &redir, REDIR_IN);
 	else
-		add_token(list, ft_strdup(">"), REDIR_OUT);
+		add_token(list, &redir, REDIR_OUT);
 	if (!*list)
 		return (-1);
 	return (1);
@@ -50,11 +53,15 @@ int	handle_redirs(t_token **list, char *str)
 
 int	handle_special_chars(t_token **list, char *input)
 {
-	int	len;
+	char	*pipe;
+	int		len;
 
 	len = 1;
 	if (input[0] == '|')
-		add_token(list, "|", PIPE);
+	{
+		pipe = ft_strdup("|");
+		add_token(list, &pipe, PIPE);
+	}
 	else
 		len = handle_redirs(list, input);
 	if (!list)

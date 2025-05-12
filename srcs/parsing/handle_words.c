@@ -27,12 +27,19 @@ int	handle_words(t_token **list, char *str)
 	t_indexer	s;
 
 	ft_memset(&s, 0, sizeof(t_indexer));
-	s.str = str;
-	word = NULL;
+	s.str = ft_strdup(str);
+	if (!s.str)
+	{
+		malloc_fail_message(list);
+		return (-1);
+	}
 	iterate_word(&s);
 	word = ft_substr(s.str, 0, s.i);
-	add_token(list, word, WORD);
-	if (!*list || !word)
+	free(s.str);
+	if (!word)
+		return (-1);
+	add_token(list, &word, WORD);
+	if (!*list)
 		return (-1);
 	return (s.i);
 }

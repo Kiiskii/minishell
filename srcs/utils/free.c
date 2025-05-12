@@ -25,8 +25,7 @@ void	free_tokens(t_token **list)
 	while (current)
 	{
 		next = current->next;
-		if (current->token)
-			free(current->token);
+		free(current->token);
 		free(current);
 		current = next;
 	}
@@ -52,16 +51,13 @@ void	free_ast(t_ast *tree)
 {
 	if (!tree)
 		return ;
-	free_ast(tree->left);
-	free_ast(tree->right);
-	if (tree->fd != -1)
-	{
-		unlink(tree->filename);
-		close(tree->fd);
-	}
+	if (tree->left)
+		free_ast(tree->left);
+	if (tree->right)
+		free_ast(tree->right);
 	if (tree->filename)
 		free(tree->filename);
-	//if (tree->args)
-	//	free_arr(tree->args);
+	if (tree->args)
+		free_arr(tree->args);
 	free(tree);
 }

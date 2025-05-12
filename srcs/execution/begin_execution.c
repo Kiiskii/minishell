@@ -1,16 +1,14 @@
 #include "../minishell.h"
 
-//add heredoc after !ast check?
-
-void	begin_execution(t_ast *ast, t_mini *lash)
+void	begin_execution(t_ast *node, t_mini *lash)
 {
-	if (!ast || !lash)
+	if (!node || !lash)
 		return ;
-	if (ast->type == PIPE)
-		execute_pipe(ast, lash);
-	else if (ast->type == WORD)
-		execute_command(ast, ast->args, lash);
-	else if (ast->type == REDIR_IN || ast->type == REDIR_OUT
-		|| ast->type == REDIR_APP)
-		execute_redirs(ast, lash);
+	if (node->type == PIPE)
+		execute_pipe(node, lash);
+	else if (node->type == WORD)
+		execute_command(node, node->args, lash);
+	else if (node->type == REDIR_IN || node->type == REDIR_OUT
+		|| node->type == REDIR_APP)
+		execute_redirs(node, lash);
 }

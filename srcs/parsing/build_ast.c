@@ -40,7 +40,6 @@ t_ast	*build_right(t_token *list)
 {
 	t_token	*tmp;
 	t_ast	*branch;
-	char	**cmd_args;
 
 	branch = NULL;
 	tmp = list;
@@ -58,10 +57,7 @@ t_ast	*build_right(t_token *list)
 		else
 			tmp = tmp->next;
 	}
-	cmd_args = list_to_array(list);
-	if (!cmd_args)
-		return (NULL);
-	branch = create_args(cmd_args, branch);
+	branch = handle_arguments(list, branch);
 	return (branch);
 }
 

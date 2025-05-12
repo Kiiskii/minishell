@@ -1,10 +1,6 @@
 #include "../minishell.h"
 
-//TODO: when does opening fail in out and append?
-//TODO: get fds from lash struct instead?
-//TODO: instead of exit, enter exit process with ast and lash?
-
-void	redirect_append(t_ast *head, t_mini *lash)
+static void	redirect_append(t_ast *head, t_mini *lash)
 {
 	int	fd;
 
@@ -14,19 +10,19 @@ void	redirect_append(t_ast *head, t_mini *lash)
 		ft_putstr_fd("lash: redirect_append: ", 2);
 		perror(head->filename);
 		lash->exit_code = 1;
-		return ;
+		exit_process(lash);
 	}
 	if (dup2(fd, STDOUT_FILENO) == -1)
 	{
 		close(fd);
 		perror("lash: dup2");
 		lash->exit_code = errno;
-		exit(lash->exit_code);
+		exit_process(lash);
 	}
 	close(fd);
 }
 
-void	redirect_out(t_ast *head, t_mini *lash)
+static void	redirect_out(t_ast *head, t_mini *lash)
 {
 	int	fd;
 
@@ -36,19 +32,19 @@ void	redirect_out(t_ast *head, t_mini *lash)
 		ft_putstr_fd("lash: redirect_out: ", 2);
 		perror(head->filename);
 		lash->exit_code = 1;
-		return ;
+		exit_process(lash);
 	}
 	if (dup2(fd, STDOUT_FILENO) == -1)
 	{
 		close(fd);
 		perror("lash: dup2");
 		lash->exit_code = errno;
-		exit(lash->exit_code);
+		exit_process(lash);
 	}
 	close(fd);
 }
 
-void	redirect_in(t_ast *node, t_mini *lash)
+static void	redirect_in(t_ast *node, t_mini *lash)
 {
 	int	fd;
 
@@ -58,23 +54,26 @@ void	redirect_in(t_ast *node, t_mini *lash)
 		ft_putstr_fd("lash: ", 2);
 		perror(node->filename);
 		lash->exit_code = 1;
-		exit(lash->exit_code);
+		exit_process(lash);
 	}
 	if (dup2(fd, STDIN_FILENO) == -1)
 	{
 		close(fd);
 		perror("lash: dup2");
 		lash->exit_code = errno;
-		exit(lash->exit_code);
+		exit_process(lash);
 	}
 	close(fd);
 }
 
-void	wait_child(pid_t pid, t_mini *lash)
+static void	check_redir_type(t_ast *node, t_mini *lash)
 {
-	waitpid(pid, &lash->exit_code, 0);
-	if (WIFEXITED(lash->exit_code))
-		lash->exit_code = WEXITSTATUS(lash->exit_code);
+	if (node->type == REDIR_IN)
+		redirect_in(node, lash);
+	else if (node->type == REDIR_OUT)
+		redirect_out(node, lash);
+	else if (node->type == REDIR_APP)
+		redirect_append(node, lash);
 }
 
 void	execute_redirs(t_ast *node, t_mini *lash)
@@ -91,17 +90,13 @@ void	execute_redirs(t_ast *node, t_mini *lash)
 	if (pid == 0)
 	{
 		reset_default_signals();
-		if (node->type == REDIR_IN)
-			redirect_in(node, lash);
-		else if (node->type == REDIR_OUT)
-			redirect_out(node, lash);
-		else if (node->type == REDIR_APP)
-			redirect_append(node, lash);
+		check_redir_type(node, lash);
 		if (lash->exit_code == 0 && node->left)
 			begin_execution(node->left, lash);
 		if (lash->exit_code == 0 && node->right)
 			begin_execution(node->right, lash);
-		exit(lash->exit_code);
+		close(lash->fd_in);
+		exit_process(lash);
 	}
 	wait_child(pid, lash);
 }

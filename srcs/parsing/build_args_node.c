@@ -38,7 +38,6 @@ int	count_tokens(t_token *list)
 		list = list->next;
 	while (list && list->type != PIPE)
 	{
-		//Make sure this no break
 		if (list->type >= REDIR_IN && list->type <= REDIR_APP)
 			list = list->next->next;
 		else
@@ -62,7 +61,20 @@ char	**list_to_array(t_token *list)
 	args = malloc((token_count + 1) * (sizeof(char *)));
 	if (!args)
 		return (NULL);
-	//args = alloc_args(tmp, args);
 	args = fill_array(tmp, args);
 	return (args);
+}
+
+t_ast	*handle_arguments(t_token *list, t_ast *branch)
+{
+	char	**cmd_args;
+
+	cmd_args = list_to_array(list);
+	if (!cmd_args)
+		return (NULL);
+	if (cmd_args[0] != NULL)
+		branch = create_args(cmd_args, branch);
+	else
+		free(cmd_args);
+	return (branch);
 }

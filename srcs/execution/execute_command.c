@@ -15,7 +15,7 @@ void	execute_command(t_ast *ast, char **args, t_mini *lash)
 	else if (ft_strcmp(args[0], "echo") == 0)
 		lash->exit_code = builtin_echo(args);
 	else if (ft_strcmp(args[0], "exit") == 0)
-		lash->exit_code = builtin_exit(ast, args, lash);
+		lash->exit_code = builtin_exit(args, lash);
 	else
-		execute_external(args, lash);
+		execute_external(ast, lash);
 }
