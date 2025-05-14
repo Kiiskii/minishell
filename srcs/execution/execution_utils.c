@@ -39,3 +39,13 @@ void	wait_child(pid_t pid, t_mini *lash)
 	if (WIFEXITED(lash->exit_code))
 		lash->exit_code = WEXITSTATUS(lash->exit_code);
 }
+
+void	exit_process(t_mini *lash)
+{
+	if (lash->fd_in != -1)
+		close(lash->fd_in);
+	if (lash->head)
+		free_ast(lash->head);
+	free_env(lash->env);
+	exit(lash->exit_code);
+}

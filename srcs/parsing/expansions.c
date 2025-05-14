@@ -4,7 +4,10 @@ char	*handle_multiple_dollar(t_indexer *s, char *new_token)
 {
 	if (!new_token)
 		return (NULL);
-	s->j = s->i;
+	if (s->str[s->i + 1] == '\0' || ft_isblank(s->str[s->i + 1]))
+		s->j = s->i;
+	else
+		s->j = s->i + 1;
 	while (s->str[s->i] == '$')
 		s->i++;
 	new_token = wrap_join(new_token, ft_substr(s->str, s->j, s->i - s->j));
@@ -26,7 +29,7 @@ char	*handle_exps(t_indexer *s, t_mini *lash, char *new_token)
 		word = ft_itoa(lash->exit_code);
 		s->i++;
 	}
-	else if (s->str[s->i + 1] == '$' || s->str[s->i + 1] == '"'
+	else if (s->str[s->i + 1] == '$' || !ft_isalnum(s->str[s->i + 1])
 		|| ft_isblank(s->str[s->i + 1]) || !s->str[s->i + 1])
 		return (handle_multiple_dollar(s, new_token));
 	else

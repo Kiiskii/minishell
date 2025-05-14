@@ -1,23 +1,26 @@
 CC = cc
 
-CFLAGS = -Wall -Wextra -Werror -g
+CFLAGS = -Wall -Wextra -Werror
 
 SRCS =	srcs/minishell.c \
-		srcs/parsing/build_args_node.c srcs/parsing/env_expansions.c srcs/parsing/expansions.c \
-		srcs/parsing/error2_parsing.c srcs/parsing/heredoc.c srcs/parsing/remove_quotes.c \
-		srcs/parsing/tokenization.c srcs/parsing/build_ast.c srcs/parsing/env-to-list.c \
-		srcs/parsing/error_parsing.c srcs/parsing/handle_words.c \
-		srcs/parsing/more_utils_heredoc.c srcs/parsing/utils_heredoc.c \
-		srcs/utils/add_node.c srcs/utils/free.c srcs/utils/utils.c srcs/utils/utils2.c \
-		srcs/signals/init_signals.c \
+		srcs/parsing/build_args_node.c srcs/parsing/env_expansions.c \
+		srcs/parsing/expansions.c srcs/parsing/error2_parsing.c \
+		srcs/parsing/heredoc.c srcs/parsing/remove_quotes.c \
+		srcs/parsing/tokenization.c srcs/parsing/build_ast.c \
+		srcs/parsing/env_to_list.c srcs/parsing/error_parsing.c \
+		srcs/parsing/handle_words.c srcs/parsing/more_utils_heredoc.c \
+		srcs/parsing/utils_heredoc.c \
+		srcs/utils/add_node.c srcs/utils/free.c srcs/utils/utils.c \
+		srcs/utils/utils2.c srcs/signals/init_signals.c \
 		srcs/builtins/cd.c srcs/builtins/echo.c srcs/builtins/env.c \
 		srcs/builtins/exit.c srcs/builtins/export.c srcs/builtins/pwd.c \
 		srcs/builtins/unset.c srcs/builtins/builtin_utils.c \
 		srcs/execution/begin_execution.c srcs/execution/execute_command.c \
-		srcs/execution/execute_external.c srcs/execution/exit_process.c \
-		srcs/execution/execute_pipe.c srcs/execution/execute_redirs.c srcs/execution/execution_utils.c \
-		srcs/env/add_to_env.c srcs/env/print_alphabetised.c srcs/env/list_to_array.c \
-		srcs/env/modify_env.c srcs/env/get_exec_path.c \
+		srcs/execution/execute_external.c srcs/execution/execute_pipe.c \
+		srcs/execution/execute_redirs.c srcs/execution/execution_utils.c \
+		srcs/env/add_to_env.c srcs/env/print_alphabetised.c \
+		srcs/env/list_to_array.c srcs/env/modify_env.c \
+		srcs/env/get_exec_path.c \
 
 NAME =	minishell
 
@@ -72,9 +75,3 @@ re:	fclean all
 
 %.o: %.c minishell.h
 		$(CC) $(CFLAGS) -c $< -o $@ -g $(HEADERS)
-
-debug: CFLAGS += -fsanitize=address -fsanitize=undefined
-debug: $(NAME)
-	@echo "$(GREEN)----------------------------------------$(RESET)"
-	@echo "$(ORANGE)Debug with sanitizers...$(RESET)"
-	@echo "$(GREEN)----------------------------------------$(RESET)"

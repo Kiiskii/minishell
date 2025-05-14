@@ -7,6 +7,12 @@ void	write_heredoc(char **line, int fd)
 	free(*line);
 }
 
+void	destroy_filename(char *filename)
+{
+	unlink(filename);
+	free(filename);
+}
+
 int	remove_delim_quotes(t_ast *node)
 {
 	char	*new_filename;

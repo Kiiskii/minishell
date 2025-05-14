@@ -89,6 +89,7 @@ void	execute_redirs(t_ast *node, t_mini *lash)
 	}
 	if (pid == 0)
 	{
+		lash->exit_code = 0;
 		reset_default_signals();
 		check_redir_type(node, lash);
 		if (lash->exit_code == 0 && node->left)

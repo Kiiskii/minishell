@@ -10,10 +10,13 @@
 # include <sys/types.h>			// pid_t
 # include <readline/readline.h>	// readline
 # include <readline/history.h>	// readline history
-# include <errno.h>				//errno
+# include <errno.h>				// errno
 # include <limits.h>			// llongmax
 # include <signal.h>			// signals
 # include <sys/stat.h>			// stat
+
+# define HEREDOC_MAX 10
+# define INPUT_MAX_LEN 1024
 
 typedef enum e_token_type
 {
@@ -73,6 +76,7 @@ char	*wrap_join(char *s1, char *s2);
 void	begin_execution(t_ast *node, t_mini *lash);
 
 //heredoc
+void	destroy_filename(char *filename);
 int		heredoc_readline_loop(t_ast *leaf, t_mini *lash, int fd,
 			int dont_expand);
 int		remove_delim_quotes(t_ast *branch);
@@ -143,10 +147,6 @@ char	**fill_array(t_token *list, char **args);
 t_ast	*add_node_right(t_ast *node, t_ast *new_node);
 t_ast	*add_node_left(t_ast *node, t_ast *new_node);
 
-//for testing
-void	execute_command(t_ast *ast, char **args, t_mini *lash); //THIS
-void	exit_process(t_mini *lash); //AND THIS
-
 // free functions
 void	delete_heredoc_temps(t_ast *tree);
 void	malloc_fail_message_tree(t_ast *tree);
@@ -156,6 +156,7 @@ void	free_ast(t_ast *tree);
 void	free_env(t_envi *env);
 
 // commands
+void	execute_command(t_ast *ast, char **args, t_mini *lash);
 int		builtin_cd(char **array, t_envi *env);
 int		builtin_echo(char **array);
 int		builtin_env(char **array, t_envi *env);
@@ -179,6 +180,7 @@ void	*fail_to_malloc(t_mini *lash);
 void	cmd_error(char *cmd, t_mini *lash);
 void	handle_exit_status(t_mini *lash);
 void	wait_child(pid_t pid, t_mini *lash);
+void	exit_process(t_mini *lash);
 
 // builtin utils
 void	not_valid_msg(char *str);
