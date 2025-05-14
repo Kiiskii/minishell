@@ -52,7 +52,7 @@ int	error_iterate_list(t_token *tokens, t_mini *lash)
 	{
 		if (tmp->type == HEREDOC)
 			heredoc_count++;
-		if (heredoc_count > 10)
+		if (heredoc_count > HEREDOC_MAX)
 		{
 			ft_putstr_fd("lash: syntax error: too many heredocs\n", 2);
 			lash->exit_code = 2;

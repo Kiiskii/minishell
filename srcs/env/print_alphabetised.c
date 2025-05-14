@@ -56,7 +56,7 @@ static t_envi	*sort_env(t_envi *env, t_envi *copy)
 
 	while (env != NULL)
 	{
-		new_node = malloc(sizeof(t_envi));
+		new_node = ft_calloc(1, sizeof(t_envi));
 		if (!new_node)
 		{
 			free_env(copy);
@@ -76,7 +76,7 @@ int	print_alphabetised(t_envi *env)
 {
 	t_envi	*alphalist;
 	t_envi	*copy;
-	t_envi	*head;
+	t_envi	*trav;
 
 	copy = NULL;
 	alphalist = sort_env(env, copy);
@@ -85,17 +85,16 @@ int	print_alphabetised(t_envi *env)
 		ft_putstr_fd("Cannot allocate memory, please CTRL + D!\n", 2);
 		return (1);
 	}
-	head = alphalist;
-	while (alphalist != NULL)
+	trav = alphalist;
+	while (trav != NULL)
 	{
 		printf("declare -x ");
-		if (alphalist->has_value == 1)
-			printf("%s=\"%s\"\n", alphalist->key, alphalist->value);
+		if (trav->has_value == 1)
+			printf("%s=\"%s\"\n", trav->key, trav->value);
 		else
-			printf("%s\n", alphalist->key);
-		alphalist = alphalist->next;
+			printf("%s\n", trav->key);
+		trav = trav->next;
 	}
 	free_env(alphalist);
-	free_env(head);
 	return (0);
 }

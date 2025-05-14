@@ -59,7 +59,7 @@ int	handle_heredoc(t_ast *leaf, int dont_expand, t_mini *lash, int error)
 	if (g_signum != SIGINT)
 		heredoc_cleanup(leaf, heredoc_stdin, filename);
 	else
-		unlink(filename);
+		destroy_filename(filename);
 	return (error);
 }
 

@@ -12,7 +12,10 @@ int	begin_tokenizing(t_token **tokens, t_mini *lash, char *input)
 	if (!tokens || !*tokens)
 		return (0);
 	if (error_iterate_list(*tokens, lash) == 0)
+	{
+		free_tokens(tokens);
 		return (0);
+	}
 	return (1);
 }
 
@@ -77,7 +80,7 @@ int	main(int argc, char **argv, char **env)
 
 	if (argc != 1)
 		return (1);
-	if (!env)
+	if (!env[0])
 	{
 		ft_putstr_fd("Empty env. Usage: ./minishell\n", 2);
 		return (1);
