@@ -43,7 +43,7 @@ static char	**ft_strmalloc(char **split, char const *s, char c, size_t i)
 			size++;
 			i++;
 		}
-		split[j] = malloc(size + 1);
+		split[j] = ft_calloc(size + 1, 1);
 		if (split[j] == NULL)
 		{
 			ft_free(split, j);

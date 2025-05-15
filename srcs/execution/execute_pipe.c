@@ -2,6 +2,7 @@
 
 static void	go_right(t_ast *node, t_mini *lash, int *fds, int *pid)
 {
+	sig_ignore();
 	*pid = fork();
 	if (*pid == -1)
 	{
@@ -19,7 +20,7 @@ static void	go_right(t_ast *node, t_mini *lash, int *fds, int *pid)
 			close(fds[0]);
 			perror("lash: dup2");
 			lash->exit_code = errno;
-			exit(errno);
+			exit_process(lash);
 		}
 		close(fds[0]);
 		begin_execution(node, lash);
@@ -29,6 +30,7 @@ static void	go_right(t_ast *node, t_mini *lash, int *fds, int *pid)
 
 static void	go_left(t_ast *node, t_mini *lash, int *fds, int *pid)
 {
+	sig_ignore();
 	*pid = fork();
 	if (*pid == -1)
 	{

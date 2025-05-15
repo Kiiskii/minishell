@@ -7,7 +7,6 @@ void	signal_exit_heredoc(char *line, t_mini *lash, int fd, t_ast *leaf)
 	lash->exit_code = 130;
 	close(leaf->fd);
 	leaf->fd = -1;
-	close(STDIN_FILENO);
 	dup2(fd, STDIN_FILENO);
 	close(fd);
 }

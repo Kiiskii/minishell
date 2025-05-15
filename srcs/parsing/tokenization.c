@@ -5,7 +5,7 @@ void	add_token(t_token **list, char **content, t_token_type type)
 	t_token	*new_node;
 	t_token	*tmp;
 
-	new_node = malloc(sizeof(t_token));
+	new_node = ft_calloc(1, sizeof(t_token));
 	if (!new_node || !content)
 	{
 		malloc_fail_message(list);

@@ -24,7 +24,7 @@ char	*ft_strjoin(char const *s1, char const *s2)
 	len1 = ft_strlen(s1);
 	len2 = ft_strlen(s2);
 	totallen = len1 + len2;
-	dest = malloc(totallen + 1);
+	dest = ft_calloc(totallen + 1, 1);
 	if (dest == NULL)
 		return (NULL);
 	ft_memcpy(dest, s1, len1);

@@ -98,6 +98,7 @@ void	init_signals_heredoc(void);
 void	reset_default_signals(void);
 void	handle_sig_int(int signum);
 void	init_signals(void);
+void	sig_ignore(void);
 
 // parsing errors
 int		error_iterate_list(t_token *tokens, t_mini *lash);
@@ -163,7 +164,7 @@ int		builtin_env(char **array, t_envi *env);
 int		builtin_exit(char **array, t_mini *lash);
 void	builtin_export(char **array, t_envi *env, t_mini *lash);
 int		builtin_pwd(char **array, t_envi *env);
-int		builtin_unset(char **array, t_envi *env);
+int		builtin_unset(char **array, t_envi **env);
 void	execute_external(t_ast *ast, t_mini *lash);
 
 // env functions

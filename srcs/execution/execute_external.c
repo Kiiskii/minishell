@@ -18,7 +18,7 @@ static void	exec_ext_child(t_mini *lash, t_ast *ast)
 	lash->exit_code = 127;
 	if (errno == EACCES)
 		lash->exit_code = 126;
-	free_arr(env_array);
+	exit_process(lash);
 }
 
 void	execute_external(t_ast *ast, t_mini *lash)
@@ -31,6 +31,7 @@ void	execute_external(t_ast *ast, t_mini *lash)
 		lash->exit_code = 127;
 		return ;
 	}
+	sig_ignore();
 	pid = fork();
 	if (pid == -1)
 	{
