@@ -27,3 +27,10 @@ void	delete_heredoc_temps(t_ast *tree)
 	if (tree->filename && tree->fd != -1)
 		unlink(tree->filename);
 }
+
+void	sig_ignore(void)
+{
+	signal(SIGINT, SIG_IGN);
+	signal(SIGQUIT, SIG_IGN);
+	signal(SIGPIPE, SIG_IGN);
+}

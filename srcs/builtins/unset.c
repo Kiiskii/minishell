@@ -34,7 +34,7 @@ void	remove_env(char	*str, t_envi **env)
 	}
 }
 
-int	builtin_unset(char **array, t_envi *env)
+int	builtin_unset(char **array, t_envi **env)
 {
 	int	i;
 
@@ -51,7 +51,7 @@ int	builtin_unset(char **array, t_envi *env)
 	}
 	while (array[i])
 	{
-		remove_env(array[i], &env);
+		remove_env(array[i], env);
 		i++;
 	}
 	return (0);

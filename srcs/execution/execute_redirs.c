@@ -80,6 +80,7 @@ void	execute_redirs(t_ast *node, t_mini *lash)
 {
 	pid_t	pid;
 
+	sig_ignore();
 	pid = fork();
 	if (pid == -1)
 	{

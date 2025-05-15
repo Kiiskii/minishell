@@ -4,7 +4,7 @@ t_ast	*create_args(char **args, t_ast *branch)
 {
 	t_ast	*new_node;
 
-	new_node = malloc(sizeof(t_ast));
+	new_node = ft_calloc(1, sizeof(t_ast));
 	if (!new_node)
 		return (NULL);
 	new_node->type = WORD;
@@ -21,7 +21,7 @@ t_ast	*create_redir(t_token_type redir, char *filename, t_ast *branch)
 {
 	t_ast	*new_node;
 
-	new_node = malloc(sizeof(t_ast));
+	new_node = ft_calloc(1, sizeof(t_ast));
 	if (!new_node)
 		return (NULL);
 	new_node->type = redir;
@@ -67,7 +67,7 @@ t_ast	*create_tree(t_ast *tree, t_token *list, t_token_type type)
 
 	if (type == PIPE)
 	{
-		new_node = malloc(sizeof(t_ast));
+		new_node = ft_calloc(1, sizeof(t_ast));
 		if (!new_node)
 			return (NULL);
 		new_node->type = type;

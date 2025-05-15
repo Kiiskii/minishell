@@ -34,6 +34,11 @@ int	check_existing(char *str, t_envi *env)
 	int		count;
 
 	count = 0;
+	if (!env)// how to check?
+	{
+		printf("exit here\n");//
+		return (0);//
+	}
 	trav = env;
 	while (str[count] && str[count] != '=')
 		count++;

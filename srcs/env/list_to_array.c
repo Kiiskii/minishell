@@ -49,7 +49,7 @@ char	**env_to_arr(t_envi *env)
 
 	i = 0;
 	size = env_size(env);
-	tmp = malloc((size + 1) * sizeof(char));
+	tmp = ft_calloc(1, (size + 1) * sizeof(char));
 	if (tmp == NULL)
 		return (NULL);
 	while (env && env->next != NULL)

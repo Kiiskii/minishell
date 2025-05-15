@@ -63,6 +63,7 @@ static int	change_dir(char *path, t_envi *env)
 	if (!current)
 		perror("lash: cd: getcwd: PWD");
 	update_env(current, old, env);
+	free(current);
 	return (0);
 }
 

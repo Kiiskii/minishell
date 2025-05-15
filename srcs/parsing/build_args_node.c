@@ -58,7 +58,7 @@ char	**list_to_array(t_token *list)
 	tmp = list;
 	token_count = 0;
 	token_count = count_tokens(tmp);
-	args = malloc((token_count + 1) * (sizeof(char *)));
+	args = ft_calloc((token_count + 1), (sizeof(char *)));
 	if (!args)
 		return (NULL);
 	args = fill_array(tmp, args);

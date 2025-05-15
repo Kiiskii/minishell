@@ -1,5 +1,31 @@
 #include "../minishell.h"
 
+t_envi	*create_shlvl(void)
+{
+	t_envi	*new_node;
+	t_envi	*second_node;
+
+	new_node = ft_calloc(1, sizeof(t_envi));
+	if (!new_node)
+		return (NULL);
+	new_node->has_value = 1;
+	new_node->key = ft_strdup("SHLVL");
+	new_node->value = ft_strdup("1");
+	if (!new_node->key || !new_node->value)
+		return (NULL);
+	second_node = ft_calloc(1, sizeof(t_envi));
+	if (!second_node)
+		return (NULL);
+	new_node->next = second_node;
+	second_node->has_value = 1;
+	second_node->key = ft_strdup("_");
+	second_node->value = ft_strdup("/usr/bin/env");
+	if (!second_node->key || !second_node->value)
+		return (NULL);
+	second_node->next = NULL;
+	return (new_node);
+}
+
 t_envi	*create_node(t_envi *new_node, char *env, int j, int has_value)
 {
 	new_node->has_value = has_value;
@@ -34,7 +60,7 @@ void	env_to_list(t_envi **envi, char **env)
 	while (env[i])
 	{
 		j = 0;
-		new_node = malloc(sizeof(t_envi));
+		new_node = ft_calloc(1, sizeof(t_envi));
 		if (!new_node)
 			return ;
 		while (env[i][j] && env[i][j] != '=')
@@ -49,4 +75,6 @@ void	env_to_list(t_envi **envi, char **env)
 			add_back(*envi, new_node);
 		i++;
 	}
+	if (!*envi)
+		*envi = create_shlvl();
 }

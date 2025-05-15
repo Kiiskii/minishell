@@ -4,6 +4,7 @@ void	reset_default_signals(void)
 {
 	signal(SIGINT, SIG_DFL);
 	signal(SIGQUIT, SIG_DFL);
+	signal(SIGPIPE, SIG_DFL);
 }
 
 void	handle_sig_int_heredoc(int signum)

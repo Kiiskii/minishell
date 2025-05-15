@@ -40,7 +40,8 @@ int	begin_ast_heredoc(t_token **tokens, t_mini *lash)
 	else if (error == -1)
 		return (0);
 	lash->head = tree;
-	begin_execution(tree, lash);
+	if (g_signum == 0)
+		begin_execution(tree, lash);
 	delete_heredoc_temps(tree);
 	free_ast(tree);
 	return (1);
@@ -70,6 +71,7 @@ void	start_readline(t_mini *lash)
 		if (begin_ast_heredoc(&tokens, lash) == 0)
 			continue ;
 		free(input);
+		g_signum = 0;
 	}
 }
 
@@ -80,14 +82,14 @@ int	main(int argc, char **argv, char **env)
 
 	if (argc != 1)
 		return (1);
-	if (!env[0])
-	{
-		ft_putstr_fd("Empty env. Usage: ./minishell\n", 2);
-		return (1);
-	}
 	(void)argv;
 	envi = NULL;
 	env_to_list(&envi, env);
+	if (!envi)
+	{
+		ft_putstr_fd("Cannot allocate memory for env!\n", 2);
+		return (1);
+	}
 	ft_memset(&lash, 0, sizeof(t_mini));
 	lash.env = envi;
 	lash.exit_code = 0;
@@ -97,7 +99,7 @@ int	main(int argc, char **argv, char **env)
 		exit(1);
 	start_readline(&lash);
 	close(lash.fd_in);
-	free_env(envi);
+	free_env(lash.env);
 	printf("Exiting lash...\n");
 	return (lash.exit_code);
 }

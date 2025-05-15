@@ -4,7 +4,12 @@ char	*handle_multiple_dollar(t_indexer *s, char *new_token)
 {
 	if (!new_token)
 		return (NULL);
-	if (s->str[s->i + 1] == '\0' || ft_isblank(s->str[s->i + 1]))
+	if (s->i == 0 && s->str[s->i + 1])
+		s->j = s->i + 1;
+	else if (s->str[s->i + 1] == '\0' || ft_isblank(s->str[s->i + 1])
+		|| ft_isblank(s->str[s->i - 1])
+		|| (s->str[s->i + 1] == '"' && ft_isblank(s->str[s->i + 1]))
+		|| s->str[s->i - 1] == '"')
 		s->j = s->i;
 	else
 		s->j = s->i + 1;

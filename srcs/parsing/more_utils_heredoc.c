@@ -20,7 +20,7 @@ int	remove_delim_quotes(t_ast *node)
 
 	len = 0;
 	len = count_delim_len(node->filename);
-	new_filename = malloc(len + 1);
+	new_filename = ft_calloc(len + 1, 1);
 	if (!new_filename)
 		return (-2);
 	heredoc_rm_quotes(node->filename, new_filename);
