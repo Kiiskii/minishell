@@ -67,26 +67,3 @@ char	**env_to_arr(t_envi *env)
 	free(tmp);
 	return (res);
 }
-
-char	**get_env_path(char **args, t_mini *lash, t_envi *env)
-{
-	char	**paths;
-
-	while (env && ft_strncmp(env->key, "PATH", 4) != 0)
-		env = env->next;
-	if (env == NULL)
-	{
-		lash->exit_code = 127;
-		ft_putstr_fd("lash: ", 2);
-		ft_putstr_fd(args[0], 2);
-		ft_putstr_fd(": no such file or directory\n", 2);
-		return (NULL);
-	}
-	paths = ft_split(env->value, ':');
-	if (paths == NULL)
-	{
-		lash->exit_code = 12;
-		ft_putstr_fd("Cannot allocate memory, please CTRL + D!\n", 2);
-	}
-	return (paths);
-}

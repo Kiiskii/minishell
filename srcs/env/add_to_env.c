@@ -67,6 +67,9 @@ int	add_new_env(char *str, t_envi *env)
 		return (1);
 	if (only_numbers(str) == 1)
 		return (1);
+	new_node = ft_calloc(1, sizeof(t_envi));
+	if (!new_node)
+		return (12);
 	while (str[equal] && str[equal] != '=')
 		equal++;
 	if (str[equal] == '=')

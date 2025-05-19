@@ -25,12 +25,12 @@ int	begin_ast_heredoc(t_token **tokens, t_mini *lash)
 	int		error;
 
 	tree = build_ast(tokens);
+	free_tokens(tokens);
 	if (!tree)
 	{
 		malloc_fail_message_tree(tree);
 		return (0);
 	}
-	free_tokens(tokens);
 	error = iterate_heredoc(tree, lash, 0);
 	if (error == -2)
 	{
