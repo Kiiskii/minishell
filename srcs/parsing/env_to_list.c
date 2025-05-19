@@ -1,5 +1,25 @@
 #include "../minishell.h"
 
+void	create_protected(t_envi *new_node, t_envi *second_node)
+{
+	new_node->next = second_node;
+	second_node->has_value = 1;
+	second_node->key = ft_strdup("_");
+	second_node->value = ft_strdup("/usr/bin/env");
+	if (!second_node->key || !second_node->value)
+	{
+		free(new_node);
+		free(new_node->key);
+		free(new_node->value);
+		free(second_node);
+		free(second_node->key);
+		free(second_node->value);
+		second_node = NULL;
+		return ;
+	}
+	second_node->next = NULL;
+}
+
 t_envi	*create_shlvl(void)
 {
 	t_envi	*new_node;
@@ -11,18 +31,17 @@ t_envi	*create_shlvl(void)
 	new_node->has_value = 1;
 	new_node->key = ft_strdup("SHLVL");
 	new_node->value = ft_strdup("1");
-	if (!new_node->key || !new_node->value)
-		return (NULL);
 	second_node = ft_calloc(1, sizeof(t_envi));
+	if (!new_node->key || !new_node->value || !second_node)
+	{
+		free(new_node);
+		free(new_node->key);
+		free(new_node->value);
+		return (NULL);
+	}
+	create_protected(new_node, second_node);
 	if (!second_node)
 		return (NULL);
-	new_node->next = second_node;
-	second_node->has_value = 1;
-	second_node->key = ft_strdup("_");
-	second_node->value = ft_strdup("/usr/bin/env");
-	if (!second_node->key || !second_node->value)
-		return (NULL);
-	second_node->next = NULL;
 	return (new_node);
 }
 
@@ -30,24 +49,48 @@ t_envi	*create_node(t_envi *new_node, char *env, int j, int has_value)
 {
 	new_node->has_value = has_value;
 	new_node->key = ft_substr(env, 0, j);
+	if (!new_node->key)
+	{
+		free(new_node);
+		return (NULL);
+	}
 	new_node->next = NULL;
 	if (has_value)
+	{
 		new_node->value = ft_strdup(&env[j + 1]);
+		if (!new_node->value)
+		{
+			free(new_node->key);
+			free(new_node);
+			return (NULL);
+		}
+	}
 	else
 		new_node->value = NULL;
 	return (new_node);
 }
 
-void	add_back(t_envi *tmp, t_envi *node)
+t_envi	*check_for_value(t_envi *new_node, char *str, int j, t_envi *envi)
 {
-	if (tmp)
+	if (str[j] == '=')
 	{
-		while (tmp->next)
-			tmp = tmp->next;
-		tmp->next = node;
+		new_node = create_node(new_node, str, j, 1);
+		if (!new_node)
+		{
+			free_env(envi);
+			return (NULL);
+		}
 	}
 	else
-		tmp = node;
+	{
+		new_node = create_node(new_node, str, j, 0);
+		if (!new_node)
+		{
+			free_env(envi);
+			return (NULL);
+		}
+	}
+	return (new_node);
 }
 
 void	env_to_list(t_envi **envi, char **env)
@@ -65,10 +108,9 @@ void	env_to_list(t_envi **envi, char **env)
 			return ;
 		while (env[i][j] && env[i][j] != '=')
 			j++;
-		if (env[i][j] == '=')
-			new_node = create_node(new_node, env[i], j, 1);
-		else
-			new_node = create_node(new_node, env[i], j, 0);
+		new_node = check_for_value(new_node, env[i], j, *envi);
+		if (!new_node)
+			return ;
 		if (!*envi)
 			*envi = new_node;
 		else

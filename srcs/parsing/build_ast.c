@@ -7,6 +7,7 @@ t_ast	*create_args(char **args, t_ast *branch)
 	new_node = ft_calloc(1, sizeof(t_ast));
 	if (!new_node)
 	{
+		free_ast(branch);
 		free_arr(args);
 		return (NULL);
 	}
@@ -26,11 +27,18 @@ t_ast	*create_redir(t_token_type redir, char *filename, t_ast *branch)
 
 	new_node = ft_calloc(1, sizeof(t_ast));
 	if (!new_node)
+	{
+		free_ast(branch);
 		return (NULL);
+	}
 	new_node->type = redir;
 	new_node->filename = ft_strdup(filename);
 	if (!new_node->filename)
+	{
+		free(new_node);
+		free_ast(branch);
 		return (NULL);
+	}
 	new_node->args = NULL;
 	new_node->left = NULL;
 	new_node->right = NULL;
@@ -64,34 +72,35 @@ t_ast	*build_right(t_token *list)
 	return (branch);
 }
 
-t_ast	*create_tree(t_ast *tree, t_token *list, t_token_type type)
+t_ast	*create_tree(t_ast *tree, t_token *list, t_token_type type, int *error)
 {
 	t_ast	*new_node;
 
 	if (type == PIPE)
 	{
+		ft_memset(&new_node, 0, sizeof(t_ast *));
 		new_node = ft_calloc(1, sizeof(t_ast));
 		if (!new_node)
+		{
+			free_ast(tree);
+			*error = 1;
 			return (NULL);
+		}
 		new_node->type = type;
-		new_node->filename = NULL;
-		new_node->args = NULL;
-		new_node->left = NULL;
 		new_node->right = build_right(list);
-		if (!new_node->right)
-			return (NULL);
 	}
 	else
-	{
 		new_node = build_right(list);
-		if (!new_node)
-			return (NULL);
+	if (!new_node)
+	{
+		free_ast(tree);
+		return (NULL);
 	}
 	tree = add_node_left(tree, new_node);
 	return (tree);
 }
 
-t_ast	*build_ast(t_token **list)
+t_ast	*build_ast(t_token **list, int *error)
 {
 	t_token	*tmp;
 	t_ast	*tree;
@@ -105,12 +114,17 @@ t_ast	*build_ast(t_token **list)
 	{
 		if (tmp->type == PIPE)
 		{
-			tree = build_ast(&tmp);
+			tree = build_ast(&tmp, error);
 			break ;
 		}
 		tmp = tmp->next;
 	}
-	tree = create_tree(tree, *list, (*list)->type);
+	tree = create_tree(tree, *list, (*list)->type, error);
+	if (*error != 0)
+	{
+		free_ast(tree);
+		return (NULL);
+	}
 	if (!tree)
 		return (NULL);
 	return (tree);

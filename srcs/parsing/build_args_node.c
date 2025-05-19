@@ -53,6 +53,7 @@ char	**list_to_array(t_token *list)
 {
 	t_token	*tmp;
 	char	**args;
+	char	**tmp_args;
 	int		token_count;
 
 	tmp = list;
@@ -61,7 +62,10 @@ char	**list_to_array(t_token *list)
 	args = ft_calloc((token_count + 1), (sizeof(char *)));
 	if (!args)
 		return (NULL);
+	tmp_args = args;
 	args = fill_array(tmp, args);
+	if (!args)
+		free(tmp_args);
 	return (args);
 }
 

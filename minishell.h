@@ -138,8 +138,8 @@ void	remove_quotes(t_token **tokens);
 t_ast	*handle_arguments(t_token *list, t_ast *branch);
 t_envi	*create_node(t_envi *new_node, char *env, int j, int has_value);
 void	add_back(t_envi *tmp, t_envi *node);
-t_ast	*build_ast(t_token **list);
-t_ast	*create_tree(t_ast *tree, t_token *list, t_token_type type);
+t_ast	*build_ast(t_token **list, int *error);
+t_ast	*create_tree(t_ast *tree, t_token *list, t_token_type type, int *error);
 t_ast	*build_right(t_token *list);
 t_ast	*create_redir(t_token_type redir, char *filename, t_ast *branch);
 t_ast	*create_args(char **args, t_ast *branch);
@@ -168,6 +168,7 @@ int		builtin_unset(char **array, t_envi **env);
 void	execute_external(t_ast *ast, t_mini *lash);
 
 // env functions
+void	create_protected(t_envi *new_node, t_envi *second_node);
 int		modify_env(char *str, t_envi *env);
 char	*find_key(char *str);
 int		print_alphabetised(t_envi *env);

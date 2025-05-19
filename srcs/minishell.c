@@ -24,7 +24,8 @@ int	begin_ast_heredoc(t_token **tokens, t_mini *lash)
 	t_ast	*tree;
 	int		error;
 
-	tree = build_ast(tokens);
+	error = 0;
+	tree = build_ast(tokens, &error);
 	free_tokens(tokens);
 	if (!tree)
 	{
