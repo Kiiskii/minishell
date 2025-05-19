@@ -9,6 +9,7 @@ static int	replace_value(t_envi *node, char *replacement)
 	if (node->value == NULL)
 	{
 		ft_putstr_fd("Cannot allocate memory, please CTRL + D!\n", 2);
+		node->has_value = 0;
 		return (1);
 	}
 	return (0);

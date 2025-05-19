@@ -6,7 +6,10 @@ t_ast	*create_args(char **args, t_ast *branch)
 
 	new_node = ft_calloc(1, sizeof(t_ast));
 	if (!new_node)
+	{
+		free_arr(args);
 		return (NULL);
+	}
 	new_node->type = WORD;
 	new_node->filename = NULL;
 	new_node->args = args;

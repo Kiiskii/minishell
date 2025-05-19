@@ -11,8 +11,6 @@ static void	exec_ext_child(t_mini *lash, t_ast *ast)
 	close(lash->fd_in);
 	reset_default_signals();
 	env_array = env_to_arr(lash->env);
-	if (!env_array)
-		ft_putstr_fd("Cannot allocate memory, please CTRL + D!\n", 2);
 	execve(path, ast->args, env_array);
 	ft_putstr_fd("Failed to execute\n", 2);
 	lash->exit_code = 127;

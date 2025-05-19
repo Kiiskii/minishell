@@ -22,8 +22,6 @@ char	*find_key(char *str)
 	if (str[i] == '=' && str[i - 1] == '+')
 		i--;
 	key = ft_substr(str, 0, i);
-	if (key == NULL)
-		ft_putstr_fd("Cannot allocate memory, please CTRL + D!\n", 2);
 	return (key);
 }
 
