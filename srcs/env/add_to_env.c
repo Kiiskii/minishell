@@ -60,6 +60,9 @@ int	add_new_env(char *str, t_envi *env)
 	int		equal;
 
 	equal = 0;
+	new_node = ft_calloc(1, sizeof(t_envi));
+	if (!new_node)
+		return (12);
 	if (is_valid_input(str) == 0)
 		return (1);
 	if (only_numbers(str) == 1)
