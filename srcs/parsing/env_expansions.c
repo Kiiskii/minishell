@@ -10,14 +10,17 @@ char	*find_env_match(char *my_key, t_envi *env)
 	{
 		if (!(ft_strcmp(my_key, tmp->key)))
 		{
-			my_value = ft_strdup(tmp->value);
+			my_value = ft_strdup(tmp->value);//
 			if (!my_value)
 				return (NULL);
 			return (my_value);
 		}
 		tmp = tmp->next;
 	}
-	return (NULL);
+	my_value = ft_strdup("");
+	if (!my_value)
+		return (NULL);
+	return (my_value);
 }
 
 char	*exps_find_key(char *token, t_envi *env)

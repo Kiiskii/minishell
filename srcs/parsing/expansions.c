@@ -23,7 +23,10 @@ char	*handle_multiple_dollar(t_indexer *s, char *new_token)
 char	*handle_exps(t_indexer *s, t_mini *lash, char *new_token)
 {
 	char	*word;
+	int		error;
 
+	error = 0;
+	word = NULL;
 	if (!new_token)
 		return (NULL);
 	word = NULL;
@@ -39,8 +42,7 @@ char	*handle_exps(t_indexer *s, t_mini *lash, char *new_token)
 		return (handle_multiple_dollar(s, new_token));
 	else
 		word = exps_find_key(&s->str[s->i + 1], lash->env);
-	if (word)
-		new_token = wrap_join(new_token, word);
+	new_token = wrap_join(new_token, word);
 	if (s->str[s->i] != '?')
 		s->i += iterate_key(&s->str[s->i + 1]);
 	s->j = s->i + 1;

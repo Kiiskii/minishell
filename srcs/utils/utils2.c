@@ -5,7 +5,11 @@ char	*wrap_join(char *s1, char *s2)
 	char	*string;
 
 	if (!s1 || !s2)
+	{
+		free(s1);
+		free(s2);
 		return (NULL);
+	}
 	string = ft_strjoin(s1, s2);
 	if (s1)
 		free(s1);
@@ -33,4 +37,16 @@ void	sig_ignore(void)
 	signal(SIGINT, SIG_IGN);
 	signal(SIGQUIT, SIG_IGN);
 	signal(SIGPIPE, SIG_IGN);
+}
+
+void	add_back(t_envi *tmp, t_envi *node)
+{
+	if (tmp)
+	{
+		while (tmp->next)
+			tmp = tmp->next;
+		tmp->next = node;
+	}
+	else
+		tmp = node;
 }
