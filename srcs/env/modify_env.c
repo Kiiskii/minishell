@@ -7,6 +7,7 @@ static void	update_values(char *new, t_envi *env, char *key)
 
 	tmp = NULL;
 	trav = env;
+	(void)new;
 	while (trav != NULL)
 	{
 		if (ft_strcmp(trav->key, key) == 0)
@@ -66,6 +67,7 @@ static void	replace_env(char *str, t_envi *trav, int count)
 			if (trav-> value == NULL)
 			{
 				free(seeker);
+				trav->has_value = 0;
 				ft_putstr_fd("Cannot allocate memory, please CTRL + D!\n", 2);
 				return ;
 			}
