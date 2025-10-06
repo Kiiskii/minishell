@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   utils_heredoc.c                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: lguillen <lguillen@student.hive.fi>        +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/05/19 10:39:20 by lguillen          #+#    #+#             */
+/*   Updated: 2025/05/19 10:39:21 by lguillen         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../minishell.h"
 
 void	signal_exit_heredoc(char *line, t_mini *lash, int fd, t_ast *leaf)
@@ -7,6 +19,7 @@ void	signal_exit_heredoc(char *line, t_mini *lash, int fd, t_ast *leaf)
 	lash->exit_code = 130;
 	close(leaf->fd);
 	leaf->fd = -1;
+	lash->heredoc_sig = 1;
 	dup2(fd, STDIN_FILENO);
 	close(fd);
 }
