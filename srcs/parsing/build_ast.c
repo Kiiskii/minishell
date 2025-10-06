@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   build_ast.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: lguillen <lguillen@student.hive.fi>        +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/05/19 10:39:28 by lguillen          #+#    #+#             */
+/*   Updated: 2025/05/19 10:39:29 by lguillen         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../minishell.h"
 
 t_ast	*create_args(char **args, t_ast *branch)
@@ -120,12 +132,10 @@ t_ast	*build_ast(t_token **list, int *error)
 		tmp = tmp->next;
 	}
 	tree = create_tree(tree, *list, (*list)->type, error);
-	if (*error != 0)
+	if (*error != 0 || !tree)
 	{
 		free_ast(tree);
 		return (NULL);
 	}
-	if (!tree)
-		return (NULL);
 	return (tree);
 }

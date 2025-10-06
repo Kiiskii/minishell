@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   minishell.h                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: lguillen <lguillen@student.hive.fi>        +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/05/19 10:31:37 by lguillen          #+#    #+#             */
+/*   Updated: 2025/05/19 10:31:42 by lguillen         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
@@ -66,6 +78,7 @@ typedef struct s_mini
 	t_ast	*head;
 	int		fd_in;
 	int		exit_code;
+	int		heredoc_sig;
 }		t_mini;
 
 extern sig_atomic_t	g_signum;

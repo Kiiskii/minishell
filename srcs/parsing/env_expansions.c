@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   env_expansions.c                                   :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: lguillen <lguillen@student.hive.fi>        +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/05/19 10:38:46 by lguillen          #+#    #+#             */
+/*   Updated: 2025/05/19 10:38:47 by lguillen         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../minishell.h"
 
 char	*find_env_match(char *my_key, t_envi *env)
@@ -10,7 +22,7 @@ char	*find_env_match(char *my_key, t_envi *env)
 	{
 		if (!(ft_strcmp(my_key, tmp->key)))
 		{
-			my_value = ft_strdup(tmp->value);//
+			my_value = ft_strdup(tmp->value);
 			if (!my_value)
 				return (NULL);
 			return (my_value);

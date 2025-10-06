@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   heredoc.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: lguillen <lguillen@student.hive.fi>        +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/05/19 10:39:07 by lguillen          #+#    #+#             */
+/*   Updated: 2025/05/19 10:39:08 by lguillen         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../minishell.h"
 
 int	create_temp_file(t_ast *leaf, char **filename, int error, t_mini *lash)
@@ -9,7 +21,8 @@ int	create_temp_file(t_ast *leaf, char **filename, int error, t_mini *lash)
 	if (leaf->fd == -1)
 	{
 		ft_putstr_fd("lash: ", 2);
-		perror(leaf->filename);
+		perror(*filename);
+		free(*filename);
 		lash->exit_code = 1;
 		return (-1);
 	}
@@ -49,8 +62,9 @@ int	handle_heredoc(t_ast *leaf, int dont_expand, t_mini *lash, int error)
 	heredoc_stdin = dup(STDIN_FILENO);
 	if (heredoc_stdin == -1)
 	{
-		perror("lash: dup2");
+		perror("lash: dup");
 		lash->exit_code = errno;
+		heredoc_cleanup(leaf, heredoc_stdin, filename);
 		return (-1);
 	}
 	if (heredoc_stdin == -1)
